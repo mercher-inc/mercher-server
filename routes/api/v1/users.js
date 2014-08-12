@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 router.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
     next();
 });
 
