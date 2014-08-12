@@ -9,7 +9,7 @@ var server = require('http').createServer(app).listen(app.get('port'), function(
 });
 var io = require('socket.io')(server);
 
-app.use('/api', require('./api/router'));
+app.use('/api/v1', require('./routes/api/v1'));
 
 app.use(express.static(__dirname + '/public'));
 

@@ -3,9 +3,10 @@ var router = express.Router();
 
 router.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', false);
+    res.type('json');
     next();
 });
 
@@ -13,5 +14,8 @@ router.use(function(req, res, next) {
 router.get('/', function(req, res) {
     res.json({version: 1});
 });
+
+router.use('/users', require('./v1/users'));
+router.use('/shops', require('./v1/shops'));
 
 module.exports = router;
