@@ -60,6 +60,7 @@ exports.up = function (knex, Promise) {
                     .notNullable();
                 table.timestamps();
             }),
+            trx.schema.raw("CREATE TYPE manager_role AS ENUM ('editor', 'seller', 'owner')"),
             trx.schema.createTable('manager', function (table) {
                 table.increments('id');
                 table.integer('user_id')
@@ -72,7 +73,7 @@ exports.up = function (knex, Promise) {
                     .inTable('shop')
                     .onDelete('CASCADE')
                     .onUpdate('CASCADE');
-                table.enu('role', ['editor', 'seller', 'owner'])
+                table.specificType('role', 'manager_role')
                     .notNullable();
                 table.boolean('is_public')
                     .defaultTo(true)
@@ -93,6 +94,7 @@ exports.down = function (knex, Promise) {
     return knex.transaction(function (trx) {
         return Promise.all([
             trx.schema.dropTable('manager'),
+            trx.schema.raw("DROP TYPE manager_role"),
             trx.schema.dropTable('shop'),
             trx.schema.dropTable('user'),
             trx.schema.dropTable('image')
