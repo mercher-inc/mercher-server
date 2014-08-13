@@ -48,10 +48,10 @@ exports.up = function (knex, Promise) {
                     .notNullable();
                 table.text('description');
                 table.string('location');
-                table.float('tax', 4, 2)
+                table.float('tax')
                     .defaultTo(0)
                     .notNullable();
-                table.float('rating', 3, 2);
+                table.float('rating');
                 table.boolean('is_active')
                     .defaultTo(true)
                     .notNullable();
