@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-router.use(function(req, res, next) {
+router.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'X-Access-Token');
@@ -11,7 +11,7 @@ router.use(function(req, res, next) {
 });
 
 /* GET home page. */
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
     res.json({version: 1});
 });
 
