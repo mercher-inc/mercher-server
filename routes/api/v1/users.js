@@ -18,6 +18,10 @@ router.get('/', function (req, res) {
 });
 
 router.param('userId', function (req, res, next, id) {
+    if (id === 'me') {
+        id = 1; // TODO: get current user id from session
+    }
+
     var userModel = new UserModel({id: id});
     userModel.fetch({require: true})
         .then(function (model) {
