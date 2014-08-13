@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var ShopsCollection = require('../../../collections/shops');
 
 router.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
@@ -8,7 +9,12 @@ router.use(function(req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res) {
-    res.json({shop: 1});
+    var shopsCollection = new ShopsCollection();
+    shopsCollection
+        .fetch()
+        .then(function (collection) {
+            res.json(collection);
+        });
 });
 
 module.exports = router;
