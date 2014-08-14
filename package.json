@@ -11,6 +11,6 @@
         "pg":                   "^3.4.1",
         "socket.io":            "^1.0.6",
         "swagger-node-express": "~2.0",
-        "swagger-ui":           "~2.0"
+        "swagger-ui":           "mercher-inc/swagger-ui"
     }
 }
