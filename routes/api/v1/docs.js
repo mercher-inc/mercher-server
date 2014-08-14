@@ -252,7 +252,7 @@ router.get('/users', function (req, res) {
                         "method":   "GET",
                         "summary":  "List users",
                         "type":     "UsersList",
-                        "nickname": "listUsers",
+                        "nickname": "list",
                         "consumes": [
                             "application/json"
                         ],
@@ -264,7 +264,7 @@ router.get('/users', function (req, res) {
                         "method":           "POST",
                         "summary":          "Create user",
                         "type":             "User",
-                        "nickname":         "createUser",
+                        "nickname":         "create",
                         "consumes":         [
                             "application/json"
                         ],
@@ -297,7 +297,7 @@ router.get('/users', function (req, res) {
                         "method":           "GET",
                         "summary":          "Read user",
                         "type":             "User",
-                        "nickname":         "readUser",
+                        "nickname":         "read",
                         "parameters":       [
                             {
                                 "name":        "userId",
@@ -327,7 +327,7 @@ router.get('/users', function (req, res) {
                         "method":           "PUT",
                         "summary":          "Update user",
                         "type":             "User",
-                        "nickname":         "updateUser",
+                        "nickname":         "update",
                         "parameters":       [
                             {
                                 "name":        "body",
@@ -364,7 +364,7 @@ router.get('/users', function (req, res) {
                         "method":           "DELETE",
                         "summary":          "Delete user",
                         "type":             "void",
-                        "nickname":         "deleteUser",
+                        "nickname":         "delete",
                         "parameters":       [
                             {
                                 "name":        "userId",
@@ -413,7 +413,7 @@ router.get('/shops', function (req, res) {
                         "method":   "GET",
                         "summary":  "List shops",
                         "type":     "ShopsList",
-                        "nickname": "listShops",
+                        "nickname": "list",
                         "consumes": [
                             "application/json"
                         ],
@@ -425,7 +425,7 @@ router.get('/shops', function (req, res) {
                         "method":           "POST",
                         "summary":          "Create shop",
                         "type":             "Shop",
-                        "nickname":         "createShop",
+                        "nickname":         "create",
                         "consumes":         [
                             "application/json"
                         ],
@@ -458,7 +458,7 @@ router.get('/shops', function (req, res) {
                         "method":           "GET",
                         "summary":          "Read shop",
                         "type":             "Shop",
-                        "nickname":         "readShop",
+                        "nickname":         "read",
                         "parameters":       [
                             {
                                 "name":        "shopId",
@@ -488,7 +488,7 @@ router.get('/shops', function (req, res) {
                         "method":           "PUT",
                         "summary":          "Update shop",
                         "type":             "Shop",
-                        "nickname":         "updateShop",
+                        "nickname":         "update",
                         "parameters":       [
                             {
                                 "name":        "body",
@@ -525,7 +525,7 @@ router.get('/shops', function (req, res) {
                         "method":           "DELETE",
                         "summary":          "Delete shop",
                         "type":             "void",
-                        "nickname":         "deleteShop",
+                        "nickname":         "delete",
                         "parameters":       [
                             {
                                 "name":        "shopId",
