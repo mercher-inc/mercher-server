@@ -1,9 +1,14 @@
-var express = require('express');
-var bodyParser = require('body-parser');
+var express = require('express'),
+    bodyParser = require('body-parser'),
+    swagger = require("swagger-node-express");
 
 var app = express();
 app.set('APP_ROOT', __dirname);
 app.use(bodyParser());
+
+swagger.configureSwaggerPaths("", "/api/v1/documentation", "");
+swagger.setAppHandler(app);
+swagger.configure("/", "1.0");
 
 app.set('bookshelf', require('./modules/bookshelf'));
 
