@@ -6,7 +6,7 @@ router.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'X-Access-Token');
     res.setHeader('Access-Control-Allow-Credentials', false);
-    res.type('json');
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
     next();
 });
 
