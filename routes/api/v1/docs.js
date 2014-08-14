@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var modelsSpecs = {
-    "Image":     {
+    "Image":       {
         "id":          "Image",
         "required":    [
             "id",
@@ -48,7 +48,7 @@ var modelsSpecs = {
             }
         }
     },
-    "User":      {
+    "User":        {
         "id":          "User",
         "required":    [
             "id",
@@ -111,7 +111,24 @@ var modelsSpecs = {
             }
         }
     },
-    "Shop":      {
+    "AccessToken": {
+        "id":          "AccessToken",
+        "required":    [
+            "token",
+            "expires_at"
+        ],
+        "description": "Access token model",
+        "properties":  {
+            "token":      {
+                "type": "string"
+            },
+            "expires_at": {
+                "type":   "string",
+                "format": "date-time"
+            }
+        }
+    },
+    "Shop":        {
         "id":          "Shop",
         "required":    [
             "id",
@@ -175,7 +192,7 @@ var modelsSpecs = {
             }
         }
     },
-    "UsersList": {
+    "UsersList":   {
         "id":          "UsersList",
         "required":    [
             "users",
@@ -195,7 +212,7 @@ var modelsSpecs = {
             }
         }
     },
-    "ShopsList": {
+    "ShopsList":   {
         "id":          "ShopsList",
         "required":    [
             "shops",
@@ -225,6 +242,10 @@ router.get('/', function (req, res) {
             {
                 "path":        "/users",
                 "description": "User resource"
+            },
+            {
+                "path":        "/access_tokens",
+                "description": "Access token resource"
             },
             {
                 "path":        "/shops",
@@ -396,6 +417,88 @@ router.get('/users', function (req, res) {
             "User":      modelsSpecs.User,
             "Image":     modelsSpecs.Image,
             "UsersList": modelsSpecs.UsersList
+        }
+    });
+});
+
+router.get('/access_tokens', function (req, res) {
+    res.json({
+        "basePath":     "/",
+        "resourcePath": "/api/v1/access_tokens",
+        "apiVersion":   "1.0",
+        "apis":         [
+            {
+                "path":       "/api/v1/access_tokens",
+                "operations": [
+                    {
+                        "method":           "POST",
+                        "summary":          "Create access token",
+                        "type":             "AccessToken",
+                        "nickname":         "create",
+                        "consumes":         [
+                            "application/json"
+                        ],
+                        "produces":         [
+                            "application/json"
+                        ],
+                        "parameters":       [
+                            {
+                                "name":        "body",
+                                "description": "Access token object that needs to be created",
+                                "required":    true,
+                                "type":        "AccessToken",
+                                "paramType":   "body"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          201,
+                                "message":       "Access token was created",
+                                "responseModel": "AccessToken"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "path":       "/api/v1/access_tokens/{token}",
+                "operations": [
+                    {
+                        "method":           "DELETE",
+                        "summary":          "Delete access token",
+                        "type":             "void",
+                        "nickname":         "delete",
+                        "parameters":       [
+                            {
+                                "name":        "token",
+                                "description": "Access token that needs to be deleted",
+                                "required":    true,
+                                "type":        "string",
+                                "paramType":   "path"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":    200,
+                                "message": "Access token was deleted"
+                            },
+                            {
+                                "code":    400,
+                                "message": "Invalid ID supplied"
+                            },
+                            {
+                                "code":    404,
+                                "message": "Access token not found"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "models":       {
+            "User":        modelsSpecs.User,
+            "Image":       modelsSpecs.Image,
+            "AccessToken": modelsSpecs.AccessToken
         }
     });
 });
