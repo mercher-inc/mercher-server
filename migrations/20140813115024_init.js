@@ -37,6 +37,16 @@ exports.up = function (knex, Promise) {
                     .notNullable();
                 table.timestamps();
             }),
+            trx.schema.createTable('access_token', function (table) {
+                table.increments('id');
+                table.integer('user_id')
+                    .references('id')
+                    .inTable('user')
+                    .onDelete('CASCADE')
+                    .onUpdate('CASCADE');
+                table.string('token', 40);
+                table.timestamps();
+            }),
             trx.schema.createTable('shop', function (table) {
                 table.increments('id');
                 table.integer('image_id')
@@ -96,6 +106,7 @@ exports.down = function (knex, Promise) {
             trx.schema.dropTable('manager'),
             trx.schema.raw("DROP TYPE manager_role"),
             trx.schema.dropTable('shop'),
+            trx.schema.dropTable('access_token'),
             trx.schema.dropTable('user'),
             trx.schema.dropTable('image')
         ])

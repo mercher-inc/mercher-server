@@ -1,7 +1,9 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 
 var app = express();
 app.set('APP_ROOT', __dirname);
+app.use(bodyParser());
 
 app.set('bookshelf', require('./modules/bookshelf'));
 

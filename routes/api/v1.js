@@ -15,7 +15,8 @@ router.get('/', function (req, res) {
     res.json({version: 1});
 });
 
-router.use('/users', require('./v1/users'));
+router.use('/access_tokens', require('./v1/access_tokens'));
 router.use('/shops', require('./v1/shops'));
+router.use('/users', require('./v1/users'));
 
 module.exports = router;
