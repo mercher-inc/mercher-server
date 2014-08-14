@@ -19,4 +19,7 @@ router.use('/access_tokens', require('./v1/access_tokens'));
 router.use('/shops', require('./v1/shops'));
 router.use('/users', require('./v1/users'));
 
+// documentation
+router.use('/docs', require('./v1/docs'));
+
 module.exports = router;
