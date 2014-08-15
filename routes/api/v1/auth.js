@@ -19,15 +19,27 @@ router.post('/basic', function (req, res) {
         })
         .fetch({require: true})
         .then(function (userModel) {
+
             var hash = crypto.createHash('sha1');
             hash.update(Math.random().toString(), 'utf8');
             hash.update(new Date().toString(), 'utf8');
             var token = hash.digest('hex');
 
-            var accessTokenModel = new AccessTokenModel({user_id: userModel.id, token: token});
+            var expirationDate = new Date();
+            expirationDate.setTime(expirationDate.getTime() + 24 * 60 * 60 * 1000); // + 1 day
+            var expires = expirationDate.toISOString();
+
+            var accessTokenModel = new AccessTokenModel({
+                user_id: userModel.id,
+                token:   token,
+                expires: expires
+            });
             accessTokenModel
                 .save().then(function (accessTokenModel) {
-                    res.json(accessTokenModel);
+                    res.json({
+                        "token":   accessTokenModel.get("token"),
+                        "expires": accessTokenModel.get("expires")
+                    });
                 });
         })
         .catch(UserModel.NotFoundError, function () {

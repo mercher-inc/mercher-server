@@ -45,6 +45,8 @@ exports.up = function (knex, Promise) {
                     .onDelete('CASCADE')
                     .onUpdate('CASCADE');
                 table.string('token', 40);
+                table.timestamp('expires')
+                    .notNullable();
                 table.timestamps();
             }),
             trx.schema.createTable('shop', function (table) {
