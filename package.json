@@ -11,6 +11,7 @@
         "knex":              "^0.6.22",
         "pg":                "^3.4.1",
         "socket.io":         "^1.0.6",
-        "swagger-ui":        "mercher-inc/swagger-ui"
+        "swagger-ui":        "mercher-inc/swagger-ui",
+        "underscore":        "^1.6.0"
     }
 }
