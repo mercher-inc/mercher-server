@@ -19,4 +19,12 @@ router.use('/users', require('./v1/users'));
 // documentation
 router.use('/docs', require('./v1/docs'));
 
+router.use(function (err, req, res, next) {
+    if (err instanceof require('./v1/errors/api_error')) {
+        res.status(err.status).json(err.error);
+        return;
+    }
+    next(err);
+});
+
 module.exports = router;

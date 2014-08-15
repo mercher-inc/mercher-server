@@ -10,7 +10,7 @@ router.use(function (req, res, next) {
     next();
 });
 
-router.get('/', function (req, res) {
+router.get('/', function (req, res, next) {
     var shopsCollection = new ShopsCollection();
     shopsCollection
         .fetch()
@@ -20,23 +20,14 @@ router.get('/', function (req, res) {
 });
 
 router.param('shopId', function (req, res, next, id) {
-    var i;
 
-    req.checkParams('shopId', 'Shop ID should be integer').notEmpty().isInt();
-    var errors = req.validationErrors(true);
+    req.checkParams('shopId', 'Shop ID is required').notEmpty();
+    req.checkParams('shopId', 'Shop ID should be integer').isInt();
+
+    var errors = req.validationErrors();
     if (errors) {
-        var requestError = {
-            "error":          400,
-            "message":        "Bad request",
-            "request_errors": []
-        };
-        for (i in errors) {
-            requestError.request_errors.push({
-                "field":   errors[i].param,
-                "message": errors[i].msg
-            });
-        }
-        res.status(400).json(requestError);
+        var badRequestError = new (require('./errors/bad_request'))("Bad request", errors);
+        next(badRequestError);
         return;
     }
 
@@ -47,10 +38,8 @@ router.param('shopId', function (req, res, next, id) {
             next();
         })
         .catch(ShopModel.NotFoundError, function () {
-            res.status(404).json({
-                "error":   404,
-                "message": "Shop was not found"
-            });
+            var notFoundError = new (require('./errors/not_found'))("Shop was not found");
+            next(notFoundError);
         })
         .catch(function (err) {
             next(err);

@@ -7,8 +7,7 @@ module.exports = {
     "description": "Not Found error",
     "properties":  {
         "error":   {
-            "type":   "integer",
-            "format": "int32"
+            "type": "string"
         },
         "message": {
             "type": "string"

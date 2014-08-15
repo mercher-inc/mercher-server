@@ -8,8 +8,7 @@ module.exports = {
     "description": "Request error",
     "properties":  {
         "error":          {
-            "type":   "integer",
-            "format": "int32"
+            "type": "string"
         },
         "message":        {
             "type": "string"

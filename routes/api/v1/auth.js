@@ -5,7 +5,7 @@ var express = require('express'),
     UserModel = require('../../../models/user'),
     AccessTokenModel = require('../../../models/access_token');
 
-router.post('/basic', function (req, res) {
+router.post('/basic', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
     });
@@ -18,23 +18,8 @@ router.post('/basic', function (req, res) {
 
     var errors = req.validationErrors();
     if (errors) {
-        var validationError = {
-            "error":             406,
-            "message":           "Validation failed",
-            "validation_errors": []
-        };
-        var validationErrors = {};
-        _.each(errors, function (element) {
-            validationErrors[element.param] = validationErrors[element.param] || [];
-            validationErrors[element.param].push(element.msg);
-        });
-        _.each(validationErrors, function (element, index) {
-            validationError.validation_errors.push({
-                "field":  index,
-                "errors": element
-            });
-        });
-        res.status(406).json(validationError);
+        var validationError = new (require('./errors/validation'))("Validation failed", errors);
+        next(validationError);
         return;
     }
 
@@ -71,7 +56,8 @@ router.post('/basic', function (req, res) {
                 });
         })
         .catch(UserModel.NotFoundError, function () {
-            res.status(404).json(null);
+            var notFoundError = new (require('./errors/not_found'))("User with these credentials was not found");
+            next(notFoundError);
         });
 });
 
