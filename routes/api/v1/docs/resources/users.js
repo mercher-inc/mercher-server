@@ -50,33 +50,6 @@ router.get('/', function (req, res) {
                                 "responseModel": "RequestError"
                             }
                         ]
-                    },
-                    {
-                        "method":           "POST",
-                        "summary":          "Create user",
-                        "type":             "User",
-                        "nickname":         "create",
-                        "parameters":       [
-                            {
-                                "name":        "body",
-                                "description": "User object that needs to be created",
-                                "required":    true,
-                                "type":        "User",
-                                "paramType":   "body"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":          201,
-                                "message":       "User was created",
-                                "responseModel": "User"
-                            },
-                            {
-                                "code":          406,
-                                "message":       "Validation failed",
-                                "responseModel": "ValidationError"
-                            }
-                        ]
                     }
                 ]
             },
@@ -153,38 +126,6 @@ router.get('/', function (req, res) {
                                 "code":          406,
                                 "message":       "Validation failed",
                                 "responseModel": "ValidationError"
-                            },
-                            {
-                                "code":          404,
-                                "message":       "User not found",
-                                "responseModel": "NotFoundError"
-                            }
-                        ]
-                    },
-                    {
-                        "method":           "DELETE",
-                        "summary":          "Delete user",
-                        "type":             "void",
-                        "nickname":         "delete",
-                        "notes":            "\"{userId}\" could have a special value \"me\", which points to current user's profile.",
-                        "parameters":       [
-                            {
-                                "name":        "userId",
-                                "description": "ID of the user that needs to be deleted",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":    200,
-                                "message": "User was deleted"
-                            },
-                            {
-                                "code":          400,
-                                "message":       "Bad request",
-                                "responseModel": "RequestError"
                             },
                             {
                                 "code":          404,
