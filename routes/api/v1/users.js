@@ -51,7 +51,10 @@ router.param('userId', function (req, res, next, id) {
             next();
         })
         .catch(UserModel.NotFoundError, function () {
-            res.status(404).json(null);
+            res.status(404).json({
+                "error":   404,
+                "message": "User was not found"
+            });
         })
         .catch(function (err) {
             next(err);
