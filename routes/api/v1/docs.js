@@ -28,7 +28,6 @@ router.get('/', function (req, res) {
 });
 
 router.use('/users', require('./docs/resources/users'));
-router.use('/access_tokens', require('./docs/resources/access_tokens'));
 router.use('/shops', require('./docs/resources/shops'));
 
 module.exports = router;
