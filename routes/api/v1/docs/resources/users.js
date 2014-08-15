@@ -3,23 +3,52 @@ var router = express.Router();
 
 router.get('/', function (req, res) {
     res.json({
-        "basePath":     "/",
-        "resourcePath": "/api/v1/user",
-        "apiVersion":   "1.0",
-        "apis":         [
+        "basePath":       "/",
+        "resourcePath":   "/api/v1/user",
+        "apiVersion":     "1.0",
+        "swaggerVersion": "1.2",
+        "consumes":       [
+            "application/json"
+        ],
+        "produces":       [
+            "application/json"
+        ],
+        "apis":           [
             {
                 "path":       "/api/v1/users",
                 "operations": [
                     {
-                        "method":   "GET",
-                        "summary":  "List users",
-                        "type":     "UsersList",
-                        "nickname": "list",
-                        "consumes": [
-                            "application/json"
+                        "method":           "GET",
+                        "summary":          "List users",
+                        "type":             "UsersList",
+                        "nickname":         "list",
+                        "parameters":       [
+                            {
+                                "name":        "limit",
+                                "description": "Amount of users to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of users to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
                         ],
-                        "produces": [
-                            "application/json"
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "UsersList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
                         ]
                     },
                     {
@@ -27,12 +56,6 @@ router.get('/', function (req, res) {
                         "summary":          "Create user",
                         "type":             "User",
                         "nickname":         "create",
-                        "consumes":         [
-                            "application/json"
-                        ],
-                        "produces":         [
-                            "application/json"
-                        ],
                         "parameters":       [
                             {
                                 "name":        "body",
@@ -65,6 +88,7 @@ router.get('/', function (req, res) {
                         "summary":          "Read user",
                         "type":             "User",
                         "nickname":         "read",
+                        "notes":            "\"{userId}\" could have a special value \"me\", which points to current user's profile.",
                         "parameters":       [
                             {
                                 "name":        "userId",
@@ -82,7 +106,7 @@ router.get('/', function (req, res) {
                             },
                             {
                                 "code":          400,
-                                "message":       "Invalid ID supplied",
+                                "message":       "Bad request",
                                 "responseModel": "RequestError"
                             },
                             {
@@ -97,6 +121,7 @@ router.get('/', function (req, res) {
                         "summary":          "Update user",
                         "type":             "User",
                         "nickname":         "update",
+                        "notes":            "\"{userId}\" could have a special value \"me\", which points to current user's profile.",
                         "parameters":       [
                             {
                                 "name":        "body",
@@ -121,7 +146,7 @@ router.get('/', function (req, res) {
                             },
                             {
                                 "code":          400,
-                                "message":       "Invalid ID supplied",
+                                "message":       "Bad request",
                                 "responseModel": "RequestError"
                             },
                             {
@@ -141,6 +166,7 @@ router.get('/', function (req, res) {
                         "summary":          "Delete user",
                         "type":             "void",
                         "nickname":         "delete",
+                        "notes":            "\"{userId}\" could have a special value \"me\", which points to current user's profile.",
                         "parameters":       [
                             {
                                 "name":        "userId",
@@ -157,7 +183,7 @@ router.get('/', function (req, res) {
                             },
                             {
                                 "code":          400,
-                                "message":       "Invalid ID supplied",
+                                "message":       "Bad request",
                                 "responseModel": "RequestError"
                             },
                             {
@@ -170,7 +196,7 @@ router.get('/', function (req, res) {
                 ]
             }
         ],
-        "models":       {
+        "models":         {
             "User":            require('../models/user'),
             "Image":           require('../models/image'),
             "UsersList":       require('../collections/users'),

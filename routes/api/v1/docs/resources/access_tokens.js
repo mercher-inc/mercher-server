@@ -3,10 +3,17 @@ var router = express.Router();
 
 router.get('/', function (req, res) {
     res.json({
-        "basePath":     "/",
-        "resourcePath": "/api/v1/access_tokens",
-        "apiVersion":   "1.0",
-        "apis":         [
+        "basePath":       "/",
+        "resourcePath":   "/api/v1/access_tokens",
+        "apiVersion":     "1.0",
+        "swaggerVersion": "1.2",
+        "consumes":       [
+            "application/json"
+        ],
+        "produces":       [
+            "application/json"
+        ],
+        "apis":           [
             {
                 "path":       "/api/v1/access_tokens",
                 "operations": [
@@ -15,12 +22,6 @@ router.get('/', function (req, res) {
                         "summary":          "Create access token",
                         "type":             "AccessToken",
                         "nickname":         "create",
-                        "consumes":         [
-                            "application/json"
-                        ],
-                        "produces":         [
-                            "application/json"
-                        ],
                         "parameters":       [
                             {
                                 "name":        "body",
@@ -69,7 +70,7 @@ router.get('/', function (req, res) {
                             },
                             {
                                 "code":          400,
-                                "message":       "Invalid ID supplied",
+                                "message":       "Bad request",
                                 "responseModel": "RequestError"
                             },
                             {
@@ -82,7 +83,7 @@ router.get('/', function (req, res) {
                 ]
             }
         ],
-        "models":       {
+        "models":         {
             "User":            require('../models/user'),
             "Image":           require('../models/image'),
             "AccessToken":     require('../models/access_token'),
