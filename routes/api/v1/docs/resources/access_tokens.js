@@ -35,6 +35,11 @@ router.get('/', function (req, res) {
                                 "code":          201,
                                 "message":       "Access token was created",
                                 "responseModel": "AccessToken"
+                            },
+                            {
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
                             }
                         ]
                     }
@@ -63,12 +68,14 @@ router.get('/', function (req, res) {
                                 "message": "Access token was deleted"
                             },
                             {
-                                "code":    400,
-                                "message": "Invalid ID supplied"
+                                "code":          400,
+                                "message":       "Invalid ID supplied",
+                                "responseModel": "RequestError"
                             },
                             {
-                                "code":    404,
-                                "message": "Access token not found"
+                                "code":          404,
+                                "message":       "Access token not found",
+                                "responseModel": "NotFoundError"
                             }
                         ]
                     }
@@ -76,9 +83,13 @@ router.get('/', function (req, res) {
             }
         ],
         "models":       {
-            "User":        require('../models/user'),
-            "Image":       require('../models/image'),
-            "AccessToken": require('../models/access_token')
+            "User":            require('../models/user'),
+            "Image":           require('../models/image'),
+            "AccessToken":     require('../models/access_token'),
+            "RequestError":    require('../errors/request'),
+            "NotFoundError":   require('../errors/not_found'),
+            "ValidationError": require('../errors/validation'),
+            "FieldError":      require('../errors/field')
         }
     });
 });

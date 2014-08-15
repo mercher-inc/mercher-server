@@ -47,6 +47,11 @@ router.get('/', function (req, res) {
                                 "code":          201,
                                 "message":       "Shop was created",
                                 "responseModel": "Shop"
+                            },
+                            {
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
                             }
                         ]
                     }
@@ -76,12 +81,14 @@ router.get('/', function (req, res) {
                                 "responseModel": "Shop"
                             },
                             {
-                                "code":    400,
-                                "message": "Invalid ID supplied"
+                                "code":          400,
+                                "message":       "Invalid ID supplied",
+                                "responseModel": "RequestError"
                             },
                             {
-                                "code":    404,
-                                "message": "Shop not found"
+                                "code":          404,
+                                "message":       "Shop not found",
+                                "responseModel": "NotFoundError"
                             }
                         ]
                     },
@@ -113,12 +120,19 @@ router.get('/', function (req, res) {
                                 "responseModel": "Shop"
                             },
                             {
-                                "code":    400,
-                                "message": "Invalid ID supplied"
+                                "code":          400,
+                                "message":       "Invalid ID supplied",
+                                "responseModel": "RequestError"
                             },
                             {
-                                "code":    404,
-                                "message": "Shop not found"
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
+                            },
+                            {
+                                "code":          404,
+                                "message":       "Shop not found",
+                                "responseModel": "NotFoundError"
                             }
                         ]
                     },
@@ -142,12 +156,14 @@ router.get('/', function (req, res) {
                                 "message": "Shop was deleted"
                             },
                             {
-                                "code":    400,
-                                "message": "Invalid ID supplied"
+                                "code":          400,
+                                "message":       "Invalid ID supplied",
+                                "responseModel": "RequestError"
                             },
                             {
-                                "code":    404,
-                                "message": "Shop not found"
+                                "code":          404,
+                                "message":       "Shop not found",
+                                "responseModel": "NotFoundError"
                             }
                         ]
                     }
@@ -155,9 +171,13 @@ router.get('/', function (req, res) {
             }
         ],
         "models":       {
-            "Shop":      require('../models/shop'),
-            "Image":     require('../models/image'),
-            "ShopsList": require('../collections/shops')
+            "Shop":            require('../models/shop'),
+            "Image":           require('../models/image'),
+            "ShopsList":       require('../collections/shops'),
+            "RequestError":    require('../errors/request'),
+            "NotFoundError":   require('../errors/not_found'),
+            "ValidationError": require('../errors/validation'),
+            "FieldError":      require('../errors/field')
         }
     });
 });

@@ -47,6 +47,11 @@ router.get('/', function (req, res) {
                                 "code":          201,
                                 "message":       "User was created",
                                 "responseModel": "User"
+                            },
+                            {
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
                             }
                         ]
                     }
@@ -76,12 +81,14 @@ router.get('/', function (req, res) {
                                 "responseModel": "User"
                             },
                             {
-                                "code":    400,
-                                "message": "Invalid ID supplied"
+                                "code":          400,
+                                "message":       "Invalid ID supplied",
+                                "responseModel": "RequestError"
                             },
                             {
-                                "code":    404,
-                                "message": "User not found"
+                                "code":          404,
+                                "message":       "User not found",
+                                "responseModel": "NotFoundError"
                             }
                         ]
                     },
@@ -113,12 +120,19 @@ router.get('/', function (req, res) {
                                 "responseModel": "User"
                             },
                             {
-                                "code":    400,
-                                "message": "Invalid ID supplied"
+                                "code":          400,
+                                "message":       "Invalid ID supplied",
+                                "responseModel": "RequestError"
                             },
                             {
-                                "code":    404,
-                                "message": "User not found"
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
+                            },
+                            {
+                                "code":          404,
+                                "message":       "User not found",
+                                "responseModel": "NotFoundError"
                             }
                         ]
                     },
@@ -142,12 +156,14 @@ router.get('/', function (req, res) {
                                 "message": "User was deleted"
                             },
                             {
-                                "code":    400,
-                                "message": "Invalid ID supplied"
+                                "code":          400,
+                                "message":       "Invalid ID supplied",
+                                "responseModel": "RequestError"
                             },
                             {
-                                "code":    404,
-                                "message": "User not found"
+                                "code":          404,
+                                "message":       "User not found",
+                                "responseModel": "NotFoundError"
                             }
                         ]
                     }
@@ -155,9 +171,13 @@ router.get('/', function (req, res) {
             }
         ],
         "models":       {
-            "User":      require('../models/user'),
-            "Image":     require('../models/image'),
-            "UsersList": require('../collections/users')
+            "User":            require('../models/user'),
+            "Image":           require('../models/image'),
+            "UsersList":       require('../collections/users'),
+            "RequestError":    require('../errors/request'),
+            "NotFoundError":   require('../errors/not_found'),
+            "ValidationError": require('../errors/validation'),
+            "FieldError":      require('../errors/field')
         }
     });
 });
