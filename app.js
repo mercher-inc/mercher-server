@@ -3,6 +3,7 @@ var express = require('express'),
 
 var app = express();
 app.use(bodyParser());
+app.disable('x-powered-by');
 
 app.set('bookshelf', require('./modules/bookshelf'));
 

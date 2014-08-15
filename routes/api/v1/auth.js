@@ -4,12 +4,12 @@ var router = express.Router();
 var UserModel = require('../../../models/user');
 var AccessTokenModel = require('../../../models/access_token');
 
-router.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Methods', 'POST');
-    next();
-});
+router.post('/basic', function (req, res) {
+    res.set({
+        'Access-Control-Allow-Methods': 'POST'
+    });
+    res.removeHeader('Access-Control-Allow-Origin');
 
-router.post('/', function (req, res) {
     var userModel = new UserModel();
 
     userModel

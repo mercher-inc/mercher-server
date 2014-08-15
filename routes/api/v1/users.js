@@ -4,7 +4,9 @@ var UsersCollection = require('../../../collections/users');
 var UserModel = require('../../../models/user');
 
 router.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+    res.set({
+        'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE'
+    });
     next();
 });
 

@@ -4,7 +4,9 @@ var ShopsCollection = require('../../../collections/shops');
 var ShopModel = require('../../../models/shop');
 
 router.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+    res.set({
+        'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE'
+    });
     next();
 });
 
