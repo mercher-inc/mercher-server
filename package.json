@@ -4,13 +4,13 @@
     "version":      "0.0.1",
     "private":      true,
     "dependencies": {
-        "body-parser":          "~1.0.0",
-        "bookshelf":            "^0.7.7",
-        "express":              "^4.2.0",
-        "knex":                 "^0.6.22",
-        "pg":                   "^3.4.1",
-        "socket.io":            "^1.0.6",
-        "swagger-node-express": "~2.0",
-        "swagger-ui":           "mercher-inc/swagger-ui"
+        "body-parser":       "~1.0.0",
+        "bookshelf":         "^0.7.7",
+        "express":           "^4.2.0",
+        "express-validator": "^2.3.0",
+        "knex":              "^0.6.22",
+        "pg":                "^3.4.1",
+        "socket.io":         "^1.0.6",
+        "swagger-ui":        "mercher-inc/swagger-ui"
     }
 }

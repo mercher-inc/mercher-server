@@ -2,18 +2,15 @@ module.exports = {
     "id":          "FieldError",
     "required":    [
         "field",
-        "errors"
+        "message"
     ],
     "description": "Field validation error",
     "properties":  {
-        "field":  {
+        "field":   {
             "type": "string"
         },
-        "errors": {
-            "type":  "array",
-            "items": {
-                "type": "string"
-            }
+        "message": {
+            "type": "string"
         }
     }
 };

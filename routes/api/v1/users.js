@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var UsersCollection = require('../../../collections/users');
-var UserModel = require('../../../models/user');
+var express = require('express'),
+    router = express.Router(),
+    UsersCollection = require('../../../collections/users'),
+    UserModel = require('../../../models/user');
 
 router.use(function (req, res, next) {
     res.set({
@@ -20,6 +20,26 @@ router.get('/', function (req, res) {
 });
 
 router.param('userId', function (req, res, next, id) {
+    var i;
+
+    req.checkParams('userId', 'User ID should be integer').notEmpty().isInt();
+    var errors = req.validationErrors(true);
+    if (errors) {
+        var requestError = {
+            "error":          400,
+            "message":        "Bad request",
+            "request_errors": []
+        };
+        for (i in errors) {
+            requestError.request_errors.push({
+                "field":   errors[i].param,
+                "message": errors[i].msg
+            });
+        }
+        res.status(400).json(requestError);
+        return;
+    }
+
     if (id === 'me') {
         id = 1; // TODO: get current user id from session
     }

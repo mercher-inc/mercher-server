@@ -3,18 +3,18 @@ module.exports = {
     "required":    [
         "error",
         "message",
-        "fields"
+        "validation_errors"
     ],
     "description": "Validation error",
     "properties":  {
-        "error":   {
+        "error":             {
             "type":   "integer",
             "format": "int32"
         },
-        "message": {
+        "message":           {
             "type": "string"
         },
-        "fields":  {
+        "validation_errors": {
             "type":        "array",
             "uniqueItems": true,
             "items":       {

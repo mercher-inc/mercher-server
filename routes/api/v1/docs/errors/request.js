@@ -3,18 +3,18 @@ module.exports = {
     "required":    [
         "error",
         "message",
-        "fields"
+        "request_errors"
     ],
     "description": "Request error",
     "properties":  {
-        "error":   {
+        "error":          {
             "type":   "integer",
             "format": "int32"
         },
-        "message": {
+        "message":        {
             "type": "string"
         },
-        "fields":  {
+        "request_errors": {
             "type":        "array",
             "uniqueItems": true,
             "items":       {

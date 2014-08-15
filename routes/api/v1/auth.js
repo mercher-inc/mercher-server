@@ -1,8 +1,8 @@
-var express = require('express');
-var crypto = require('crypto');
-var router = express.Router();
-var UserModel = require('../../../models/user');
-var AccessTokenModel = require('../../../models/access_token');
+var express = require('express'),
+    crypto = require('crypto'),
+    router = express.Router(),
+    UserModel = require('../../../models/user'),
+    AccessTokenModel = require('../../../models/access_token');
 
 router.post('/basic', function (req, res) {
     res.set({

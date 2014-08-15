@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var ShopsCollection = require('../../../collections/shops');
-var ShopModel = require('../../../models/shop');
+var express = require('express'),
+    router = express.Router(),
+    ShopsCollection = require('../../../collections/shops'),
+    ShopModel = require('../../../models/shop');
 
 router.use(function (req, res, next) {
     res.set({
@@ -20,6 +20,26 @@ router.get('/', function (req, res) {
 });
 
 router.param('shopId', function (req, res, next, id) {
+    var i;
+
+    req.checkParams('shopId', 'Shop ID should be integer').notEmpty().isInt();
+    var errors = req.validationErrors(true);
+    if (errors) {
+        var requestError = {
+            "error":          400,
+            "message":        "Bad request",
+            "request_errors": []
+        };
+        for (i in errors) {
+            requestError.request_errors.push({
+                "field":   errors[i].param,
+                "message": errors[i].msg
+            });
+        }
+        res.status(400).json(requestError);
+        return;
+    }
+
     var shopModel = new ShopModel({id: id});
     shopModel.fetch({require: true})
         .then(function (model) {
