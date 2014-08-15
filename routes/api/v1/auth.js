@@ -5,6 +5,61 @@ var express = require('express'),
     UserModel = require('../../../models/user'),
     AccessTokenModel = require('../../../models/access_token');
 
+router.post('/sign_up', function (req, res, next) {
+    res.set({
+        'Access-Control-Allow-Methods': 'POST'
+    });
+    res.removeHeader('Access-Control-Allow-Origin');
+
+    req.checkBody('email', 'Email is required').notEmpty();
+    req.checkBody('email', 'Email should be valid email').isEmail();
+    req.checkBody('password', 'Password is required').notEmpty();
+    req.checkBody('password', 'Password should be 8-20 long').len(8, 20);
+    req.checkBody('first_name', 'First name should be less then 40 characters long').len(0, 40);
+    req.checkBody('last_name', 'Last name should be less then 40 characters long').len(0, 40);
+
+    var errors = req.validationErrors();
+    if (errors) {
+        var validationError = new (require('./errors/validation'))("Validation failed", errors);
+        next(validationError);
+        return;
+    }
+
+    var userModel = new UserModel({
+        email:      req.body.email,
+        password:   crypto.pbkdf2Sync(req.body.password, 'Mercher', 10, 20).toString('hex'),
+        first_name: req.body.first_name,
+        last_name:  req.body.last_name
+    });
+
+    userModel
+        .save()
+        .then(function(userModel){
+
+            var hash = crypto.createHash('sha1');
+            hash.update(Math.random().toString(), 'utf8');
+            hash.update(new Date().toString(), 'utf8');
+            var token = hash.digest('hex');
+
+            var expirationDate = new Date();
+            expirationDate.setTime(expirationDate.getTime() + 24 * 60 * 60 * 1000); // + 1 day
+            var expires = expirationDate.toISOString();
+
+            var accessTokenModel = new AccessTokenModel({
+                user_id: userModel.id,
+                token:   token,
+                expires: expires
+            });
+            accessTokenModel
+                .save().then(function (accessTokenModel) {
+                    res.status(201).json({
+                        "token":   accessTokenModel.get("token"),
+                        "expires": accessTokenModel.get("expires")
+                    });
+                });
+        });
+});
+
 router.post('/basic', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
