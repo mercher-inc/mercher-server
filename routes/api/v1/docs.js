@@ -1,239 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-var modelsSpecs = {
-    "Image":       {
-        "id":          "Image",
-        "required":    [
-            "id",
-            "file",
-            "is_active",
-            "is_banned"
-        ],
-        "description": "Image model",
-        "properties":  {
-            "id":          {
-                "type":   "integer",
-                "format": "int32"
-            },
-            "title":       {
-                "type":         "string",
-                "defaultValue": null
-            },
-            "description": {
-                "type":         "string",
-                "defaultValue": null
-            },
-            "file":        {
-                "type":         "string",
-                "defaultValue": null
-            },
-            "is_active":   {
-                "type":         "boolean",
-                "defaultValue": true
-            },
-            "is_banned":   {
-                "type":         "boolean",
-                "defaultValue": false
-            },
-            "created_at":  {
-                "type":         "string",
-                "format":       "date-time",
-                "defaultValue": null
-            },
-            "updated_at":  {
-                "type":         "string",
-                "format":       "date-time",
-                "defaultValue": null
-            }
-        }
-    },
-    "User":        {
-        "id":          "User",
-        "required":    [
-            "id",
-            "email",
-            "is_active",
-            "is_banned"
-        ],
-        "description": "User model",
-        "properties":  {
-            "id":         {
-                "type":   "integer",
-                "format": "int32"
-            },
-            "image_id":   {
-                "type":         "integer",
-                "format":       "int32",
-                "defaultValue": null
-            },
-            "first_name": {
-                "type":         "string",
-                "defaultValue": null
-            },
-            "last_name":  {
-                "type":         "string",
-                "defaultValue": null
-            },
-            "email":      {
-                "type": "string"
-            },
-            "password":   {
-                "type":         "string",
-                "defaultValue": null
-            },
-            "last_login": {
-                "type":         "string",
-                "format":       "date-time",
-                "defaultValue": null
-            },
-            "is_active":  {
-                "type":         "boolean",
-                "defaultValue": true
-            },
-            "is_banned":  {
-                "type":         "boolean",
-                "defaultValue": false
-            },
-            "created_at": {
-                "type":         "string",
-                "format":       "date-time",
-                "defaultValue": null
-            },
-            "updated_at": {
-                "type":         "string",
-                "format":       "date-time",
-                "defaultValue": null
-            },
-            "image":      {
-                "$ref":         "Image",
-                "defaultValue": null
-            }
-        }
-    },
-    "AccessToken": {
-        "id":          "AccessToken",
-        "required":    [
-            "token",
-            "expires_at"
-        ],
-        "description": "Access token model",
-        "properties":  {
-            "token":      {
-                "type": "string"
-            },
-            "expires_at": {
-                "type":   "string",
-                "format": "date-time"
-            }
-        }
-    },
-    "Shop":        {
-        "id":          "Shop",
-        "required":    [
-            "id",
-            "title",
-            "is_active",
-            "is_banned"
-        ],
-        "description": "Shop model",
-        "properties":  {
-            "id":          {
-                "type":   "integer",
-                "format": "int32"
-            },
-            "image_id":    {
-                "type":         "integer",
-                "format":       "int32",
-                "defaultValue": null
-            },
-            "title":       {
-                "type": "string"
-            },
-            "description": {
-                "type":         "string",
-                "defaultValue": null
-            },
-            "location":    {
-                "type":         "string",
-                "defaultValue": null
-            },
-            "tax":         {
-                "type":         "number",
-                "format":       "float",
-                "defaultValue": null
-            },
-            "rating":      {
-                "type":         "number",
-                "format":       "float",
-                "defaultValue": null
-            },
-            "is_active":   {
-                "type":         "boolean",
-                "defaultValue": true
-            },
-            "is_banned":   {
-                "type":         "boolean",
-                "defaultValue": false
-            },
-            "created_at":  {
-                "type":         "string",
-                "format":       "date-time",
-                "defaultValue": null
-            },
-            "updated_at":  {
-                "type":         "string",
-                "format":       "date-time",
-                "defaultValue": null
-            },
-            "image":       {
-                "$ref":         "Image",
-                "defaultValue": null
-            }
-        }
-    },
-    "UsersList":   {
-        "id":          "UsersList",
-        "required":    [
-            "users",
-            "total"
-        ],
-        "description": "Users collection",
-        "properties":  {
-            "users": {
-                "type":  "array",
-                "items": {
-                    "$ref": "User"
-                }
-            },
-            "total": {
-                "type":   "integer",
-                "format": "int32"
-            }
-        }
-    },
-    "ShopsList":   {
-        "id":          "ShopsList",
-        "required":    [
-            "shops",
-            "total"
-        ],
-        "description": "Shops collection",
-        "properties":  {
-            "shops": {
-                "type":  "array",
-                "items": {
-                    "$ref": "Shop"
-                }
-            },
-            "total": {
-                "type":   "integer",
-                "format": "int32"
-            }
-        }
-    }
-};
-
 router.get('/', function (req, res) {
     res.json({
         "apiVersion":     "1.0",
@@ -414,9 +181,9 @@ router.get('/users', function (req, res) {
             }
         ],
         "models":       {
-            "User":      modelsSpecs.User,
-            "Image":     modelsSpecs.Image,
-            "UsersList": modelsSpecs.UsersList
+            "User":      require('./docs/models/user'),
+            "Image":     require('./docs/models/image'),
+            "UsersList": require('./docs/collections/users')
         }
     });
 });
@@ -496,9 +263,9 @@ router.get('/access_tokens', function (req, res) {
             }
         ],
         "models":       {
-            "User":        modelsSpecs.User,
-            "Image":       modelsSpecs.Image,
-            "AccessToken": modelsSpecs.AccessToken
+            "User":        require('./docs/models/user'),
+            "Image":       require('./docs/models/image'),
+            "AccessToken": require('./docs/models/access_token')
         }
     });
 });
@@ -657,9 +424,9 @@ router.get('/shops', function (req, res) {
             }
         ],
         "models":       {
-            "Shop":      modelsSpecs.Shop,
-            "Image":     modelsSpecs.Image,
-            "ShopsList": modelsSpecs.ShopsList
+            "Shop":      require('./docs/models/shop'),
+            "Image":     require('./docs/models/image'),
+            "ShopsList": require('./docs/collections/shops')
         }
     });
 });
