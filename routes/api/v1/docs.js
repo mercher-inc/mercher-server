@@ -7,12 +7,12 @@ router.get('/', function (req, res) {
         "swaggerVersion": "1.2",
         "apis":           [
             {
-                "path":        "/users",
-                "description": "User resource"
+                "path":        "/auth",
+                "description": "Auth resource"
             },
             {
-                "path":        "/access_tokens",
-                "description": "Access token resource"
+                "path":        "/users",
+                "description": "User resource"
             },
             {
                 "path":        "/shops",
@@ -27,6 +27,7 @@ router.get('/', function (req, res) {
     });
 });
 
+router.use('/auth', require('./docs/resources/auth'));
 router.use('/users', require('./docs/resources/users'));
 router.use('/shops', require('./docs/resources/shops'));
 
