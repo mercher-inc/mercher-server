@@ -36,7 +36,7 @@ router.post('/basic', function (req, res) {
             });
             accessTokenModel
                 .save().then(function (accessTokenModel) {
-                    res.json({
+                    res.status(201).json({
                         "token":   accessTokenModel.get("token"),
                         "expires": accessTokenModel.get("expires")
                     });
