@@ -49,7 +49,7 @@ router.param('shopId', function (req, res, next, id) {
         .catch(ShopModel.NotFoundError, function () {
             res.status(404).json({
                 "error":   404,
-                "message": "User was not found"
+                "message": "Shop was not found"
             });
         })
         .catch(function (err) {
