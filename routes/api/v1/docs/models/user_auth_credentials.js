@@ -1,5 +1,5 @@
 module.exports = {
-    "id":          "UserCredentials",
+    "id":          "UserAuthCredentials",
     "required":    [
         "email",
         "password"

@@ -15,6 +15,38 @@ router.get('/', function (req, res) {
         ],
         "apis":           [
             {
+                "path":       "/api/v1/auth/sign_up",
+                "operations": [
+                    {
+                        "method":           "POST",
+                        "summary":          "Sign Up",
+                        "type":             "AccessToken",
+                        "nickname":         "sign_up",
+                        "parameters":       [
+                            {
+                                "name":        "body",
+                                "description": "User Sign Up Credentials model",
+                                "required":    true,
+                                "type":        "UserSignUpCredentials",
+                                "paramType":   "body"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          201,
+                                "message":       "User account was created successfully",
+                                "responseModel": "AccessToken"
+                            },
+                            {
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 "path":       "/api/v1/auth/basic",
                 "operations": [
                     {
@@ -25,16 +57,16 @@ router.get('/', function (req, res) {
                         "parameters":       [
                             {
                                 "name":        "body",
-                                "description": "User Auth Credentials object",
+                                "description": "User Auth Credentials model",
                                 "required":    true,
-                                "type":        "UserCredentials",
+                                "type":        "UserAuthCredentials",
                                 "paramType":   "body"
                             }
                         ],
                         "responseMessages": [
                             {
-                                "code":          200,
-                                "message":       "OK",
+                                "code":          201,
+                                "message":       "Access Token was created successfully",
                                 "responseModel": "AccessToken"
                             },
                             {
@@ -48,10 +80,11 @@ router.get('/', function (req, res) {
             }
         ],
         "models":         {
-            "AccessToken":     require('../models/access_token'),
-            "UserCredentials": require('../models/user_credentials'),
-            "ValidationError": require('../errors/validation'),
-            "FieldError":      require('../errors/field')
+            "AccessToken":           require('../models/access_token'),
+            "UserSignUpCredentials": require('../models/user_sign_up_credentials'),
+            "UserAuthCredentials":   require('../models/user_auth_credentials'),
+            "ValidationError":       require('../errors/validation'),
+            "FieldError":            require('../errors/field')
         }
     });
 });
