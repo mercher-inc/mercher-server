@@ -2,8 +2,7 @@ module.exports = {
     "id":          "UserSignUpCredentials",
     "required":    [
         "email",
-        "password",
-        "password_c"
+        "password"
     ],
     "description": "User Sign Up Credentials model",
     "properties":  {
@@ -11,9 +10,6 @@ module.exports = {
             "type": "string"
         },
         "password":   {
-            "type": "string"
-        },
-        "password_c": {
             "type": "string"
         },
         "first_name": {

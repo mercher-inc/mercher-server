@@ -25,37 +25,53 @@ router.post('/sign_up', function (req, res, next) {
         return;
     }
 
-    var userModel = new UserModel({
-        email:      req.body.email,
-        password:   crypto.pbkdf2Sync(req.body.password, 'Mercher', 10, 20).toString('hex'),
-        first_name: req.body.first_name,
-        last_name:  req.body.last_name
-    });
+    new UserModel()
+        .where({email: req.body.email})
+        .fetch({require: true})
+        .then(function () {
+            var validationError = new (require('./errors/validation'))("Validation failed", [
+                {
+                    param: 'email',
+                    msg:   'Email is already taken',
+                    value: req.body.email
+                }
+            ]);
+            next(validationError);
+        })
+        .catch(UserModel.NotFoundError, function () {
 
-    userModel
-        .save()
-        .then(function(userModel){
-
-            var hash = crypto.createHash('sha1');
-            hash.update(Math.random().toString(), 'utf8');
-            hash.update(new Date().toString(), 'utf8');
-            var token = hash.digest('hex');
-
-            var expirationDate = new Date();
-            expirationDate.setTime(expirationDate.getTime() + 24 * 60 * 60 * 1000); // + 1 day
-            var expires = expirationDate.toISOString();
-
-            var accessTokenModel = new AccessTokenModel({
-                user_id: userModel.id,
-                token:   token,
-                expires: expires
+            var userModel = new UserModel({
+                email:      req.body.email,
+                password:   crypto.pbkdf2Sync(req.body.password, 'Mercher', 10, 20).toString('hex'),
+                first_name: req.body.first_name,
+                last_name:  req.body.last_name
             });
-            accessTokenModel
-                .save().then(function (accessTokenModel) {
-                    res.status(201).json({
-                        "token":   accessTokenModel.get("token"),
-                        "expires": accessTokenModel.get("expires")
+
+            userModel
+                .save()
+                .then(function (userModel) {
+
+                    var hash = crypto.createHash('sha1');
+                    hash.update(Math.random().toString(), 'utf8');
+                    hash.update(new Date().toString(), 'utf8');
+                    var token = hash.digest('hex');
+
+                    var expirationDate = new Date();
+                    expirationDate.setTime(expirationDate.getTime() + 24 * 60 * 60 * 1000); // + 1 day
+                    var expires = expirationDate.toISOString();
+
+                    var accessTokenModel = new AccessTokenModel({
+                        user_id: userModel.id,
+                        token:   token,
+                        expires: expires
                     });
+                    accessTokenModel
+                        .save().then(function (accessTokenModel) {
+                            res.status(201).json({
+                                "token":   accessTokenModel.get("token"),
+                                "expires": accessTokenModel.get("expires")
+                            });
+                        });
                 });
         });
 });
