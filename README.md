@@ -62,4 +62,18 @@ Go through [Mercher Web Client setup process](https://github.com/mercher-inc/mer
 ln -s ~/work/mercher-inc/mercher-web-client/dist/ ~/work/mercher-inc/mercher-server/public
 ```
 
+### Install Swagger UI
+Install and build Mercher's Swagger UI
+```bash
+cd ~/work/mercher-inc/
+git clone git@github.com:mercher-inc/swagger-ui.git
+cd swagger-ui
+npm install
+npm run-script build
+```
+And then link it to the project
+```bash
+ln -s ~/work/mercher-inc/swagger-ui/dist/ ~/work/mercher-inc/mercher-server/swagger
+```
+
 Have fun!
