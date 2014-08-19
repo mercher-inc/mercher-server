@@ -57,7 +57,7 @@ npm install
 ```
 
 ### Install Web Client
-Go through [Mercher Web Client](https://github.com/mercher-inc/mercher-web-client) setup process and then link `public` folder to web client's `dist`:
+Go through [Mercher Web Client setup process](https://github.com/mercher-inc/mercher-web-client#dev-environment-setup) and then link `public` folder to web client's `dist`:
 ```bash
 ln -s ~/work/mercher-inc/mercher-web-client/dist/ ~/work/mercher-inc/mercher-server/public
 ```
