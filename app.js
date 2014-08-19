@@ -1,4 +1,5 @@
 var express = require('express'),
+    fs = require('fs'),
     expressValidator = require('express-validator'),
     bodyParser = require('body-parser');
 
@@ -16,7 +17,11 @@ var server = require('http').createServer(app).listen(app.get('port'), function 
 });
 var io = require('socket.io')(server);
 
-app.use('/swagger', express.static(__dirname + '/node_modules/swagger-ui/dist'));
+fs.exists(__dirname + '/swagger', function (fs) {
+    if (fs) {
+        app.use('/swagger', express.static(__dirname + '/swagger'));
+    }
+});
 
 app.use('/api/v1', require('./routes/api/v1'));
 
