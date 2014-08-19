@@ -7,7 +7,7 @@ Mercher Server
 * [Node.js 0.10.*](http://nodejs.org/download/)
 
 ## Dev environment setup
-For the first download and setup Ubuntu. Hope you can do it by yourself.
+At first you should download and setup Ubuntu. Hope you can do it by yourself.
 Then download WebStorm to the home directory, unpack the WebStorm-*.tar.gz file using the following command:
 ```bash
 tar xfz WebStorm-*.tar.gz
@@ -61,3 +61,5 @@ Go through [Mercher Web Client](https://github.com/mercher-inc/mercher-web-clien
 ```bash
 ln -s ~/work/mercher-inc/mercher-web-client/dist/ ~/work/mercher-inc/mercher-server/public
 ```
+
+Have fun!
