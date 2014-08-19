@@ -75,5 +75,10 @@ And then link it to the project
 ```bash
 ln -s ~/work/mercher-inc/swagger-ui/dist/ ~/work/mercher-inc/mercher-server/swagger
 ```
+### Start application
+```bash
+cd ~/work/mercher-inc/mercher-server
+node app
+```
 
 Have fun!
