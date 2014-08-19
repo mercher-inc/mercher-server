@@ -8,9 +8,9 @@ Mercher Server
 
 ## Dev environment setup
 At first you should download and setup Ubuntu. Hope you can do it by yourself.
-Then download WebStorm to the home directory, unpack the WebStorm-*.tar.gz file using the following command:
+Then download WebStorm to the home directory, unpack the WebStorm-8.*.tar.gz file using the following command:
 ```bash
-tar xfz WebStorm-*.tar.gz
+tar xfz WebStorm-8.*.tar.gz
 ```
 Now update your local package index:
 ```bash
