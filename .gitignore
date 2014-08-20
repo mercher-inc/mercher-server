@@ -1,3 +1,5 @@
 node_modules
+.idea
+knexfile.js
 public
 swagger
