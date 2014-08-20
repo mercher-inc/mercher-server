@@ -28,6 +28,10 @@ Create new database
 sudo createdb --host=localhost --username=postgres --encoding=UTF-8 mercher
 ```
 
+### Install Knex
+```bash
+npm install knex -g
+```
 
 ### Clone repository
 Create working folders and clone project repository:
@@ -42,6 +46,16 @@ cd ~/work/mercher-inc/mercher-server
 nvm install
 nvm use
 npm install
+```
+### Create DB config
+```bash
+cp ~/work/mercher-inc/mercher-server/knexfile.js.example ~/work/mercher-inc/mercher-server/knexfile.js
+```
+Update `knexfile.js` to fit your configuration.
+
+### Update DB
+```bash
+knex migrate:latest
 ```
 
 ### Link to Web Client
