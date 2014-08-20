@@ -12,7 +12,6 @@ At first you should go through [Web Client Dev environment setup guide](https://
 ### Clone repository
 Create working folders and clone project repository:
 ```bash
-mkdir ~/work/mercher-inc
 cd ~/work/mercher-inc
 git clone git@github.com:mercher-inc/mercher-server.git
 ```
