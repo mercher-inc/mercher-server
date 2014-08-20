@@ -7,7 +7,7 @@ Mercher Server
 * [Node.js 0.10.30](http://nodejs.org/download/)
 
 ## Dev environment setup
-At first you should go through [Web Client Dev environment setup guide](https://github.com/mercher-inc/mercher-web-client/blob/master/README.md#dev-environment-requirements).
+At first you should go through [Web Client Dev environment setup guide](https://github.com/mercher-inc/mercher-web-client/blob/master/README.md#dev-environment-setup).
 
 ### Clone repository
 Create working folders and clone project repository:
