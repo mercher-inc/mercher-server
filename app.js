@@ -28,12 +28,13 @@ app.use('/api/v1', require('./routes/api/v1'));
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function (socket) {
-    console.log('a user connected', socket.id/*, socket.request.headers*/);
+    console.log('a user connected', socket.id, socket.request.headers);
+
     socket.on('disconnect', function () {
         console.log('user disconnected', socket.id);
     });
 
-    socket.on('app_started', function (socket) {
+    socket.on('app_started', function () {
         console.log('app started', socket.id);
     });
 });
