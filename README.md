@@ -9,6 +9,30 @@ Mercher Server
 ## Dev environment setup
 At first you should go through [Web Client Dev environment setup guide](https://github.com/mercher-inc/mercher-web-client/blob/master/README.md#dev-environment-setup).
 
+### Install PostgreSQL
+```bash
+sudo apt-get install postgresql postgresql-contrib postgresql-client
+```
+Log into psql
+```bash
+sudo -u postgres psql postgres
+```
+set new password
+```
+\password postgres
+```
+press `Ctrl+d` to log out.
+
+Create new database
+```bash
+sudo createdb --host=localhost --username=postgres --encoding=UTF-8 mercher
+```
+
+### Install Knex
+```bash
+npm install knex -g
+```
+
 ### Clone repository
 Create working folders and clone project repository:
 ```bash
@@ -22,6 +46,16 @@ cd ~/work/mercher-inc/mercher-server
 nvm install
 nvm use
 npm install
+```
+### Create DB config
+```bash
+cp ~/work/mercher-inc/mercher-server/knexfile.js.example ~/work/mercher-inc/mercher-server/knexfile.js
+```
+Update `knexfile.js` to fit your configuration.
+
+### Update DB
+```bash
+knex migrate:latest
 ```
 
 ### Link to Web Client
