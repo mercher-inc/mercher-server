@@ -37,7 +37,7 @@ router.use(function (req, res, next) {
                     req.currentUser = user;
                     next();
                 })
-                .catch(User.NotFoundError, function(){
+                .catch(User.NotFoundError, function () {
                     next();
                 });
         })
