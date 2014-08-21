@@ -27,7 +27,8 @@ expressAsyncValidator.validators['meToUserId'] = function (param, value, options
                 resolve(model.get('user_id'));
             })
             .catch(AccessToken.NotFoundError, function () {
-                reject(new (expressAsyncValidator.errors.fieldValidationError)(param, value, 'User is not authorized'));
+                var NotAuthorizedError = require('./v1/errors/not_authorized');
+                reject(new NotAuthorizedError('User is not authorized'));
             });
     });
 };

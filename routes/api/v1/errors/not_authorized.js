@@ -1,7 +1,7 @@
 var ApiError = require('./api_error');
 
 var NotAuthorizedError = function (message) {
-    this.status = 404;
+    this.status = 401;
     this.name = "NotAuthorizedError";
     this.message = message || "Not Authorized";
 

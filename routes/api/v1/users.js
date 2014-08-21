@@ -1,7 +1,8 @@
 var express = require('express'),
     router = express.Router(),
     UsersCollection = require('../../../collections/users'),
-    UserModel = require('../../../models/user');
+    UserModel = require('../../../models/user'),
+    expressAsyncValidator = require('express-async-validator');
 
 router.use(function (req, res, next) {
     res.set({
@@ -20,6 +21,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.param('userId', function (req, res, next, id) {
+    var NotAuthorizedError = require('./errors/not_authorized');
     req
         .model({
             "userId": {
@@ -57,7 +59,10 @@ router.param('userId', function (req, res, next, id) {
                     next(err);
                 });
         })
-        .catch(function (error) {
+        .catch(NotAuthorizedError, function (error) {
+            next(error);
+        })
+        .catch(expressAsyncValidator.errors.fieldValidationError, function (error) {
             var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
             next(badRequestError);
         });
