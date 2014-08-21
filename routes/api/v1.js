@@ -1,7 +1,5 @@
 var express = require('express'),
-    router = express.Router(),
-    Promise = require('bluebird'),
-    expressAsyncValidator = require('express-async-validator');
+    router = express.Router();
 
 router.use(function (req, res, next) {
     res.set({
@@ -17,21 +15,6 @@ router.use(function (req, res, next) {
 router.use('/auth', require('./v1/auth'));
 router.use('/shops', require('./v1/shops'));
 router.use('/users', require('./v1/users'));
-
-expressAsyncValidator.validators['meToUserId'] = function (param, value, options) {
-    return new Promise(function (resolve, reject) {
-        var AccessToken = require('../../models/access_token');
-        var accessToken = new AccessToken({token: options.token});
-        accessToken.fetch({require: true})
-            .then(function (model) {
-                resolve(model.get('user_id'));
-            })
-            .catch(AccessToken.NotFoundError, function () {
-                var NotAuthorizedError = require('./v1/errors/not_authorized');
-                reject(new NotAuthorizedError('User is not authorized'));
-            });
-    });
-};
 
 // documentation
 router.use('/docs', require('./v1/docs'));

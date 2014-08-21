@@ -1,8 +1,7 @@
 var express = require('express'),
     router = express.Router(),
     UsersCollection = require('../../../collections/users'),
-    UserModel = require('../../../models/user'),
-    expressAsyncValidator = require('express-async-validator');
+    UserModel = require('../../../models/user');
 
 router.use(function (req, res, next) {
     res.set({
@@ -20,24 +19,46 @@ router.get('/', function (req, res, next) {
         });
 });
 
-router.param('userId', function (req, res, next, id) {
-    var NotAuthorizedError = require('./errors/not_authorized');
+router.param('userId', function (req, res, next) {
+    //nothing to do here if userId is not "me"
+    if (req.params.userId !== 'me') {
+        next();
+        return;
+    }
+
+    //user should be authorized to request "me"
+    if (!req.get('X-Access-Token')) {
+        next(new (require('./errors/not_authorized'))('User is not authorized'));
+        return;
+    }
+
+    //check access token and set current user's ID
+    var AccessToken = require('../../../models/access_token');
+    var accessToken = new AccessToken({token: req.get('X-Access-Token')});
+    accessToken.fetch({require: true})
+        .then(function (accessToken) {
+            //everything is ok, setting userId
+            req.params.userId = accessToken.get('user_id');
+            next();
+        })
+        .catch(AccessToken.NotFoundError, function () {
+            //if we don't recognize this token - user is not authorized
+            next(new (require('./errors/not_authorized'))('User is not authorized'));
+        });
+});
+
+router.param('userId', function (req, res, next) {
     req
         .model({
             "userId": {
                 "rules":      {
-                    "required":   {
+                    "required":  {
                         "message": "User ID is required"
                     },
-                    "matches":    {
-                        "message":   "User ID should be numeric or \"me\"",
-                        "pattern":   /^([0-9]+|me)$/,
-                        "modifiers": ""
+                    "isNumeric": {
+                        "message": "User ID should be numeric or \"me\""
                     },
-                    "meToUserId": {
-                        "token": req.get('X-Access-Token')
-                    },
-                    "toInt":      {}
+                    "toInt":     {}
                 },
                 "source":     ["params"],
                 "allowEmpty": false
@@ -59,10 +80,7 @@ router.param('userId', function (req, res, next, id) {
                     next(err);
                 });
         })
-        .catch(NotAuthorizedError, function (error) {
-            next(error);
-        })
-        .catch(expressAsyncValidator.errors.fieldValidationError, function (error) {
+        .catch(function (error) {
             var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
             next(badRequestError);
         });
