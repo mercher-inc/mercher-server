@@ -10,11 +10,16 @@ router.use('/sign_up', function (req, res, next) {
         .model({
             "email":      {
                 "rules":      {
-                    "required": {
+                    "required":     {
                         "message": "Email is required"
                     },
-                    "isEmail":  {
+                    "isEmail":      {
                         "message": "Email should be a valid email address"
+                    },
+                    "uniqueRecord": {
+                        "message": "Email already used",
+                        "model":   require('../../../models/user'),
+                        "field":   "email"
                     }
                 },
                 "source":     ["body"],
@@ -77,53 +82,38 @@ router.post('/sign_up', function (req, res, next) {
     });
     res.removeHeader('Access-Control-Allow-Origin');
 
-    new UserModel()
-        .where({email: req.body.email})
-        .fetch({require: true})
-        .then(function () {
-            var validationError = new (require('./errors/validation'))("Validation failed", [
-                {
-                    param: 'email',
-                    msg:   'Email is already taken',
-                    value: req.body.email
-                }
-            ]);
-            next(validationError);
-        })
-        .catch(UserModel.NotFoundError, function () {
 
-            var userModel = new UserModel({
-                email:      req.body.email,
-                password:   crypto.pbkdf2Sync(req.body.password, 'Mercher', 10, 20).toString('hex'),
-                first_name: req.body.first_name,
-                last_name:  req.body.last_name
+    var userModel = new UserModel({
+        email:      req.body.email,
+        password:   crypto.pbkdf2Sync(req.body.password, 'Mercher', 10, 20).toString('hex'),
+        first_name: req.body.first_name,
+        last_name:  req.body.last_name
+    });
+
+    userModel
+        .save()
+        .then(function (userModel) {
+
+            var hash = crypto.createHash('sha1');
+            hash.update(Math.random().toString(), 'utf8');
+            hash.update(new Date().toString(), 'utf8');
+            var token = hash.digest('hex');
+
+            var expirationDate = new Date();
+            expirationDate.setTime(expirationDate.getTime() + 24 * 60 * 60 * 1000); // + 1 day
+            var expires = expirationDate.toISOString();
+
+            var accessTokenModel = new AccessTokenModel({
+                user_id: userModel.id,
+                token:   token,
+                expires: expires
             });
-
-            userModel
-                .save()
-                .then(function (userModel) {
-
-                    var hash = crypto.createHash('sha1');
-                    hash.update(Math.random().toString(), 'utf8');
-                    hash.update(new Date().toString(), 'utf8');
-                    var token = hash.digest('hex');
-
-                    var expirationDate = new Date();
-                    expirationDate.setTime(expirationDate.getTime() + 24 * 60 * 60 * 1000); // + 1 day
-                    var expires = expirationDate.toISOString();
-
-                    var accessTokenModel = new AccessTokenModel({
-                        user_id: userModel.id,
-                        token:   token,
-                        expires: expires
+            accessTokenModel
+                .save().then(function (accessTokenModel) {
+                    res.status(201).json({
+                        "token":   accessTokenModel.get("token"),
+                        "expires": accessTokenModel.get("expires")
                     });
-                    accessTokenModel
-                        .save().then(function (accessTokenModel) {
-                            res.status(201).json({
-                                "token":   accessTokenModel.get("token"),
-                                "expires": accessTokenModel.get("expires")
-                            });
-                        });
                 });
         });
 });

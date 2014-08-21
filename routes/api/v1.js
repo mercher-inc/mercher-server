@@ -1,5 +1,23 @@
 var express = require('express'),
-    router = express.Router();
+    router = express.Router(),
+    expressAsyncValidator = require('express-async-validator'),
+    Promise = require('bluebird');
+
+expressAsyncValidator.validators.uniqueRecord = function (param, value, options) {
+    return new Promise(function (resolve, reject) {
+        var query = {};
+        query[options.field] = value;
+        var model = new options.model(query);
+        model
+            .fetch({require: true})
+            .then(function () {
+                reject(new (expressAsyncValidator.errors.fieldValidationError)(param, value, options.message));
+            })
+            .catch(options.model.NotFoundError, function () {
+                resolve(value);
+            });
+    });
+};
 
 router.use(function (req, res, next) {
     res.set({
