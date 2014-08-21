@@ -38,10 +38,10 @@ module.exports = {
             "type":         "string",
             "defaultValue": null
         },
-        "attributes":                  {
+        /*"attributes":                  {
             "type":         "json",
             "defaultValue": {}
-        },
+        },*/
         "tags":                        {
             "type":  "array",
             "items": {
