@@ -21,6 +21,10 @@ router.get('/', function (req, res) {
             {
                 "path":        "/products",
                 "description": "Product resource"
+            },
+            {
+                "path":        "/categories",
+                "description": "Category resource"
             }
         ],
         "info":           {
@@ -35,5 +39,6 @@ router.use('/auth', require('./docs/resources/auth'));
 router.use('/users', require('./docs/resources/users'));
 router.use('/shops', require('./docs/resources/shops'));
 router.use('/products', require('./docs/resources/products'));
+router.use('/categories', require('./docs/resources/categories'));
 
 module.exports = router;
