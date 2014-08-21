@@ -28,7 +28,7 @@ router.param('userId', function (req, res, next) {
 
     //user should be authorized to request "me"
     if (!req.get('X-Access-Token')) {
-        next(new (require('./errors/not_authorized'))('User is not authorized'));
+        next(new (require('./errors/unauthorized'))('User is not authorized'));
         return;
     }
 
@@ -43,7 +43,7 @@ router.param('userId', function (req, res, next) {
         })
         .catch(AccessToken.NotFoundError, function () {
             //if we don't recognize this token - user is not authorized
-            next(new (require('./errors/not_authorized'))('User is not authorized'));
+            next(new (require('./errors/unauthorized'))('User is not authorized'));
         });
 });
 

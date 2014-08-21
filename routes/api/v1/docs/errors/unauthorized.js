@@ -1,10 +1,10 @@
 module.exports = {
-    "id":          "NotAuthorizedError",
+    "id":          "Unauthorized",
     "required":    [
         "error",
         "message"
     ],
-    "description": "Not Authorized error",
+    "description": "Unauthorized error",
     "properties":  {
         "error":   {
             "type": "string"

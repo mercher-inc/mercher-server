@@ -194,14 +194,14 @@ router.get('/', function (req, res) {
             }
         ],
         "models":         {
-            "Shop":               require('../models/shop'),
-            "Image":              require('../models/image'),
-            "ShopsList":          require('../collections/shops'),
-            "RequestError":       require('../errors/request'),
-            "NotAuthorizedError": require('../errors/not_authorized'),
-            "NotFoundError":      require('../errors/not_found'),
-            "ValidationError":    require('../errors/validation'),
-            "FieldError":         require('../errors/field')
+            "Shop":              require('../models/shop'),
+            "Image":             require('../models/image'),
+            "ShopsList":         require('../collections/shops'),
+            "RequestError":      require('../errors/request'),
+            "UnauthorizedError": require('../errors/unauthorized'),
+            "NotFoundError":     require('../errors/not_found'),
+            "ValidationError":   require('../errors/validation'),
+            "FieldError":        require('../errors/field')
         }
     });
 });
