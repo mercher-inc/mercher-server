@@ -21,8 +21,7 @@ module.exports = {
             "defaultValue": null
         },
         "file":        {
-            "type":         "string",
-            "defaultValue": null
+            "type": "string"
         },
         "is_active":   {
             "type":         "boolean",
