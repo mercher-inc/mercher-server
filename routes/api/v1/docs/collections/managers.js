@@ -1,18 +1,18 @@
 module.exports = {
-    "id":          "CategoriesList",
+    "id":          "ManagersList",
     "required":    [
-        "categories",
+        "managers",
         "total"
     ],
-    "description": "Categories collection",
+    "description": "Managers collection",
     "properties":  {
-        "categories": {
+        "managers": {
             "type":  "array",
             "items": {
-                "$ref": "Category"
+                "$ref": "Manager"
             }
         },
-        "total":      {
+        "total":    {
             "type":   "integer",
             "format": "int32"
         }

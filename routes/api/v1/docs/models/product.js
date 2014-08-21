@@ -39,9 +39,9 @@ module.exports = {
             "defaultValue": null
         },
         /*"attributes":                  {
-            "type":         "json",
-            "defaultValue": {}
-        },*/
+         "type":         "json",
+         "defaultValue": {}
+         },*/
         "tags":                        {
             "type":  "array",
             "items": {
