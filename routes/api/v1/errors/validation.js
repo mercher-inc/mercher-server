@@ -9,16 +9,8 @@ var ValidationError = function (message, error) {
     this.error = {
         "error":             this.name,
         "message":           this.message,
-        "validation_errors": []
+        "validation_errors": error.fields
     };
-    var self = this;
-    var validationErrors = error.fields;
-    _.each(validationErrors, function (errors, field) {
-        self.error.validation_errors.push({
-            "field":  field,
-            "errors": errors
-        });
-    });
 };
 
 ValidationError.prototype = new ApiError();

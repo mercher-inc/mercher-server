@@ -14,11 +14,7 @@ module.exports = {
             "type": "string"
         },
         "validation_errors": {
-            "type":        "array",
-            "uniqueItems": true,
-            "items":       {
-                "$ref": "FieldError"
-            }
+            "$ref": "FieldError"
         }
     }
 };

@@ -6,10 +6,7 @@ module.exports = {
     ],
     "description": "Field validation error",
     "properties":  {
-        "field":  {
-            "type": "string"
-        },
-        "errors": {
+        "field": {
             "type":  "array",
             "items": {
                 "type": "string"

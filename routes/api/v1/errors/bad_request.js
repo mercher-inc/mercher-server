@@ -9,16 +9,8 @@ var BadRequestError = function (message, error) {
     this.error = {
         "error":          this.name,
         "message":        this.message,
-        "request_errors": []
+        "request_errors": error.fields
     };
-    var self = this;
-    var requestErrors = error.fields;
-    _.each(requestErrors, function (errors, field) {
-        self.error.request_errors.push({
-            "field":  field,
-            "errors": errors
-        });
-    });
 };
 
 BadRequestError.prototype = new ApiError();
