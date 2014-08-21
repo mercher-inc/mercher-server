@@ -131,7 +131,7 @@ router.post('/sign_up', function (req, res, next) {
 router.use('/basic', function (req, res, next) {
     req
         .model({
-            "email":      {
+            "email":    {
                 "rules":      {
                     "required": {
                         "message": "Email is required"
@@ -143,7 +143,7 @@ router.use('/basic', function (req, res, next) {
                 "source":     ["body"],
                 "allowEmpty": false
             },
-            "password":   {
+            "password": {
                 "rules":      {
                     "required": {
                         "message": "Password is required"

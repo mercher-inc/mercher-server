@@ -1,7 +1,7 @@
 var _ = require('underscore'),
     ApiError = require('./api_error');
 
-var BadRequestError = function (message, errors) {
+var BadRequestError = function (message, error) {
     this.status = 400;
     this.name = "BadRequestError";
     this.message = message || "Bad Request";

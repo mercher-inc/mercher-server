@@ -20,33 +20,41 @@ router.get('/', function (req, res, next) {
 });
 
 router.param('userId', function (req, res, next, id) {
-
-    req.checkParams('userId', 'User ID is required').notEmpty();
-    req.checkParams('userId', 'User ID should be integer').isInt();
-
-    var errors = req.validationErrors();
-    if (errors) {
-        var badRequestError = new (require('./errors/bad_request'))("Bad request", errors);
-        next(badRequestError);
-        return;
-    }
-
-    if (id === 'me') {
-        id = 1; // TODO: get current user id from session
-    }
-
-    var userModel = new UserModel({id: id});
-    userModel.fetch({require: true})
-        .then(function (model) {
-            req.user = model;
-            next();
+    req
+        .model({
+            "userId": {
+                "rules":      {
+                    "required": {
+                        "message": "User ID is required"
+                    },
+                    "isInt":    {
+                        "message": "User ID should be integer"
+                    },
+                    "toInt":    {}
+                },
+                "source":     ["params"],
+                "allowEmpty": false
+            }
         })
-        .catch(UserModel.NotFoundError, function () {
-            var notFoundError = new (require('./errors/not_found'))("User was not found");
-            next(notFoundError);
+        .validate()
+        .then(function () {
+            var userModel = new UserModel({id: req.params.userId});
+            userModel.fetch({require: true})
+                .then(function (model) {
+                    req.user = model;
+                    next();
+                })
+                .catch(UserModel.NotFoundError, function () {
+                    var notFoundError = new (require('./errors/not_found'))("User was not found");
+                    next(notFoundError);
+                })
+                .catch(function (err) {
+                    next(err);
+                });
         })
-        .catch(function (err) {
-            next(err);
+        .catch(function (error) {
+            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
+            next(badRequestError);
         });
 });
 
