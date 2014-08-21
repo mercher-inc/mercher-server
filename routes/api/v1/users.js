@@ -27,10 +27,11 @@ router.param('userId', function (req, res, next, id) {
                     "required": {
                         "message": "User ID is required"
                     },
-                    "isInt":    {
-                        "message": "User ID should be integer"
-                    },
-                    "toInt":    {}
+                    "matches":  {
+                        "message":   "User ID should be numeric or \"me\"",
+                        "pattern":   /^([0-9]+|me)$/,
+                        "modifiers": ""
+                    }
                 },
                 "source":     ["params"],
                 "allowEmpty": false

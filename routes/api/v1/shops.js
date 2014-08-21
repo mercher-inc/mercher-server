@@ -24,13 +24,13 @@ router.param('shopId', function (req, res, next) {
         .model({
             "shopId": {
                 "rules":      {
-                    "required": {
+                    "required":  {
                         "message": "Shop ID is required"
                     },
-                    "isInt":    {
-                        "message": "Shop ID should be integer"
+                    "isNumeric": {
+                        "message": "Shop ID should be numeric"
                     },
-                    "toInt":    {}
+                    "toInt":     {}
                 },
                 "source":     ["params"],
                 "allowEmpty": false
