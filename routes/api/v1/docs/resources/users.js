@@ -78,6 +78,11 @@ router.get('/', function (req, res) {
                                 "responseModel": "User"
                             },
                             {
+                                "code":          401,
+                                "message":       "Unauthorized",
+                                "responseModel": "NotAuthorizedError"
+                            },
+                            {
                                 "code":          400,
                                 "message":       "Bad request",
                                 "responseModel": "RequestError"
@@ -138,13 +143,14 @@ router.get('/', function (req, res) {
             }
         ],
         "models":         {
-            "User":            require('../models/user'),
-            "Image":           require('../models/image'),
-            "UsersList":       require('../collections/users'),
-            "RequestError":    require('../errors/request'),
-            "NotFoundError":   require('../errors/not_found'),
-            "ValidationError": require('../errors/validation'),
-            "FieldError":      require('../errors/field')
+            "User":               require('../models/user'),
+            "Image":              require('../models/image'),
+            "UsersList":          require('../collections/users'),
+            "RequestError":       require('../errors/request'),
+            "NotAuthorizedError": require('../errors/not_authorized'),
+            "NotFoundError":      require('../errors/not_found'),
+            "ValidationError":    require('../errors/validation'),
+            "FieldError":         require('../errors/field')
         }
     });
 });
