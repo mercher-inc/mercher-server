@@ -27,6 +27,23 @@ app.use('/api/v1', require('./routes/api/v1'));
 
 app.use(express.static(__dirname + '/public'));
 
+app.use(function (err, req, res, next) {
+    res.format({
+        'text/plain': function () {
+            res.status(err.status).send(err.message);
+        },
+        'text/html': function () {
+            res.status(err.status).send(err.message);
+        },
+        'application/json': function () {
+            res.status(err.status).send({
+                "error":   err.name,
+                "message": err.message
+            });
+        }
+    });
+});
+
 io.on('connection', function (socket) {
     console.log('a user connected', socket.id, socket.request.headers);
 
