@@ -2,6 +2,7 @@ module.exports = {
     "id":          "Product",
     "required":    [
         "id",
+        "shop_id",
         "title",
         "is_active",
         "is_banned"
@@ -11,6 +12,15 @@ module.exports = {
         "id":                          {
             "type":   "integer",
             "format": "int32"
+        },
+        "shop_id":                     {
+            "type":   "integer",
+            "format": "int32"
+        },
+        "category_id":                 {
+            "type":         "integer",
+            "format":       "int32",
+            "defaultValue": null
         },
         "title":                       {
             "type": "string"
@@ -79,6 +89,12 @@ module.exports = {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
+        },
+        "shop":                        {
+            "$ref": "Shop"
+        },
+        "category":                    {
+            "$ref": "Category"
         }
     }
 };

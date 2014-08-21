@@ -196,6 +196,8 @@ router.get('/', function (req, res) {
         "models":         {
             "Product":           require('../models/product'),
             "Image":             require('../models/image'),
+            "Shop":              require('../models/shop'),
+            "Category":          require('../models/category'),
             "ProductsList":      require('../collections/products'),
             "RequestError":      require('../errors/request'),
             "UnauthorizedError": require('../errors/unauthorized'),
