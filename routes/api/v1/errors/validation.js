@@ -1,7 +1,7 @@
 var _ = require('underscore'),
     ApiError = require('./api_error');
 
-var ValidationError = function (message, errors) {
+var ValidationError = function (message, error) {
     this.status = 406;
     this.name = "ValidationError";
     this.message = message || "Not Acceptable";
@@ -12,15 +12,11 @@ var ValidationError = function (message, errors) {
         "validation_errors": []
     };
     var self = this;
-    var validationErrors = {};
-    _.each(errors, function (element) {
-        validationErrors[element.param] = validationErrors[element.param] || [];
-        validationErrors[element.param].push(element.msg);
-    });
-    _.each(validationErrors, function (element, index) {
+    var validationErrors = error.fields;
+    _.each(validationErrors, function (errors, field) {
         self.error.validation_errors.push({
-            "field":  index,
-            "errors": element
+            "field":  field,
+            "errors": errors
         });
     });
 };

@@ -5,25 +5,77 @@ var express = require('express'),
     UserModel = require('../../../models/user'),
     AccessTokenModel = require('../../../models/access_token');
 
+router.use('/sign_up', function (req, res, next) {
+    req
+        .model({
+            "email":      {
+                "rules":      {
+                    "required": {
+                        "message": "Email is required"
+                    },
+                    "isEmail":  {
+                        "message": "Email should be a valid email address"
+                    }
+                },
+                "source":     ["body"],
+                "allowEmpty": false
+            },
+            "password":   {
+                "rules":      {
+                    "required": {
+                        "message": "Password is required"
+                    },
+                    "isLength": {
+                        "message": "Password should be between 8 and 40 characters long",
+                        "min":     8,
+                        "max":     40
+                    }
+                },
+                "source":     ["body"],
+                "allowEmpty": false
+            },
+            "first_name": {
+                "rules":        {
+                    "escape":   {},
+                    "isLength": {
+                        "message": "First name should be less then 40 characters long",
+                        "min":     0,
+                        "max":     40
+                    }
+                },
+                "source":       ["body"],
+                "allowEmpty":   true,
+                "defaultValue": null
+            },
+            "last_name":  {
+                "rules":        {
+                    "escape":   {},
+                    "isLength": {
+                        "message": "Last name should be less then 40 characters long",
+                        "min":     0,
+                        "max":     40
+                    }
+                },
+                "source":       ["body"],
+                "allowEmpty":   true,
+                "defaultValue": null
+            }
+        })
+        .validate()
+        .then(function () {
+            next();
+        })
+        .catch(function (error) {
+            var validationError = new (require('./errors/validation'))("Validation failed", error);
+            next(validationError);
+        });
+});
+
 router.post('/sign_up', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
     });
     res.removeHeader('Access-Control-Allow-Origin');
-
-    req.checkBody('email', 'Email is required').notEmpty();
-    req.checkBody('email', 'Email should be valid email').isEmail();
-    req.checkBody('password', 'Password is required').notEmpty();
-    req.checkBody('password', 'Password should be 8-20 long').len(8, 20);
-    req.checkBody('first_name', 'First name should be less then 40 characters long').len(0, 40);
-    req.checkBody('last_name', 'Last name should be less then 40 characters long').len(0, 40);
-
-    var errors = req.validationErrors();
-    if (errors) {
-        var validationError = new (require('./errors/validation'))("Validation failed", errors);
-        next(validationError);
-        return;
-    }
 
     new UserModel()
         .where({email: req.body.email})
@@ -76,23 +128,51 @@ router.post('/sign_up', function (req, res, next) {
         });
 });
 
+router.use('/basic', function (req, res, next) {
+    req
+        .model({
+            "email":      {
+                "rules":      {
+                    "required": {
+                        "message": "Email is required"
+                    },
+                    "isEmail":  {
+                        "message": "Email should be a valid email address"
+                    }
+                },
+                "source":     ["body"],
+                "allowEmpty": false
+            },
+            "password":   {
+                "rules":      {
+                    "required": {
+                        "message": "Password is required"
+                    },
+                    "isLength": {
+                        "message": "Password should be between 8 and 40 characters long",
+                        "min":     8,
+                        "max":     40
+                    }
+                },
+                "source":     ["body"],
+                "allowEmpty": false
+            }
+        })
+        .validate()
+        .then(function () {
+            next();
+        })
+        .catch(function (error) {
+            var validationError = new (require('./errors/validation'))("Validation failed", error);
+            next(validationError);
+        });
+});
+
 router.post('/basic', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
     });
     res.removeHeader('Access-Control-Allow-Origin');
-
-    req.checkBody('email', 'Email is required').notEmpty();
-    req.checkBody('email', 'Email should be valid email').isEmail();
-    req.checkBody('password', 'Password is required').notEmpty();
-    req.checkBody('password', 'Password should be 8-20 long').len(8, 20);
-
-    var errors = req.validationErrors();
-    if (errors) {
-        var validationError = new (require('./errors/validation'))("Validation failed", errors);
-        next(validationError);
-        return;
-    }
 
     var userModel = new UserModel();
 

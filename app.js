@@ -1,11 +1,11 @@
 var express = require('express'),
     fs = require('fs'),
-    expressValidator = require('express-validator'),
+    expressAsyncValidator = require('express-async-validator'),
     bodyParser = require('body-parser');
 
 var app = express();
 app.use(bodyParser());
-app.use(expressValidator());
+app.use(expressAsyncValidator());
 app.disable('x-powered-by');
 
 app.set('bookshelf', require('./modules/bookshelf'));

@@ -12,15 +12,11 @@ var BadRequestError = function (message, errors) {
         "request_errors": []
     };
     var self = this;
-    var requestErrors = {};
-    _.each(errors, function (element) {
-        requestErrors[element.param] = requestErrors[element.param] || [];
-        requestErrors[element.param].push(element.msg);
-    });
-    _.each(requestErrors, function (element, index) {
+    var requestErrors = error.fields;
+    _.each(requestErrors, function (errors, field) {
         self.error.request_errors.push({
-            "field":  index,
-            "errors": element
+            "field":  field,
+            "errors": errors
         });
     });
 };
