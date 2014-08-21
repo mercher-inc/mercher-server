@@ -24,14 +24,18 @@ router.param('userId', function (req, res, next, id) {
         .model({
             "userId": {
                 "rules":      {
-                    "required": {
+                    "required":   {
                         "message": "User ID is required"
                     },
-                    "matches":  {
+                    "matches":    {
                         "message":   "User ID should be numeric or \"me\"",
                         "pattern":   /^([0-9]+|me)$/,
                         "modifiers": ""
-                    }
+                    },
+                    "meToUserId": {
+                        "token": req.get('X-Access-Token')
+                    },
+                    "toInt":      {}
                 },
                 "source":     ["params"],
                 "allowEmpty": false
