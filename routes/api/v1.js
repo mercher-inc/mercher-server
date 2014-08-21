@@ -20,6 +20,33 @@ expressAsyncValidator.validators.uniqueRecord = function (param, value, options)
 };
 
 router.use(function (req, res, next) {
+    if (!req.get('X-Access-Token')) {
+        next();
+        return;
+    }
+    var AccessToken = require('../../models/access_token');
+    new AccessToken()
+        .where({token: req.get('X-Access-Token')})
+        .fetch({require: true})
+        .then(function (accessToken) {
+            //everything is ok, getting user
+            var User = require('../../models/user');
+            new User({id: accessToken.get('user_id')})
+                .fetch({require: true})
+                .then(function (user) {
+                    req.currentUser = user;
+                    next();
+                })
+                .catch(User.NotFoundError, function(){
+                    next();
+                });
+        })
+        .catch(AccessToken.NotFoundError, function () {
+            next();
+        });
+});
+
+router.use(function (req, res, next) {
     res.set({
         'Access-Control-Allow-Origin':      '*',
         'Access-Control-Allow-Methods':     'GET',

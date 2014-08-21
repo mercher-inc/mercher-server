@@ -27,24 +27,15 @@ router.param('userId', function (req, res, next) {
     }
 
     //user should be authorized to request "me"
-    if (!req.get('X-Access-Token')) {
+    if (!req.currentUser) {
         next(new (require('./errors/unauthorized'))('User is not authorized'));
         return;
     }
 
-    //check access token and set current user's ID
-    var AccessToken = require('../../../models/access_token');
-    var accessToken = new AccessToken({token: req.get('X-Access-Token')});
-    accessToken.fetch({require: true})
-        .then(function (accessToken) {
-            //everything is ok, setting userId
-            req.params.userId = accessToken.get('user_id');
-            next();
-        })
-        .catch(AccessToken.NotFoundError, function () {
-            //if we don't recognize this token - user is not authorized
-            next(new (require('./errors/unauthorized'))('User is not authorized'));
-        });
+    //everything is ok, setting userId
+    req.params.userId = req.currentUser.get('id');
+
+    next();
 });
 
 router.param('userId', function (req, res, next) {
