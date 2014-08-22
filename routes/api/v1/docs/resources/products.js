@@ -191,6 +191,98 @@ router.get('/', function (req, res) {
                         ]
                     }
                 ]
+            },
+            {
+                "path":       "/api/v1/shops/{shopId}/products",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List shop's products",
+                        "type":             "ProductsList",
+                        "nickname":         "list_shop_products",
+                        "parameters":       [
+                            {
+                                "name":        "shopId",
+                                "description": "ID of the shop which products needs to be fetched",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of products to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of products to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ProductsList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "path":       "/api/v1/categories/{categoryId}/products",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List category's products",
+                        "type":             "ProductsList",
+                        "nickname":         "list_category_products",
+                        "parameters":       [
+                            {
+                                "name":        "categoryId",
+                                "description": "ID of the category which products needs to be fetched",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of products to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of products to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ProductsList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    }
+                ]
             }
         ],
         "models":         {
