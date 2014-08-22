@@ -10,7 +10,7 @@ var UserModel = bookshelf.Model.extend(
         hasTimestamps: true
     },
     {
-        login: function (email, password) {
+        login: function (credentials) {
             var UserModel = this;
             return new Promise(function (resolve, reject) {
                 new (expressAsyncValidator.model)(
@@ -36,7 +36,7 @@ var UserModel = bookshelf.Model.extend(
                         }
                     }
                 )
-                    .validate({email: email, password: password})
+                    .validate(credentials)
                     .then(function (model) {
                         new UserModel()
                             .where({

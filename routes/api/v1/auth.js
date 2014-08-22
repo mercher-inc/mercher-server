@@ -126,7 +126,7 @@ router.post('/basic', function (req, res, next) {
     res.removeHeader('Access-Control-Allow-Origin');
 
     UserModel
-        .login(req.body.email, req.body.password)
+        .login(req.body)
         .then(function (userModel) {
             AccessTokenModel
                 .grant(userModel)
