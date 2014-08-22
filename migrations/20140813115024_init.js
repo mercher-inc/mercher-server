@@ -7,8 +7,9 @@ exports.up = function (knex, Promise) {
                 table.increments('id');
                 table.string('title');
                 table.text('description');
-                table.string('file');
+                table.string('key');
                 table.text('crop_geometry');
+                table.text('files');
                 table.boolean('is_active')
                     .defaultTo(true)
                     .notNullable();
