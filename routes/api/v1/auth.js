@@ -23,10 +23,6 @@ router.post('/sign_up', function (req, res, next) {
                     });
                 });
         })
-        .catch(UserModel.NotFoundError, function () {
-            var notFoundError = new (require('./errors/not_found'))("User with these credentials was not found");
-            next(notFoundError);
-        })
         .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
             var validationError = new (require('./errors/validation'))("Validation failed", error);
             next(validationError);
