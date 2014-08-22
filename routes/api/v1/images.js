@@ -80,7 +80,8 @@ router.post('/', function (req, res, next) {
                 var uploadsPath = __dirname + '/../../../uploads';
                 if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath);
                 var imagePath = fs.realpathSync(uploadsPath) + '/' + key;
-                if (!fs.existsSync(imagePath)) fs.mkdirSync(imagePath);
+                if (fs.existsSync(imagePath)) fs.rmdirSync(imagePath);
+                fs.mkdirSync(imagePath);
 
                 var i = filename.lastIndexOf('.');
                 var ext = (i < 0) ? '' : filename.substr(i);
