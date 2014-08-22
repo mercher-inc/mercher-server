@@ -1,10 +1,13 @@
 var express = require('express'),
     fs = require('fs'),
     expressAsyncValidator = require('express-async-validator'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser');
 
 var app = express();
-app.use(bodyParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(cookieParser());
 app.use(expressAsyncValidator());
 app.disable('x-powered-by');
 
@@ -29,10 +32,10 @@ app.use(express.static(__dirname + '/public'));
 
 app.use(function (err, req, res, next) {
     res.format({
-        'text/plain': function () {
+        'text/plain':       function () {
             res.status(err.status).send(err.message);
         },
-        'text/html': function () {
+        'text/html':        function () {
             res.status(err.status).send(err.message);
         },
         'application/json': function () {

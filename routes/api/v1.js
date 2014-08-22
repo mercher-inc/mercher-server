@@ -60,6 +60,7 @@ router.use(function (req, res, next) {
 router.use('/auth', require('./v1/auth'));
 router.use('/shops', require('./v1/shops'));
 router.use('/users', require('./v1/users'));
+router.use('/images', require('./v1/images'));
 
 // documentation
 router.use('/docs', require('./v1/docs'));
