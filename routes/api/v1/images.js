@@ -17,7 +17,7 @@ router.use(function (req, res, next) {
 router.use('/', busboy());
 router.use('/', require('./middleware/auth_check'));
 
-router.post('/', function (req, res, next) {
+router.post('/', function (req, res) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
     });
@@ -86,6 +86,50 @@ router.post('/', function (req, res, next) {
                             cropGeometry.top = 0;
                             cropGeometry.left = Math.floor((originalDimensions.width - originalDimensions.height) / 2);
                         }
+
+                        /*var conversions = {
+                         'xs': 200,
+                         's':  400,
+                         'm':  800,
+                         'l':  1600,
+                         'xl': 3200
+                         };*/
+
+                        var squareFilePath = fs.realpathSync(uploadsPath) + '/sq_' + newFileName;
+                        var xlFilePath = fs.realpathSync(uploadsPath) + '/xl_' + newFileName;
+                        var lFilePath = fs.realpathSync(uploadsPath) + '/l_' + newFileName;
+
+                        im.convert(
+                            [
+                                newFilePath,
+                                '-crop', cropGeometry.width + 'x' + cropGeometry.height + '+' + cropGeometry.left + '+' + cropGeometry.top,
+                                squareFilePath
+                            ],
+                            function (err) {
+                                if (err) throw err;
+                            });
+
+                        im.convert(
+                            [
+                                newFilePath,
+                                '-crop', cropGeometry.width + 'x' + cropGeometry.height + '+' + cropGeometry.left + '+' + cropGeometry.top,
+                                '-resize', '800x800',
+                                xlFilePath
+                            ],
+                            function (err) {
+                                if (err) throw err;
+                            });
+
+                        im.convert(
+                            [
+                                newFilePath,
+                                '-crop', cropGeometry.width + 'x' + cropGeometry.height + '+' + cropGeometry.left + '+' + cropGeometry.top,
+                                '-resize', '400x400',
+                                lFilePath
+                            ],
+                            function (err) {
+                                if (err) throw err;
+                            });
 
                         var imageModel = new ImageModel({
                             file:          newFileName,
