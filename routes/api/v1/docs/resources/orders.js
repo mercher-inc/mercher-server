@@ -81,6 +81,98 @@ router.get('/', function (req, res) {
                 ]
             },
             {
+                "path":       "/api/v1/users/{userId}/orders",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List user's orders",
+                        "type":             "OrdersList",
+                        "nickname":         "list_users_orders",
+                        "parameters":       [
+                            {
+                                "name":        "userId",
+                                "description": "ID of the user which orders needs to be fetched",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of orders to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of orders to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "OrdersList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "path":       "/api/v1/shops/{shopId}/orders",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List shop's orders",
+                        "type":             "OrdersList",
+                        "nickname":         "list_shops_orders",
+                        "parameters":       [
+                            {
+                                "name":        "shopId",
+                                "description": "ID of the shop which orders needs to be fetched",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of orders to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of orders to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "OrdersList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 "path":       "/api/v1/orders/{orderId}",
                 "operations": [
                     {

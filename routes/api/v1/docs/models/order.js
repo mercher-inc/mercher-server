@@ -2,9 +2,9 @@ module.exports = {
     "id":          "Order",
     "required":    [
         "id",
-        "status",
-        "is_active",
-        "is_banned"
+        "user_id",
+        "shop_id",
+        "status"
     ],
     "description": "Order model",
     "properties":  {
@@ -24,7 +24,7 @@ module.exports = {
         },
         "status":              {
             "type": "string",
-            "enum": ["new", "open"]
+            "enum": ["draft", "new", "open"]
         },
         "price_total":         {
             "type":         "number",
