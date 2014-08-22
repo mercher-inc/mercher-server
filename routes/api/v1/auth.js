@@ -3,8 +3,8 @@ var express = require('express'),
     _ = require('underscore'),
     router = express.Router(),
     UserModel = require('../../../models/user'),
-    expressAsyncValidator = require('express-async-validator'),
-    AccessTokenModel = require('../../../models/access_token');
+    AccessTokenModel = require('../../../models/access_token'),
+    expressAsyncValidator = require('express-async-validator');
 
 router.use('/sign_up', function (req, res, next) {
     req
@@ -125,25 +125,12 @@ router.post('/basic', function (req, res, next) {
     });
     res.removeHeader('Access-Control-Allow-Origin');
 
-    UserModel.login(req.body.email, req.body.password)
+    UserModel
+        .login(req.body.email, req.body.password)
         .then(function (userModel) {
-            var hash = crypto.createHash('sha1');
-            hash.update(Math.random().toString(), 'utf8');
-            hash.update(new Date().toString(), 'utf8');
-            var token = hash.digest('hex');
-
-            var expirationDate = new Date();
-            expirationDate.setTime(expirationDate.getTime() + 24 * 60 * 60 * 1000); // + 1 day
-            var expires = expirationDate.toISOString();
-
-            var accessTokenModel = new AccessTokenModel({
-                user_id: userModel.id,
-                token:   token,
-                expires: expires
-            });
-
-            accessTokenModel
-                .save().then(function (accessTokenModel) {
+            AccessTokenModel
+                .grant(userModel)
+                .then(function (accessTokenModel) {
                     res.status(201).json({
                         "token":   accessTokenModel.get("token"),
                         "expires": accessTokenModel.get("expires")
