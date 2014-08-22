@@ -10,7 +10,85 @@ var UserModel = bookshelf.Model.extend(
         hasTimestamps: true
     },
     {
-        login: function (credentials) {
+        signUp: function (credentials) {
+            var UserModel = this;
+            return new Promise(function (resolve, reject) {
+                new (expressAsyncValidator.model)(
+                    {
+                        "email":      {
+                            "rules":      {
+                                "required":     {
+                                    "message": "Email is required"
+                                },
+                                "isEmail":      {
+                                    "message": "Email should be a valid email address"
+                                },
+                                "uniqueRecord": {
+                                    "message": "Email already used",
+                                    "model":   UserModel,
+                                    "field":   "email"
+                                }
+                            },
+                            "allowEmpty": false
+                        },
+                        "password":   {
+                            "rules":      {
+                                "required": {
+                                    "message": "Password is required"
+                                },
+                                "isLength": {
+                                    "message": "Password should be between 8 and 40 characters long",
+                                    "min":     8,
+                                    "max":     40
+                                }
+                            },
+                            "allowEmpty": false
+                        },
+                        "first_name": {
+                            "rules":        {
+                                "escape":   {},
+                                "isLength": {
+                                    "message": "First name should be less then 40 characters long",
+                                    "min":     0,
+                                    "max":     40
+                                }
+                            },
+                            "allowEmpty":   true,
+                            "defaultValue": null
+                        },
+                        "last_name":  {
+                            "rules":        {
+                                "escape":   {},
+                                "isLength": {
+                                    "message": "Last name should be less then 40 characters long",
+                                    "min":     0,
+                                    "max":     40
+                                }
+                            },
+                            "allowEmpty":   true,
+                            "defaultValue": null
+                        }
+                    }
+                )
+                    .validate(credentials)
+                    .then(function (model) {
+                        new UserModel({
+                            email:      model.email,
+                            password:   crypto.pbkdf2Sync(model.password, salt, 10, 20).toString('hex'),
+                            first_name: model.first_name,
+                            last_name:  model.last_name
+                        })
+                            .save()
+                            .then(function (userModel) {
+                                resolve(userModel);
+                            })
+                    })
+                    .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
+                        reject(error);
+                    });
+            });
+        },
+        login:  function (credentials) {
             var UserModel = this;
             return new Promise(function (resolve, reject) {
                 new (expressAsyncValidator.model)(
