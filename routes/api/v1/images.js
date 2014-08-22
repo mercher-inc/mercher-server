@@ -14,8 +14,12 @@ router.use(function (req, res, next) {
 });
 
 router.use('/', busboy());
+router.use('/', require('./middleware/auth_check'));
 
 router.post('/', function (req, res, next) {
+    res.set({
+        'Access-Control-Allow-Methods': 'POST'
+    });
 
     var findUnusedName = function (filename) {
         return new Promise(function (resolve) {
@@ -24,8 +28,8 @@ router.post('/', function (req, res, next) {
 
             var hash = crypto.createHash('sha1');
             hash.update(filename, 'utf8');
+            hash.update(Math.random().toString(), 'utf8');
             var newFileName = hash.digest('hex') + ext;
-            console.log(newFileName);
 
             var imageModel = new ImageModel();
 
