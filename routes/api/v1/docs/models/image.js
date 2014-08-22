@@ -2,41 +2,49 @@ module.exports = {
     "id":          "Image",
     "required":    [
         "id",
-        "file",
+        "key",
+        "crop_geometry",
+        "files",
         "is_active",
         "is_banned"
     ],
     "description": "Image model",
     "properties":  {
-        "id":          {
+        "id":            {
             "type":   "integer",
             "format": "int32"
         },
-        "title":       {
+        "title":         {
             "type":         "string",
             "defaultValue": null
         },
-        "description": {
+        "description":   {
             "type":         "string",
             "defaultValue": null
         },
-        "file":        {
+        "key":           {
             "type": "string"
         },
-        "is_active":   {
+        "crop_geometry": {
+            "type": "json"
+        },
+        "files":         {
+            "type": "json"
+        },
+        "is_active":     {
             "type":         "boolean",
             "defaultValue": true
         },
-        "is_banned":   {
+        "is_banned":     {
             "type":         "boolean",
             "defaultValue": false
         },
-        "created_at":  {
+        "created_at":    {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updated_at":  {
+        "updated_at":    {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
