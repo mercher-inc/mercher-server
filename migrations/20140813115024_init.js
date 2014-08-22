@@ -8,6 +8,7 @@ exports.up = function (knex, Promise) {
                 table.string('title');
                 table.text('description');
                 table.string('file');
+                table.text('crop_geometry');
                 table.boolean('is_active')
                     .defaultTo(true)
                     .notNullable();

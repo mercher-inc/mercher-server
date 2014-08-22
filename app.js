@@ -27,6 +27,7 @@ fs.exists(__dirname + '/swagger', function (fs) {
 });
 
 app.use('/api/v1', require('./routes/api/v1'));
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 app.use(express.static(__dirname + '/public'));
 
