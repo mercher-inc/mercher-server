@@ -33,6 +33,11 @@ sudo createdb --host=localhost --username=postgres --encoding=UTF-8 mercher
 npm install knex -g
 ```
 
+### Install ImageMagick
+```bash
+sudo apt-get install imagemagick
+```
+
 ### Clone repository
 Create working folders and clone project repository:
 ```bash
