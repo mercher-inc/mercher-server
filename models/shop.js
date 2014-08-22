@@ -1,7 +1,8 @@
 var bookshelf = require('../modules/bookshelf');
 
 var Model = bookshelf.Model.extend({
-    tableName: 'shop'
+    tableName: 'shop',
+    hasTimestamps: true
 });
 
 module.exports = Model;

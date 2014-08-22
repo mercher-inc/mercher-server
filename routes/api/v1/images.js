@@ -94,8 +94,8 @@ router.post('/', function (req, res, next) {
                     im.identify(originFilePath, function (err, features) {
 
                         var cropGeometry = {
-                            "width":  0,
-                            "height": 0,
+                            "width":  features.width,
+                            "height": features.height,
                             "top":    0,
                             "left":   0
                         };
@@ -177,7 +177,7 @@ router.post('/', function (req, res, next) {
                                 imageModel
                                     .save()
                                     .then(function (imageModel) {
-                                        imageModel
+                                        new ImageModel({id: imageModel.id})
                                             .fetch()
                                             .then(function (imageModel) {
                                                 res.json(imageModel);

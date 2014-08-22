@@ -8,8 +8,8 @@ exports.up = function (knex, Promise) {
                 table.string('title');
                 table.text('description');
                 table.string('key');
-                table.text('crop_geometry');
-                table.text('files');
+                table.json('crop_geometry');
+                table.json('files');
                 table.boolean('is_active')
                     .defaultTo(true)
                     .notNullable();
