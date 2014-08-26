@@ -31,8 +31,11 @@ exports.up = function (knex, Promise) {
                     .notNullable();
                 table.string('password', 40);
                 table.timestamp('last_login');
+                table.boolean('is_admin')
+                    .defaultTo(false)
+                    .notNullable();
                 table.boolean('is_active')
-                    .defaultTo(true)
+                    .defaultTo(false)
                     .notNullable();
                 table.boolean('is_banned')
                     .defaultTo(false)
@@ -49,6 +52,19 @@ exports.up = function (knex, Promise) {
                 table.string('token', 40);
                 table.timestamp('expires')
                     .notNullable();
+                table.timestamps();
+            }),
+            trx.schema.raw("CREATE TYPE activation_code_purpose AS ENUM ('email_activation', 'password_reset')"),
+            trx.schema.createTable('activation_code', function (table) {
+                table.increments('id');
+                table.integer('user_id')
+                    .references('id')
+                    .inTable('user')
+                    .onDelete('CASCADE')
+                    .onUpdate('CASCADE');
+                table.specificType('purpose', 'activation_code_purpose')
+                    .notNullable();
+                table.string('code', 40);
                 table.timestamps();
             }),
             trx.schema.createTable('shop', function (table) {
@@ -111,6 +127,8 @@ exports.down = function (knex, Promise) {
             trx.schema.raw("DROP TYPE manager_role"),
             trx.schema.dropTable('shop'),
             trx.schema.dropTable('access_token'),
+            trx.schema.dropTable('activation_code'),
+            trx.schema.raw("DROP TYPE activation_code_purpose"),
             trx.schema.dropTable('user'),
             trx.schema.dropTable('image')
         ])
