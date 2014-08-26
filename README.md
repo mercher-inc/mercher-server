@@ -88,4 +88,7 @@ cd ~/work/mercher-inc/mercher-server
 node app
 ```
 
+### Continous Integration
+You can find a Change Log [here](http://tc.mercherdev.com/viewType.html?buildTypeId=MercherServer_Build&tab=buildTypeChangeLog&branch_Mercher2_MercherServe=__all_branches__&from=&to=&userId=id%3A1&path=&showBuilds=true&changesLimit=1).
+
 Have fun!
