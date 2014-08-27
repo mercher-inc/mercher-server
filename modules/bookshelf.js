@@ -5,7 +5,7 @@ var knex = require('knex')({
             user:     process.env.RDS_USERNAME,
             password: process.env.RDS_PASSWORD,
             port:     process.env.RDS_PORT,
-            database: 'mercher',
+            database: process.env.RDS_DB_NAME,
             charset:  'utf8'
         },
         migrations: {

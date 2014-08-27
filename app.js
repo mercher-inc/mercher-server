@@ -17,7 +17,9 @@ app.set('port', process.env.PORT || 3000);
 
 var server = require('http').createServer(app).listen(app.get('port'), function () {
     console.log("Express server listening on port " + app.get('port'));
-    console.log(process.env);
+    for (var key in process.env) {
+        console.log(key, '=>', process.env[key]);
+    }
 });
 var io = require('socket.io')(server);
 
