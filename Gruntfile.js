@@ -38,8 +38,7 @@ module.exports = function (grunt) {
                             'modules/**/*.js',
                             'routes/**/*.js',
                             'app.js',
-                            'package.json',
-                            'knexfile.js'
+                            'package.json'
                         ]
                     }
                 ]
