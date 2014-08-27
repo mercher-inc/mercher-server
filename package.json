@@ -1,9 +1,9 @@
 {
-    "name":         "mercher-server",
-    "description":  "Mercher Server",
-    "version":      "0.0.1",
-    "private":      true,
-    "dependencies": {
+    "name":            "mercher-server",
+    "description":     "Mercher Server",
+    "version":         "0.0.1",
+    "private":         true,
+    "dependencies":    {
         "bluebird":                "^2.3.0",
         "body-parser":             "~1.0.0",
         "bookshelf":               "^0.7.7",
@@ -17,11 +17,14 @@
         "socket.io":               "^1.0.6",
         "underscore":              "^1.6.0"
     },
+    "engines":         {
+        "node": "0.10.26"
+    },
     "devDependencies": {
-        "grunt":                    "^0.4.1",
-        "grunt-contrib-clean":      "^0.5.0",
-        "grunt-contrib-copy":       "^0.5.0",
-        "load-grunt-tasks":         "^0.4.0",
-        "time-grunt":               "^0.3.1"
+        "grunt":               "^0.4.1",
+        "grunt-contrib-clean": "^0.5.0",
+        "grunt-contrib-copy":  "^0.5.0",
+        "load-grunt-tasks":    "^0.4.0",
+        "time-grunt":          "^0.3.1"
     }
 }
