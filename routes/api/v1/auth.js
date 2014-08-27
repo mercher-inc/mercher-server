@@ -3,7 +3,7 @@ var express = require('express'),
     router = express.Router(),
     UserModel = require('../../../models/user'),
     AccessTokenModel = require('../../../models/access_token'),
-    expressAsyncValidator = require('express-async-validator');
+    expressAsyncValidator = require('../../../modules/express-async-validator/module');
 
 router.post('/sign_up', function (req, res, next) {
     res.set({

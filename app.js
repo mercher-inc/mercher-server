@@ -1,6 +1,6 @@
 var express = require('express'),
     fs = require('fs'),
-    expressAsyncValidator = require('express-async-validator'),
+    expressAsyncValidator = require('./modules/express-async-validator/module'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser');
 

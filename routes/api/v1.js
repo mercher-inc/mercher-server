@@ -1,6 +1,6 @@
 var express = require('express'),
     router = express.Router(),
-    expressAsyncValidator = require('express-async-validator'),
+    expressAsyncValidator = require('../../modules/express-async-validator/module'),
     Promise = require('bluebird');
 
 expressAsyncValidator.validators.uniqueRecord = function (param, value, options) {

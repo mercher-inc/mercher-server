@@ -1,7 +1,7 @@
 var bookshelf = require('../modules/bookshelf'),
     Promise = require('bluebird'),
     crypto = require('crypto'),
-    expressAsyncValidator = require('express-async-validator'),
+    expressAsyncValidator = require('../modules/express-async-validator/module'),
     salt = 'Mercher';
 
 var UserModel = bookshelf.Model.extend(
