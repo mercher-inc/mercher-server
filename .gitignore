@@ -1,6 +1,5 @@
 node_modules
 .idea
-knexfile.js
 dist
 public
 swagger
