@@ -25,14 +25,14 @@ bookshelf.knex.migrate.latest()
         var io = require('socket.io')(server);
 
         io.on('connection', function (socket) {
-            console.log('a user connected', socket.id, socket.request.headers);
+            //console.log('a user connected', socket.id, socket.request.headers);
 
             socket.on('disconnect', function () {
-                console.log('user disconnected', socket.id);
+                //console.log('user disconnected', socket.id);
             });
 
             socket.on('app_started', function () {
-                console.log('app started', socket.id);
+                //console.log('app started', socket.id);
             });
         });
     });
