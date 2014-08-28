@@ -1,7 +1,8 @@
 var express = require('express'),
     router = express.Router(),
     UsersCollection = require('../../../collections/users'),
-    UserModel = require('../../../models/user');
+    UserModel = require('../../../models/user'),
+    expressAsyncValidator = require('../../../modules/express-async-validator/module');
 
 router.use(function (req, res, next) {
     res.set({
@@ -10,14 +11,47 @@ router.use(function (req, res, next) {
     next();
 });
 
+// Fetch users collection
 router.get('/', function (req, res, next) {
-    var usersCollection = new UsersCollection();
-    usersCollection
-        .fetch({
-            withRelated: ['image']
+    new (expressAsyncValidator.model)({
+            "limit":  {
+                "rules":        {
+                    "isInt": {
+                        "message": "Limit should be integer"
+                    },
+                    "toInt": {}
+                },
+                "allowEmpty":   true,
+                "defaultValue": 10
+            },
+            "offset": {
+                "rules":        {
+                    "isInt": {
+                        "message": "Offset should be integer"
+                    },
+                    "toInt": {}
+                },
+                "allowEmpty":   true,
+                "defaultValue": 0
+            }
         })
-        .then(function (collection) {
-            res.json(collection);
+        .validate(req.query)
+        .then(function (params) {
+            var usersCollection = new UsersCollection();
+            usersCollection
+                .query(function(qb) {
+                    qb.limit(params.limit).offset(params.offset);
+                })
+                .fetch({
+                    withRelated: ['image']
+                })
+                .then(function (collection) {
+                    res.json(collection);
+                });
+        })
+        .catch(function (error) {
+            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
+            next(badRequestError);
         });
 });
 

@@ -1,7 +1,8 @@
 var express = require('express'),
     router = express.Router(),
     ShopsCollection = require('../../../collections/shops'),
-    ShopModel = require('../../../models/shop');
+    ShopModel = require('../../../models/shop'),
+    expressAsyncValidator = require('../../../modules/express-async-validator/module');
 
 router.use(function (req, res, next) {
     res.set({
@@ -11,13 +12,45 @@ router.use(function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
-    var shopsCollection = new ShopsCollection();
-    shopsCollection
-        .fetch({
-            withRelated: ['image']
+    new (expressAsyncValidator.model)({
+        "limit":  {
+            "rules":        {
+                "isInt": {
+                    "message": "Limit should be integer"
+                },
+                "toInt": {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": 10
+        },
+        "offset": {
+            "rules":        {
+                "isInt": {
+                    "message": "Offset should be integer"
+                },
+                "toInt": {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": 0
+        }
+    })
+        .validate(req.query)
+        .then(function (params) {
+            var shopsCollection = new ShopsCollection();
+            shopsCollection
+                .query(function (qb) {
+                    qb.limit(params.limit).offset(params.offset);
+                })
+                .fetch({
+                    withRelated: ['image']
+                })
+                .then(function (collection) {
+                    res.json(collection);
+                });
         })
-        .then(function (collection) {
-            res.json(collection);
+        .catch(function (error) {
+            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
+            next(badRequestError);
         });
 });
 
