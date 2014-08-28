@@ -1,8 +1,10 @@
 var bookshelf = require('../modules/bookshelf');
 
-var Model = bookshelf.Model.extend({
-    tableName: 'image',
-    hasTimestamps: true
-});
+var ImageModel = bookshelf.Model.extend(
+    {
+        tableName:     'image',
+        hasTimestamps: true
+    }
+);
 
-module.exports = Model;
+module.exports = ImageModel;

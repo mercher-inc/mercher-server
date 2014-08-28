@@ -1,7 +1,10 @@
-var bookshelf = require('../modules/bookshelf');
+var bookshelf = require('../modules/bookshelf'),
+    UserModel = require('../models/user');
 
-var Collection = bookshelf.Collection.extend({
-    model: require('../models/user')
-});
+var UsersCollection = bookshelf.Collection.extend(
+    {
+        model: UserModel
+    }
+);
 
-module.exports = Collection;
+module.exports = UsersCollection;

@@ -2,12 +2,16 @@ var bookshelf = require('../modules/bookshelf'),
     Promise = require('bluebird'),
     crypto = require('crypto'),
     expressAsyncValidator = require('../modules/express-async-validator/module'),
-    salt = 'Mercher';
+    salt = 'Mercher',
+    ImageModel = require('./image');
 
 var UserModel = bookshelf.Model.extend(
     {
         tableName:     'user',
-        hasTimestamps: true
+        hasTimestamps: true,
+        image:         function () {
+            return this.belongsTo(ImageModel);
+        }
     },
     {
         signUp: function (credentials) {
@@ -78,7 +82,6 @@ var UserModel = bookshelf.Model.extend(
                             first_name: model.first_name,
                             last_name:  model.last_name,
                             last_login: (new Date()).toISOString(),
-                            is_admin:   false,
                             is_active:  false,
                             is_banned:  false
                         })

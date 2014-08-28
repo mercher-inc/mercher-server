@@ -1,7 +1,10 @@
-var bookshelf = require('../modules/bookshelf');
+var bookshelf = require('../modules/bookshelf'),
+    ShopModel = require('../models/shop');
 
-var Collection = bookshelf.Collection.extend({
-    model: require('../models/shop')
-});
+var ShopsCollection = bookshelf.Collection.extend(
+    {
+        model: ShopModel
+    }
+);
 
-module.exports = Collection;
+module.exports = ShopsCollection;

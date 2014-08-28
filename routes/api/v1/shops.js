@@ -13,7 +13,9 @@ router.use(function (req, res, next) {
 router.get('/', function (req, res, next) {
     var shopsCollection = new ShopsCollection();
     shopsCollection
-        .fetch()
+        .fetch({
+            withRelated: ['image']
+        })
         .then(function (collection) {
             res.json(collection);
         });
