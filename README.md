@@ -38,6 +38,32 @@ npm install knex -g
 sudo apt-get install imagemagick
 ```
 
+### Configure server
+Update config file
+```bash
+sudo nano /etc/apache2/sites-available/local.mercherdev.com.conf
+```
+Paste config
+```
+<VirtualHost *:80>
+  ServerName local.mercherdev.com
+  ProxyRequests Off
+  <Proxy *>
+    Order deny,allow
+    Allow from all
+  </Proxy>
+  ProxyPreserveHost on
+  ProxyPass /swagger   http://localhost:3000/swagger
+  ProxyPass /api       http://localhost:3000/api
+  ProxyPass /socket.io http://localhost:3000/socket.io
+  ProxyPass /          http://localhost:9000/
+</VirtualHost>
+```
+Reload configuration
+```bash
+sudo service apache2 reload
+```
+
 ### Clone repository
 Create working folders and clone project repository:
 ```bash
