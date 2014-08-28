@@ -30,10 +30,10 @@ router.get('/', function (req, res) {
                 "path":        "/managers",
                 "description": "Manager resource"
             },
-            {
+            /*{
                 "path":        "/craftsmen",
                 "description": "Craftsman resource"
-            },
+            },*/
             {
                 "path":        "/orders",
                 "description": "Order resource"
@@ -57,7 +57,7 @@ router.use('/shops', require('./docs/resources/shops'));
 router.use('/products', require('./docs/resources/products'));
 router.use('/categories', require('./docs/resources/categories'));
 router.use('/managers', require('./docs/resources/managers'));
-router.use('/craftsmen', require('./docs/resources/craftsmen'));
+//router.use('/craftsmen', require('./docs/resources/craftsmen'));
 router.use('/orders', require('./docs/resources/orders'));
 router.use('/images', require('./docs/resources/images'));
 
