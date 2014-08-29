@@ -209,7 +209,11 @@ router.param('shopId', function (req, res, next) {
 });
 
 router.get('/:shopId', function (req, res) {
-    res.json(req.shop);
+    req.shop
+        .load('image')
+        .then(function(){
+            res.json(req.shop);
+        });
 });
 
 module.exports = router;
