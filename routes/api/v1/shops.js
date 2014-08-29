@@ -1,5 +1,6 @@
 var express = require('express'),
     router = express.Router(),
+    Promise = require("bluebird"),
     Bookshelf = require('../../../modules/bookshelf'),
     ShopsCollection = require('../../../collections/shops'),
     ShopModel = require('../../../models/shop'),
@@ -39,15 +40,28 @@ router.get('/', function (req, res, next) {
         .validate(req.query)
         .then(function (params) {
             var shopsCollection = new ShopsCollection();
-            shopsCollection
-                .query(function (qb) {
-                    qb.limit(params.limit).offset(params.offset);
+            var shopModel = new ShopModel();
+            Promise
+                .props({
+                    shops: shopsCollection
+                               .query(function (qb) {
+                                    qb.limit(params.limit).offset(params.offset);
+                                })
+                               .fetch({
+                                    withRelated: ['image']
+                                }),
+                    total: shopModel
+                               .query()
+                               .count(shopModel.idAttribute)
+                               .then(function (result) {
+                                    return parseInt(result[0].count);
+                                })
                 })
-                .fetch({
-                    withRelated: ['image']
+                .then(function (results) {
+                    res.json(results);
                 })
-                .then(function (collection) {
-                    res.json(collection);
+                .catch(function (err) {
+                    next(err);
                 });
         })
         .catch(function (error) {
