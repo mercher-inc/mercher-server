@@ -125,7 +125,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Shop object that needs to be updated",
                                 "required":    true,
-                                "type":        "Shop",
+                                "type":        "ShopRequest",
                                 "paramType":   "body"
                             },
                             {

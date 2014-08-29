@@ -3,6 +3,7 @@ var express = require('express'),
     Bookshelf = require('../../../modules/bookshelf'),
     ShopsCollection = require('../../../collections/shops'),
     ShopModel = require('../../../models/shop'),
+    ManagerModel = require('../../../models/manager'),
     expressAsyncValidator = require('../../../modules/express-async-validator/module');
 
 router.use(function (req, res, next) {
@@ -135,7 +136,6 @@ router.post('/', function (req, res, next) {
                     return new ShopModel()
                         .save(params, {transacting: t})
                         .then(function (shopModel) {
-                            var ManagerModel = require('../../../models/manager');
                             return new ManagerModel()
                                 .save({
                                     user_id: req.currentUser.id,
@@ -211,8 +211,119 @@ router.param('shopId', function (req, res, next) {
 router.get('/:shopId', function (req, res) {
     req.shop
         .load('image')
-        .then(function(){
+        .then(function () {
             res.json(req.shop);
+        });
+});
+
+router.put('/:shopId', function (req, res, next) {
+    if (!req.currentUser) {
+        next(new (require('./errors/unauthorized'))('User is not authorized'));
+        return;
+    }
+
+    new ManagerModel()
+        .query(function (qb) {
+            qb
+                .where('user_id', '=', req.currentUser.id)
+                .where('shop_id', '=', req.shop.id)
+                .where('role', '>=', 'owner');
+        })
+        .fetch({require: true})
+        .then(function () {
+            new (expressAsyncValidator.model)({
+                "image_id":    {
+                    "rules":        {
+                        "isInt": {
+                            "message": "Image ID should be integer"
+                        },
+                        "toInt": {}
+                    },
+                    "allowEmpty":   true,
+                    "defaultValue": null
+                },
+                "title":       {
+                    "rules":      {
+                        "required": {
+                            "message": "Shop's title is required"
+                        },
+                        "toString": {},
+                        "trim":     {},
+                        "escape":   {},
+                        "isLength": {
+                            "message": "Shop's title should be at least 3 characters long and less then 250 characters",
+                            "min":     3,
+                            "max":     250
+                        }
+                    },
+                    "allowEmpty": false
+                },
+                "description": {
+                    "rules":        {
+                        "toString": {},
+                        "escape":   {}
+                    },
+                    "allowEmpty":   true,
+                    "defaultValue": null
+                },
+                "location":    {
+                    "rules":        {
+                        "toString": {},
+                        "trim":     {},
+                        "escape":   {},
+                        "isLength": {
+                            "message": "Shop's location should be at least 3 characters long and less then 250 characters",
+                            "min":     3,
+                            "max":     250
+                        }
+                    },
+                    "allowEmpty":   true,
+                    "defaultValue": null
+                },
+                "tax":         {
+                    "rules":        {
+                        "isFloat": {
+                            "message": "Tax should be float"
+                        },
+                        "toFloat": {}
+                    },
+                    "allowEmpty":   true,
+                    "defaultValue": 0
+                },
+                "is_public":   {
+                    "rules":        {
+                        "toBoolean": {}
+                    },
+                    "allowEmpty":   true,
+                    "defaultValue": false
+                }
+            })
+                .validate(req.body)
+                .then(function (params) {
+                    Bookshelf
+                        .transaction(function (t) {
+                            return req.shop.save(params, {patch: true, transacting: t});
+                        })
+                        .then(function (shopModel) {
+                            new ShopModel({id: shopModel.id})
+                                .fetch({
+                                    withRelated: ['image']
+                                })
+                                .then(function (shopModel) {
+                                    res.status(200).json(shopModel);
+                                });
+                        })
+                        .catch(function (err) {
+                            res.status(500).json(err);
+                        });
+                })
+                .catch(function (error) {
+                    var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
+                    next(badRequestError);
+                });
+        })
+        .catch(ManagerModel.NotFoundError, function () {
+            next(new (require('./errors/unauthorized'))('User is not authorized'));
         });
 });
 
