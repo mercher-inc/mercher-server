@@ -3,7 +3,7 @@ module.exports = {
     "required":    [
         "id",
         "title",
-        "is_active",
+        "is_public",
         "is_banned"
     ],
     "description": "Shop model",
@@ -33,12 +33,7 @@ module.exports = {
             "format":       "float",
             "defaultValue": null
         },
-        "rating":      {
-            "type":         "number",
-            "format":       "float",
-            "defaultValue": null
-        },
-        "is_active":   {
+        "is_public":   {
             "type":         "boolean",
             "defaultValue": true
         },
