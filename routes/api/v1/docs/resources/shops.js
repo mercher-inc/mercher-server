@@ -158,37 +158,6 @@ router.get('/', function (req, res) {
                                 "responseModel": "NotFoundError"
                             }
                         ]
-                    },
-                    {
-                        "method":           "DELETE",
-                        "summary":          "Delete shop",
-                        "type":             "void",
-                        "nickname":         "delete",
-                        "parameters":       [
-                            {
-                                "name":        "shopId",
-                                "description": "ID of the shop that needs to be deleted",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":    200,
-                                "message": "Shop was deleted"
-                            },
-                            {
-                                "code":          400,
-                                "message":       "Bad request",
-                                "responseModel": "RequestError"
-                            },
-                            {
-                                "code":          404,
-                                "message":       "Shop not found",
-                                "responseModel": "NotFoundError"
-                            }
-                        ]
                     }
                 ]
             }
