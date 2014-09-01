@@ -256,4 +256,135 @@ router.get('/:productId', function (req, res) {
         });
 });
 
+router.put('/:productId', function (req, res, next) {
+    if (!req.currentUser) {
+        next(new (require('./errors/unauthorized'))('User is not authorized'));
+        return;
+    }
+
+    new (expressAsyncValidator.model)({
+        "shop_id":         {
+            "rules":      {
+                "required": {
+                    "message": "Shop ID is required"
+                },
+                "isInt":    {
+                    "message": "Shop ID should be integer"
+                },
+                "toInt":    {}
+            },
+            "allowEmpty": false
+        },
+        "category_id":     {
+            "rules":        {
+                "isInt": {
+                    "message": "Category ID should be integer"
+                },
+                "toInt": {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": null
+        },
+        "title":           {
+            "rules":      {
+                "required": {
+                    "message": "Product's title is required"
+                },
+                "toString": {},
+                "trim":     {},
+                "escape":   {},
+                "isLength": {
+                    "message": "Product's title should be at least 3 characters long and less then 250 characters",
+                    "min":     3,
+                    "max":     250
+                }
+            },
+            "allowEmpty": false
+        },
+        "description":     {
+            "rules":        {
+                "toString": {},
+                "escape":   {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": null
+        },
+        "price":           {
+            "rules":        {
+                "isFloat": {
+                    "message": "Price should be float"
+                },
+                "toFloat": {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": null
+        },
+        "shipping_cost":   {
+            "rules":        {
+                "isFloat": {
+                    "message": "Shipping cost should be float"
+                },
+                "toFloat": {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": null
+        },
+        "shipping_weight": {
+            "rules":        {
+                "isFloat": {
+                    "message": "Shipping weight should be float"
+                },
+                "toFloat": {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": null
+        },
+        "amount_in_stock": {
+            "rules":        {
+                "isInt": {
+                    "message": "Amount in stock should be integer"
+                },
+                "toInt": {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": null
+        },
+        "is_unique":       {
+            "rules":        {
+                "toBoolean": {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": false
+        },
+        "is_public":       {
+            "rules":        {
+                "toBoolean": {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": false
+        }
+    })
+        .validate(req.body)
+        .then(function (params) {
+            req.product
+                .save(params, {patch: true})
+                .then(function (productModel) {
+                    new ProductModel({id: productModel.id})
+                        .fetch({
+                            withRelated: ['shop.image']
+                        })
+                        .then(function (productModel) {
+                            res.status(200).json(productModel);
+                        });
+                })
+                .catch(function (err) {
+                    res.status(500).json(err);
+                });
+        })
+        .catch(function (error) {
+            var validationError = new (require('./errors/validation'))("Validation failed", error);
+            next(validationError);
+        });
+});
+
 module.exports = router;
