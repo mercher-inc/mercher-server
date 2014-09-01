@@ -29,6 +29,10 @@ module.exports = {
         "is_public":   {
             "type":         "boolean",
             "defaultValue": false
+        },
+        "is_banned":   {
+            "type":         "boolean",
+            "defaultValue": false
         }
     }
 };

@@ -4,7 +4,9 @@ module.exports = {
         "id",
         "title",
         "is_public",
-        "is_banned"
+        "is_banned",
+        "created_at",
+        "updated_at"
     ],
     "description": "Shop model",
     "properties":  {
@@ -31,7 +33,7 @@ module.exports = {
         "tax":         {
             "type":         "number",
             "format":       "float",
-            "defaultValue": null
+            "defaultValue": 0
         },
         "is_public":   {
             "type":         "boolean",

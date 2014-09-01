@@ -61,7 +61,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Product object that needs to be created",
                                 "required":    true,
-                                "type":        "Product",
+                                "type":        "ProductRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -125,7 +125,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Product object that needs to be updated",
                                 "required":    true,
-                                "type":        "Product",
+                                "type":        "ProductRequest",
                                 "paramType":   "body"
                             },
                             {
@@ -287,6 +287,7 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "Product":           require('../models/product'),
+            "ProductRequest":       require('../models/request/product'),
             "Image":             require('../models/image'),
             "Shop":              require('../models/shop'),
             "Category":          require('../models/category'),
