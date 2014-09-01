@@ -34,11 +34,11 @@ module.exports = function (grunt) {
                         dest:   'dist',
                         src:    [
                             '.ebextensions/*.config',
-                            'collections/*.js',
-                            'models/*.js',
+                            'collections/**/*.js',
+                            'models/**/*.js',
                             'modules/**/*.js',
                             'routes/**/*.js',
-                            'migrations/*.js',
+                            'migrations/**/*.js',
                             'app.js',
                             'package.json'
                         ]
