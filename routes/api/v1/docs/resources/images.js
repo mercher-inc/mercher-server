@@ -18,6 +18,40 @@ router.get('/', function (req, res) {
                 "path":       "/api/v1/images",
                 "operations": [
                     {
+                        "method":           "GET",
+                        "summary":          "List images",
+                        "type":             "ImagesList",
+                        "nickname":         "list",
+                        "parameters":       [
+                            {
+                                "name":        "limit",
+                                "description": "Amount of images to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of images to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ImagesList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    },
+                    {
                         "method":           "POST",
                         "summary":          "Upload image",
                         "type":             "Image",
@@ -162,10 +196,51 @@ router.get('/', function (req, res) {
                 "path":       "/api/v1/products/{productId}/images",
                 "operations": [
                     {
+                        "method":           "GET",
+                        "summary":          "List product's images",
+                        "type":             "ImagesList",
+                        "nickname":         "product_images_list",
+                        "parameters":       [
+                            {
+                                "name":        "productId",
+                                "description": "ID of the product",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of images to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of images to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ImagesList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    },
+                    {
                         "method":           "POST",
-                        "summary":          "Upload image",
+                        "summary":          "Upload product image",
                         "type":             "Image",
-                        "nickname":         "upload",
+                        "nickname":         "product_image_upload",
                         "parameters":       [
                             {
                                 "name":        "productId",
@@ -200,6 +275,7 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "Image":             require('../models/image'),
+            "ImagesList":             require('../collections/images'),
             "RequestError":      require('../errors/request'),
             "UnauthorizedError": require('../errors/unauthorized'),
             "NotFoundError":     require('../errors/not_found'),
