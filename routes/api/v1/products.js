@@ -202,6 +202,13 @@ router.post('/', function (req, res, next) {
         });
 });
 
+router.use('/:productId', function (req, res, next) {
+    res.set({
+        'Access-Control-Allow-Methods': 'GET,PUT,DELETE'
+    });
+    next();
+});
+
 router.param('productId', function (req, res, next) {
     req
         .model({
