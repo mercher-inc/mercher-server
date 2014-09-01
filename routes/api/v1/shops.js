@@ -44,18 +44,18 @@ router.get('/', function (req, res, next) {
             Promise
                 .props({
                     shops: shopsCollection
-                               .query(function (qb) {
-                                    qb.limit(params.limit).offset(params.offset);
-                                })
-                               .fetch({
-                                    withRelated: ['image']
-                                }),
+                       .query(function (qb) {
+                            qb.limit(params.limit).offset(params.offset);
+                        })
+                       .fetch({
+                            withRelated: ['image']
+                        }),
                     total: shopModel
-                               .query()
-                               .count(shopModel.idAttribute)
-                               .then(function (result) {
-                                    return parseInt(result[0].count);
-                                })
+                       .query()
+                       .count(shopModel.idAttribute)
+                       .then(function (result) {
+                            return parseInt(result[0].count);
+                        })
                 })
                 .then(function (results) {
                     res.json(results);

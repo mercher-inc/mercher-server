@@ -14,32 +14,32 @@ router.use(function (req, res, next) {
 // Fetch users collection
 router.get('/', function (req, res, next) {
     new (expressAsyncValidator.model)({
-            "limit":  {
-                "rules":        {
-                    "isInt": {
-                        "message": "Limit should be integer"
-                    },
-                    "toInt": {}
+        "limit":  {
+            "rules":        {
+                "isInt": {
+                    "message": "Limit should be integer"
                 },
-                "allowEmpty":   true,
-                "defaultValue": 10
+                "toInt": {}
             },
-            "offset": {
-                "rules":        {
-                    "isInt": {
-                        "message": "Offset should be integer"
-                    },
-                    "toInt": {}
+            "allowEmpty":   true,
+            "defaultValue": 10
+        },
+        "offset": {
+            "rules":        {
+                "isInt": {
+                    "message": "Offset should be integer"
                 },
-                "allowEmpty":   true,
-                "defaultValue": 0
-            }
-        })
+                "toInt": {}
+            },
+            "allowEmpty":   true,
+            "defaultValue": 0
+        }
+    })
         .validate(req.query)
         .then(function (params) {
             var usersCollection = new UsersCollection();
             usersCollection
-                .query(function(qb) {
+                .query(function (qb) {
                     qb.limit(params.limit).offset(params.offset);
                 })
                 .fetch({

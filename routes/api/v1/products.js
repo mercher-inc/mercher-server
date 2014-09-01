@@ -73,6 +73,7 @@ router.post('/', function (req, res, next) {
         next(new (require('./errors/unauthorized'))('User is not authorized'));
         return;
     }
+
     new ProductModel()
         .save(req.body, {req: req})
         .then(function (productModel) {
@@ -85,9 +86,21 @@ router.post('/', function (req, res, next) {
                     res.status(201).json(productModel);
                 });
         })
-        .catch(function (error) {
+        .catch(ProductModel.PermissionError, function (error) {
+            var forbiddenError = new (require('./errors/forbidden'))(error.message);
+            next(forbiddenError);
+        })
+        .catch(ProductModel.ValidationError, function (error) {
             var validationError = new (require('./errors/validation'))("Validation failed", error);
             next(validationError);
+        })
+        .catch(ProductModel.PermissionError, function (error) {
+            var internalServerError = new (require('./errors/internal'))(error.message);
+            next(internalServerError);
+        })
+        .catch(function (error) {
+            var internalServerError = new (require('./errors/internal'))();
+            next(internalServerError);
         });
 });
 
@@ -162,9 +175,21 @@ router.put('/:productId', function (req, res, next) {
                     res.status(200).json(productModel);
                 });
         })
-        .catch(function (error) {
+        .catch(ProductModel.PermissionError, function (error) {
+            var forbiddenError = new (require('./errors/forbidden'))(error.message);
+            next(forbiddenError);
+        })
+        .catch(ProductModel.ValidationError, function (error) {
             var validationError = new (require('./errors/validation'))("Validation failed", error);
             next(validationError);
+        })
+        .catch(ProductModel.PermissionError, function (error) {
+            var internalServerError = new (require('./errors/internal'))(error.message);
+            next(internalServerError);
+        })
+        .catch(function (error) {
+            var internalServerError = new (require('./errors/internal'))();
+            next(internalServerError);
         });
 });
 

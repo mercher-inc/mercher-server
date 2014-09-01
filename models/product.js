@@ -1,9 +1,10 @@
 var bookshelf = require('../modules/bookshelf'),
+    BaseModel = require('./base'),
     Promise = require("bluebird"),
     ShopModel = require('./shop'),
     expressAsyncValidator = require('../modules/express-async-validator/module');
 
-var ProductModel = bookshelf.Model.extend(
+var ProductModel = BaseModel.extend(
     {
         tableName:     'product',
         hasTimestamps: true,
@@ -15,13 +16,70 @@ var ProductModel = bookshelf.Model.extend(
             this.on('creating', this.validateCreating);
             this.on('updating', this.validateUpdating);
         },
-        validateCreating: function (model, attrs, options) {
-            return new (expressAsyncValidator.model)(validateCreatingConfig)
-                .validate(attrs);
+        validateCreating: function (productModel, attrs, options) {
+            return new Promise(function (resolve, reject) {
+                new (expressAsyncValidator.model)(validateCreatingConfig)
+                    .validate(attrs)
+                    .then(function (attrs) {
+                        productModel
+                            .checkPermission(options.req.currentUser, 'editor')
+                            .then(function () {
+                                resolve(attrs);
+                            })
+                            .catch(ProductModel.PermissionError, function (error) {
+                                reject(new ProductModel.PermissionError("You are not allowed to create new products in this shop"));
+                            })
+                            .catch(function () {
+                                reject(new ProductModel.InternalServerError());
+                            });
+                    })
+                    .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
+                        reject(new ProductModel.ValidationError("Product validation failed", error.fields));
+                    })
+                    .catch(function () {
+                        reject(new ProductModel.InternalServerError());
+                    });
+            });
         },
-        validateUpdating: function (model, attrs, options) {
-            return new (expressAsyncValidator.model)(validateUpdatingConfig)
-                .validate(attrs);
+        validateUpdating: function (productModel, attrs, options) {
+            return new Promise(function (resolve, reject) {
+                productModel
+                    .checkPermission(options.req.currentUser, 'editor')
+                    .then(function () {
+                        new (expressAsyncValidator.model)(validateUpdatingConfig)
+                            .validate(attrs)
+                            .then(function (attrs) {
+                                resolve(attrs);
+                            })
+                            .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
+                                reject(new ProductModel.ValidationError("Product validation failed", error.fields));
+                            })
+                            .catch(function () {
+                                reject(new ProductModel.InternalServerError());
+                            });
+                    })
+                    .catch(ProductModel.PermissionError, function (error) {
+                        reject(new ProductModel.PermissionError("You are not allowed to modify this product"));
+                    })
+                    .catch(function () {
+                        reject(new ProductModel.InternalServerError());
+                    });
+            });
+        },
+        checkPermission:  function (currentUserModel, role) {
+            var productModel = this,
+                shopId = productModel.isNew() ? productModel.get('shop_id') : productModel.previous('shop_id'),
+                userId = currentUserModel.get('id');
+            return new Promise(function (resolve, reject) {
+                ProductModel
+                    .checkPermission(shopId, userId, role)
+                    .then(function () {
+                        resolve(productModel);
+                    })
+                    .catch(function () {
+                        reject(new ProductModel.PermissionError());
+                    });
+            });
         }
     }
 );
