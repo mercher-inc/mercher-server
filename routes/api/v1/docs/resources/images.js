@@ -157,6 +157,45 @@ router.get('/', function (req, res) {
                         ]
                     }
                 ]
+            },
+            {
+                "path":       "/api/v1/products/{productId}/images",
+                "operations": [
+                    {
+                        "method":           "POST",
+                        "summary":          "Upload image",
+                        "type":             "Image",
+                        "nickname":         "upload",
+                        "parameters":       [
+                            {
+                                "name":        "productId",
+                                "description": "ID of the product",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "file",
+                                "description": "Image file that needs to be uploaded",
+                                "required":    true,
+                                "type":        "file",
+                                "paramType":   "form"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          201,
+                                "message":       "Image was created",
+                                "responseModel": "Image"
+                            },
+                            {
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
+                            }
+                        ]
+                    }
+                ]
             }
         ],
         "models":         {

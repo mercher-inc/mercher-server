@@ -181,6 +181,8 @@ router.post('/', function (req, res, next) {
                                             .fetch()
                                             .then(function (imageModel) {
                                                 res.json(imageModel);
+                                                req.image = imageModel;
+                                                next();
                                             });
                                     });
                             })
