@@ -290,7 +290,7 @@ router.get('/', function (req, res) {
                     {
                         "method":           "GET",
                         "summary":          "List product's images",
-                        "type":             "ImagesList",
+                        "type":             "ProductImagesList",
                         "nickname":         "product_images_list",
                         "parameters":       [
                             {
@@ -319,7 +319,7 @@ router.get('/', function (req, res) {
                             {
                                 "code":          200,
                                 "message":       "OK",
-                                "responseModel": "ImagesList"
+                                "responseModel": "ProductImagesList"
                             },
                             {
                                 "code":          400,
@@ -331,7 +331,7 @@ router.get('/', function (req, res) {
                     {
                         "method":           "POST",
                         "summary":          "Upload product image",
-                        "type":             "Image",
+                        "type":             "ProductImage",
                         "nickname":         "product_image_upload",
                         "parameters":       [
                             {
@@ -367,7 +367,7 @@ router.get('/', function (req, res) {
                             {
                                 "code":          201,
                                 "message":       "Image was created",
-                                "responseModel": "Image"
+                                "responseModel": "ProductImage"
                             },
                             {
                                 "code":          406,
@@ -383,9 +383,11 @@ router.get('/', function (req, res) {
             "Product":           require('../models/product'),
             "ProductRequest":    require('../models/request/product'),
             "Image":             require('../models/image'),
+            "ProductImage":      require('../models/product_image'),
             "Shop":              require('../models/shop'),
             "Category":          require('../models/category'),
             "ProductsList":      require('../collections/products'),
+            "ProductImagesList": require('../collections/product_images'),
             "RequestError":      require('../errors/request'),
             "UnauthorizedError": require('../errors/unauthorized'),
             "NotFoundError":     require('../errors/not_found'),
