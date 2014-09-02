@@ -283,6 +283,100 @@ router.get('/', function (req, res) {
                         ]
                     }
                 ]
+            },
+            {
+                "path":       "/api/v1/products/{productId}/product_images",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List product's images",
+                        "type":             "ImagesList",
+                        "nickname":         "product_images_list",
+                        "parameters":       [
+                            {
+                                "name":        "productId",
+                                "description": "ID of the product",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of images to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of images to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ImagesList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    },
+                    {
+                        "method":           "POST",
+                        "summary":          "Upload product image",
+                        "type":             "Image",
+                        "nickname":         "product_image_upload",
+                        "parameters":       [
+                            {
+                                "name":        "productId",
+                                "description": "ID of the product",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "file",
+                                "description": "Image file that needs to be uploaded",
+                                "required":    true,
+                                "type":        "file",
+                                "paramType":   "form"
+                            },
+                            {
+                                "name":        "priority",
+                                "description": "Priority of the image",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "form"
+                            },
+                            {
+                                "name":        "is_public",
+                                "description": "Show image or not",
+                                "required":    true,
+                                "type":        "boolean",
+                                "paramType":   "form"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          201,
+                                "message":       "Image was created",
+                                "responseModel": "Image"
+                            },
+                            {
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
+                            }
+                        ]
+                    }
+                ]
             }
         ],
         "models":         {

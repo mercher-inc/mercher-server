@@ -21,7 +21,7 @@ router.post('/', function (req, res) {
                         new ProductImageModel({id: productImageModel.id})
                             .fetch({withRelated: ['image']})
                             .then(function (productImageModel) {
-                                res.set('Location', '/api/v1/products/' + productImageModel.get('product_id') + '/images/' + productImageModel.get('image_id'));
+                                res.set('Location', '/api/v1/products/' + productImageModel.get('product_id') + '/product_images/' + productImageModel.id);
                                 res.status(201).json(productImageModel);
                             });
                     });

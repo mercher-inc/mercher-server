@@ -160,5 +160,5 @@ router.put('/:productId', function (req, res, next) {
         });
 });
 
-router.use('/:productId/images', require('./products/images'));
+router.use('/:productId/product_images', require('./products/product_images'));
 module.exports = router;
