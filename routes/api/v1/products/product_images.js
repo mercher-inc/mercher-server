@@ -22,7 +22,10 @@ router.get('/', function (req, res, next) {
 
     var collectionRequest = productImagesCollection
         .query(function (qb) {
-            qb.where('product_id', '=', req.product.id).limit(req.query.limit).offset(req.query.offset);
+            qb
+                .where('product_id', '=', req.product.id)
+                .limit(req.query.limit)
+                .offset(req.query.offset);
         })
         .fetch({
             withRelated: ['image']
