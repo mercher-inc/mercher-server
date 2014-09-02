@@ -17,12 +17,12 @@ router.post('/', function (req, res) {
             .then(function (imageModel) {
                 new ProductImageModel()
                     .save({"product_id": req.product.id, "image_id": imageModel.id})
-                    .then(function () {
-                        new ImageModel({id: imageModel.id})
-                            .fetch()
-                            .then(function (imageModel) {
-                                res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/images/' + imageModel.id);
-                                res.status(201).json(imageModel);
+                    .then(function (productImageModel) {
+                        new ProductImageModel({id: productImageModel.id})
+                            .fetch({withRelated: ['image']})
+                            .then(function (productImageModel) {
+                                res.set('Location', '/api/v1/products/' + productImageModel.get('product_id') + '/images/' + productImageModel.get('image_id'));
+                                res.status(201).json(productImageModel);
                             });
                     });
             });
