@@ -7,75 +7,45 @@ var express = require('express'),
     ManagerModel = require('../../../models/manager'),
     expressAsyncValidator = require('../../../modules/express-async-validator/module');
 
-router.use(function (req, res, next) {
+router.use('/', function (req, res, next) {
     res.set({
-        'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE'
+        'Access-Control-Allow-Methods': 'GET,POST'
     });
     next();
 });
 
+router.get('/', require('./middleware/collection_params_check'));
+
 router.get('/', function (req, res, next) {
-    new (expressAsyncValidator.model)({
-        "limit":  {
-            "rules":        {
-                "isInt": {
-                    "message": "Limit should be integer"
-                },
-                "toInt": {}
-            },
-            "allowEmpty":   true,
-            "defaultValue": 10
-        },
-        "offset": {
-            "rules":        {
-                "isInt": {
-                    "message": "Offset should be integer"
-                },
-                "toInt": {}
-            },
-            "allowEmpty":   true,
-            "defaultValue": 0
-        }
-    })
-        .validate(req.query)
-        .then(function (params) {
-            var shopsCollection = new ShopsCollection();
-            var shopModel = new ShopModel();
-            Promise
-                .props({
-                    shops: shopsCollection
-                       .query(function (qb) {
-                            qb.limit(params.limit).offset(params.offset);
-                        })
-                       .fetch({
-                            withRelated: ['image']
-                        }),
-                    total: shopModel
-                       .query()
-                       .count(shopModel.idAttribute)
-                       .then(function (result) {
-                            return parseInt(result[0].count);
-                        })
+    var shopsCollection = new ShopsCollection();
+    var shopModel = new ShopModel();
+    Promise
+        .props({
+            shops: shopsCollection
+               .query(function (qb) {
+                    qb.limit(req.query.limit).offset(req.query.offset);
                 })
-                .then(function (results) {
-                    res.json(results);
+               .fetch({
+                    withRelated: ['image']
+                }),
+            total: shopModel
+               .query()
+               .count(shopModel.idAttribute)
+               .then(function (result) {
+                    return parseInt(result[0].count);
                 })
-                .catch(function (err) {
-                    next(err);
-                });
         })
-        .catch(function (error) {
-            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-            next(badRequestError);
+        .then(function (results) {
+            res.json(results);
+        })
+        .catch(function (err) {
+            next(err);
         });
 });
 
-router.post('/', function (req, res, next) {
-    if (!req.currentUser) {
-        next(new (require('./errors/unauthorized'))('User is not authorized'));
-        return;
-    }
+router.post('/', require('./middleware/auth_check'));
 
+router.post('/', function (req, res, next) {
     new (expressAsyncValidator.model)({
         "image_id":    {
             "rules":        {
@@ -183,6 +153,13 @@ router.post('/', function (req, res, next) {
         });
 });
 
+router.use('/:shopId', function (req, res, next) {
+    res.set({
+        'Access-Control-Allow-Methods': 'GET,PUT'
+    });
+    next();
+});
+
 router.param('shopId', function (req, res, next) {
     req
         .model({
@@ -230,12 +207,9 @@ router.get('/:shopId', function (req, res) {
         });
 });
 
-router.put('/:shopId', function (req, res, next) {
-    if (!req.currentUser) {
-        next(new (require('./errors/unauthorized'))('User is not authorized'));
-        return;
-    }
+router.put('/:shopId', require('./middleware/auth_check'));
 
+router.put('/:shopId', function (req, res, next) {
     new ManagerModel()
         .query(function (qb) {
             qb
