@@ -287,7 +287,7 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "Product":           require('../models/product'),
-            "ProductRequest":       require('../models/request/product'),
+            "ProductRequest":    require('../models/request/product'),
             "Image":             require('../models/image'),
             "Shop":              require('../models/shop'),
             "Category":          require('../models/category'),

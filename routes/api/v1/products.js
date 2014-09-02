@@ -160,17 +160,5 @@ router.put('/:productId', function (req, res, next) {
         });
 });
 
-router.use('/:productId/images', require('./images'));
-router.post('/:productId/images', function (req, res, next) {
-    var ProductImageModel = require('../../../models/product_image');
-    new ProductImageModel({
-        product_id: req.product.id,
-        image_id:   req.image.id
-    })
-        .save()
-        .then(function(productImageModel){
-            console.log(productImageModel);
-        });
-});
-
+router.use('/:productId/images', require('./products/images'));
 module.exports = router;

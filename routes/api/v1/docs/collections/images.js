@@ -12,7 +12,7 @@ module.exports = {
                 "$ref": "Image"
             }
         },
-        "total":    {
+        "total":  {
             "type":   "integer",
             "format": "int32"
         }

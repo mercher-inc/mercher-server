@@ -275,7 +275,7 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "Image":             require('../models/image'),
-            "ImagesList":             require('../collections/images'),
+            "ImagesList":        require('../collections/images'),
             "RequestError":      require('../errors/request'),
             "UnauthorizedError": require('../errors/unauthorized'),
             "NotFoundError":     require('../errors/not_found'),

@@ -6,51 +6,51 @@ module.exports = {
     ],
     "description": "Product request model",
     "properties":  {
-        "shop_id":                     {
+        "shop_id":         {
             "type":   "integer",
             "format": "int32"
         },
-        "category_id":                 {
+        "category_id":     {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
         },
-        "title":                       {
+        "title":           {
             "type": "string"
         },
-        "description":                 {
+        "description":     {
             "type":         "string",
             "defaultValue": null
         },
-        "price":                       {
+        "price":           {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "shipping_cost":               {
+        "shipping_cost":   {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "shipping_weight":             {
+        "shipping_weight": {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "amount_in_stock":             {
+        "amount_in_stock": {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "is_unique":                   {
+        "is_unique":       {
             "type":         "boolean",
             "defaultValue": true
         },
-        "is_public":                   {
+        "is_public":       {
             "type":         "boolean",
             "defaultValue": true
         },
-        "is_banned":                   {
+        "is_banned":       {
             "type":         "boolean",
             "defaultValue": false
         }
