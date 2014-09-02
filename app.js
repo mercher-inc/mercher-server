@@ -17,10 +17,6 @@ app.set('bookshelf', require('./modules/bookshelf'));
 
 app.set('port', process.env.PORT || 3000);
 
-for (var k in process.env) {
-    console.log(k, process.env[k]);
-}
-
 bookshelf.knex.migrate.latest()
     .then(function () {
         server = require('http').createServer(app).listen(app.get('port'), function () {

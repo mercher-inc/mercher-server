@@ -57,6 +57,10 @@ router.use(function (req, res, next) {
     next();
 });
 
+router.get('/env', function (req, res, next) {
+    res.json(process.env);
+});
+
 router.use('/auth', require('./v1/auth'));
 router.use('/shops', require('./v1/shops'));
 router.use('/products', require('./v1/products'));
