@@ -5,18 +5,39 @@ var express = require('express'),
     ProductImageModel = require('../../../../models/product_image');
 
 router.use('/', busboy());
+
 router.post('/', require('../middleware/auth_check'));
 
 router.post('/', function (req, res) {
+    var Promise = require('bluebird');
 
-    req.pipe(req.busboy);
+    var productImageModel = new ProductImageModel({"product_id": req.product.id});
+    var promises = [];
+
     req.busboy.on('file', function (fieldname, file, filename) {
+        promises.push(
+            ImageModel
+                .createImage(file, filename)
+                .then(function (imageModel) {
+                    productImageModel.set('image_id', imageModel.id);
+                })
+        );
+    });
 
-        ImageModel
-            .createImage(file, filename)
-            .then(function (imageModel) {
-                new ProductImageModel()
-                    .save({"product_id": req.product.id, "image_id": imageModel.id})
+    req.busboy.on('field', function (key, value) {
+        promises.push(
+            new Promise(function (resolve) {
+                productImageModel.set(key, value);
+                resolve(productImageModel);
+            })
+        );
+    });
+
+    req.busboy.on('finish', function () {
+        Promise.all(promises)
+            .then(function () {
+                productImageModel
+                    .save({}, {req: req})
                     .then(function (productImageModel) {
                         new ProductImageModel({id: productImageModel.id})
                             .fetch({withRelated: ['image']})
@@ -27,6 +48,8 @@ router.post('/', function (req, res) {
                     });
             });
     });
+
+    req.pipe(req.busboy);
 });
 
 module.exports = router;
