@@ -64,7 +64,7 @@ router.post('/', function (req, res, next) {
             var validationError = new (require('./errors/validation'))("Validation failed", error);
             next(validationError);
         })
-        .catch(ProductModel.PermissionError, function (error) {
+        .catch(ProductModel.InternalServerError, function (error) {
             var internalServerError = new (require('./errors/internal'))(error.message);
             next(internalServerError);
         })
@@ -150,7 +150,7 @@ router.put('/:productId', function (req, res, next) {
             var validationError = new (require('./errors/validation'))("Validation failed", error);
             next(validationError);
         })
-        .catch(ProductModel.PermissionError, function (error) {
+        .catch(ProductModel.InternalServerError, function (error) {
             var internalServerError = new (require('./errors/internal'))(error.message);
             next(internalServerError);
         })

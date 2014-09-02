@@ -46,110 +46,53 @@ router.get('/', function (req, res, next) {
 router.post('/', require('./middleware/auth_check'));
 
 router.post('/', function (req, res, next) {
-    new (expressAsyncValidator.model)({
-        "image_id":    {
-            "rules":        {
-                "isInt": {
-                    "message": "Image ID should be integer"
-                },
-                "toInt": {}
-            },
-            "allowEmpty":   true,
-            "defaultValue": null
-        },
-        "title":       {
-            "rules":      {
-                "required": {
-                    "message": "Shop's title is required"
-                },
-                "toString": {},
-                "trim":     {},
-                "escape":   {},
-                "isLength": {
-                    "message": "Shop's title should be at least 3 characters long and less then 250 characters",
-                    "min":     3,
-                    "max":     250
-                }
-            },
-            "allowEmpty": false
-        },
-        "description": {
-            "rules":        {
-                "toString": {},
-                "escape":   {}
-            },
-            "allowEmpty":   true,
-            "defaultValue": null
-        },
-        "location":    {
-            "rules":        {
-                "toString": {},
-                "trim":     {},
-                "escape":   {},
-                "isLength": {
-                    "message": "Shop's location should be at least 3 characters long and less then 250 characters",
-                    "min":     3,
-                    "max":     250
-                }
-            },
-            "allowEmpty":   true,
-            "defaultValue": null
-        },
-        "tax":         {
-            "rules":        {
-                "isFloat": {
-                    "message": "Tax should be float"
-                },
-                "toFloat": {}
-            },
-            "allowEmpty":   true,
-            "defaultValue": 0
-        },
-        "is_public":   {
-            "rules":        {
-                "toBoolean": {}
-            },
-            "allowEmpty":   true,
-            "defaultValue": false
-        }
-    })
-        .validate(req.body)
-        .then(function (params) {
-            Bookshelf
-                .transaction(function (t) {
-                    return new ShopModel()
-                        .save(params, {transacting: t})
-                        .then(function (shopModel) {
-                            return new ManagerModel()
-                                .save({
-                                    user_id: req.currentUser.id,
-                                    shop_id: shopModel.id,
-                                    role:    'owner'
-                                }, {
-                                    transacting: t
-                                })
-                                .then(function () {
-                                    return shopModel;
-                                });
-                        });
-                })
+    Bookshelf
+        .transaction(function (t) {
+            return new ShopModel()
+                .save(req.body, {transacting: t, req: req})
                 .then(function (shopModel) {
-                    new ShopModel({id: shopModel.id})
-                        .fetch({
-                            withRelated: ['image']
+                    return new ManagerModel()
+                        .save({
+                            user_id: req.currentUser.id,
+                            shop_id: shopModel.id,
+                            role:    'owner'
+                        }, {
+                            transacting: t
                         })
-                        .then(function (shopModel) {
-                            res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/shops/' + shopModel.id);
-                            res.status(201).json(shopModel);
+                        .then(function () {
+                            return shopModel;
                         });
                 })
-                .catch(function (err) {
-                    res.status(500).json(err);
+                .catch(ShopModel.PermissionError, function (error) {
+                    var forbiddenError = new (require('./errors/forbidden'))(error.message);
+                    next(forbiddenError);
+                })
+                .catch(ShopModel.ValidationError, function (error) {
+                    var validationError = new (require('./errors/validation'))("Validation failed", error);
+                    next(validationError);
+                })
+                .catch(ShopModel.InternalServerError, function (error) {
+                    var internalServerError = new (require('./errors/internal'))(error.message);
+                    next(internalServerError);
+                })
+                .catch(function (error) {
+                    var internalServerError = new (require('./errors/internal'))();
+                    next(internalServerError);
                 });
         })
-        .catch(function (error) {
-            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-            next(badRequestError);
+        .then(function (shopModel) {
+            new ShopModel({id: shopModel.id})
+                .fetch({
+                    withRelated: ['image']
+                })
+                .then(function (shopModel) {
+                    res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/shops/' + shopModel.id);
+                    res.status(201).json(shopModel);
+                });
+        })
+        .catch(function (err) {
+            var internalServerError = new (require('./errors/internal'))();
+            next(internalServerError);
         });
 });
 
@@ -210,108 +153,32 @@ router.get('/:shopId', function (req, res) {
 router.put('/:shopId', require('./middleware/auth_check'));
 
 router.put('/:shopId', function (req, res, next) {
-    new ManagerModel()
-        .query(function (qb) {
-            qb
-                .where('user_id', '=', req.currentUser.id)
-                .where('shop_id', '=', req.shop.id)
-                .where('role', '>=', 'owner');
-        })
-        .fetch({require: true})
-        .then(function () {
-            new (expressAsyncValidator.model)({
-                "image_id":    {
-                    "rules":        {
-                        "isInt": {
-                            "message": "Image ID should be integer"
-                        },
-                        "toInt": {}
-                    },
-                    "allowEmpty":   true,
-                    "defaultValue": null
-                },
-                "title":       {
-                    "rules":      {
-                        "required": {
-                            "message": "Shop's title is required"
-                        },
-                        "toString": {},
-                        "trim":     {},
-                        "escape":   {},
-                        "isLength": {
-                            "message": "Shop's title should be at least 3 characters long and less then 250 characters",
-                            "min":     3,
-                            "max":     250
-                        }
-                    },
-                    "allowEmpty": false
-                },
-                "description": {
-                    "rules":        {
-                        "toString": {},
-                        "escape":   {}
-                    },
-                    "allowEmpty":   true,
-                    "defaultValue": null
-                },
-                "location":    {
-                    "rules":        {
-                        "toString": {},
-                        "trim":     {},
-                        "escape":   {},
-                        "isLength": {
-                            "message": "Shop's location should be at least 3 characters long and less then 250 characters",
-                            "min":     3,
-                            "max":     250
-                        }
-                    },
-                    "allowEmpty":   true,
-                    "defaultValue": null
-                },
-                "tax":         {
-                    "rules":        {
-                        "isFloat": {
-                            "message": "Tax should be float"
-                        },
-                        "toFloat": {}
-                    },
-                    "allowEmpty":   true,
-                    "defaultValue": 0
-                },
-                "is_public":   {
-                    "rules":        {
-                        "toBoolean": {}
-                    },
-                    "allowEmpty":   true,
-                    "defaultValue": false
-                }
-            })
-                .validate(req.body)
-                .then(function (params) {
-                    Bookshelf
-                        .transaction(function (t) {
-                            return req.shop.save(params, {patch: true, transacting: t});
-                        })
-                        .then(function (shopModel) {
-                            new ShopModel({id: shopModel.id})
-                                .fetch({
-                                    withRelated: ['image']
-                                })
-                                .then(function (shopModel) {
-                                    res.status(200).json(shopModel);
-                                });
-                        })
-                        .catch(function (err) {
-                            res.status(500).json(err);
-                        });
+    req.shop
+        .save(req.body, {req: req})
+        .then(function (shopModel) {
+            new ShopModel({id: shopModel.id})
+                .fetch({
+                    withRelated: ['image']
                 })
-                .catch(function (error) {
-                    var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-                    next(badRequestError);
+                .then(function (shopModel) {
+                    res.status(200).json(shopModel);
                 });
         })
-        .catch(ManagerModel.NotFoundError, function () {
-            next(new (require('./errors/unauthorized'))('User is not authorized'));
+        .catch(ShopModel.PermissionError, function (error) {
+            var forbiddenError = new (require('./errors/forbidden'))(error.message);
+            next(forbiddenError);
+        })
+        .catch(ShopModel.ValidationError, function (error) {
+            var validationError = new (require('./errors/validation'))("Validation failed", error);
+            next(validationError);
+        })
+        .catch(ShopModel.InternalServerError, function (error) {
+            var internalServerError = new (require('./errors/internal'))(error.message);
+            next(internalServerError);
+        })
+        .catch(function (error) {
+            var internalServerError = new (require('./errors/internal'))();
+            next(internalServerError);
         });
 });
 
