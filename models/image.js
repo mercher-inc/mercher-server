@@ -70,10 +70,9 @@ var ImageModel = bookshelf.Model.extend(
 
                             im.identify(originFilePath, function (err, features) {
                                 var cropGeometry = {
-                                    "width":  features.width,
-                                    "height": features.height,
-                                    "top":    0,
-                                    "left":   0
+                                    "size": 0,
+                                    "top":  0,
+                                    "left": 0
                                 };
 
                                 var originalDimensions = {
@@ -82,11 +81,11 @@ var ImageModel = bookshelf.Model.extend(
                                 };
 
                                 if (originalDimensions.width < originalDimensions.height) {
-                                    cropGeometry.height = cropGeometry.width = originalDimensions.width;
+                                    cropGeometry.size = originalDimensions.width;
                                     cropGeometry.left = 0;
                                     cropGeometry.top = Math.floor((originalDimensions.height - originalDimensions.width) / 2);
                                 } else {
-                                    cropGeometry.width = cropGeometry.height = originalDimensions.height;
+                                    cropGeometry.size = originalDimensions.height;
                                     cropGeometry.top = 0;
                                     cropGeometry.left = Math.floor((originalDimensions.width - originalDimensions.height) / 2);
                                 }

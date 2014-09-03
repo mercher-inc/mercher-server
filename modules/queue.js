@@ -4,7 +4,8 @@ var kue = require('kue'),
             port: process.env.REDIS_PORT,
             host: process.env.REDIS_ENDPOINT
         }
-    });
+    }),
+    _ = require('underscore');
 
 queue.process('crop image', function (job, done) {
     var im = require('imagemagick'),
@@ -18,7 +19,7 @@ queue.process('crop image', function (job, done) {
             im.convert(
                 [
                     src,
-                    '-crop', geometry.width + 'x' + geometry.height + '+' + geometry.left + '+' + geometry.top,
+                    '-crop', geometry.size + 'x' + geometry.size + '+' + geometry.left + '+' + geometry.top,
                     dst
                 ],
                 function (err) {
@@ -31,12 +32,15 @@ queue.process('crop image', function (job, done) {
         });
     };
 
-    var resizeImage = function (src, dst, dimensions) {
+    var resizeImage = function (src, dst, size) {
         return new Promise(function (resolve, reject) {
             im.convert(
                 [
                     src,
-                    '-resize', dimensions.width + 'x' + dimensions.height,
+                    '-resize', size + 'x' + size,
+                    '-strip',
+                    '-interlace', 'Plane',
+                    '-quality', '85',
                     dst
                 ],
                 function (err) {
@@ -71,92 +75,73 @@ queue.process('crop image', function (job, done) {
     var originFile = path.normalize(job.data.originFile),
         originPath = path.dirname(originFile),
         originExt = path.extname(originFile),
-        files = {
-            xs:  {
-                file:       'xs' + originExt,
-                dimensions: {
-                    height: 100,
-                    width:  100
-                }
-            },
-            s:   {
-                file:       's' + originExt,
-                dimensions: {
-                    height: 200,
-                    width:  200
-                }
-            },
-            m:   {
-                file:       'm' + originExt,
-                dimensions: {
-                    height: 400,
-                    width:  400
-                }
-            },
-            l:   {
-                file:       'l' + originExt,
-                dimensions: {
-                    height: 800,
-                    width:  800
-                }
-            },
-            xl:  {
-                file:       'xl' + originExt,
-                dimensions: {
-                    height: 1600,
-                    width:  1600
-                }
-            },
-            xxl: {
-                file:       'xxl' + originExt,
-                dimensions: {
-                    height: 3200,
-                    width:  3200
-                }
-            }
-        },
-        resizeDimensions = [];
+        sizeUsages = {},
+        resizeParams = [],
+        files = {};
 
-    for (var i in files) {
-        resizeDimensions.push({
-            id:         i,
-            dst:        path.join(originPath, files[i].file),
-            dimensions: files[i].dimensions
+    var screens = {
+        "mdpi":    1,
+        "hdpi":    1.5,
+        "xhdpi":   2,
+        "xxhdpi":  3,
+        "xxxhdpi": 4
+    };
+
+    var sizes = {
+        "xs": 0,
+        "s":  1,
+        "m":  2,
+        "l":  3,
+        "xl": 4
+    };
+
+    _.each(screens, function (dpi, resolutionName) {
+        _.each(sizes, function (multiplier, sizeName) {
+            var size = Math.min(Math.pow(2, multiplier) * 100 * dpi, job.data.cropGeometry.size);
+            sizeUsages[size] = sizeUsages[size] || {};
+            sizeUsages[size][sizeName] = sizeUsages[size][sizeName] || [];
+            sizeUsages[size][sizeName].push(resolutionName);
         });
-    }
+    });
 
-    cropImage(originFile, path.join(originPath, 'max' + originExt), job.data.cropGeometry)
+    _.each(sizeUsages, function (usage, size) {
+        resizeParams.push({
+            dst:   path.join(originPath, size + originExt),
+            size:  size,
+            usage: usage
+        });
+    });
+
+    cropImage(originFile, path.join(originPath, 'tmp' + originExt), job.data.cropGeometry)
         .then(function (croppedFile) {
-            return renameImage(croppedFile)
-                .then(function (croppedFile) {
-                    files["max"] = {
-                        "file":     path.basename(croppedFile),
-                        dimensions: {
-                            height: job.data.cropGeometry.height,
-                            width:  job.data.cropGeometry.width
-                        }
-                    };
-                    job.progress(1, resizeDimensions.length + 1);
-                    Promise
-                        .each(resizeDimensions, function (item, index, count) {
-                            return resizeImage(croppedFile, item.dst, item.dimensions)
+            return Promise
+                .each(resizeParams, function (item, index, count) {
+                    return resizeImage(croppedFile, item.dst, item.size)
+                        .then(function (resizedFile) {
+                            return renameImage(resizedFile)
                                 .then(function (resizedFile) {
-                                    return renameImage(resizedFile)
-                                        .then(function (resizedFile) {
-                                            files[item.id].file = path.basename(resizedFile);
-                                            job.progress(index + 2, count + 1);
+                                    _.each(item.usage, function (resolutionNames, sizeName) {
+                                        files[sizeName] = files[sizeName] || {};
+                                        _.each(resolutionNames, function (resolutionName) {
+                                            files[sizeName][resolutionName] = {
+                                                file: path.basename(resizedFile),
+                                                size: item.size
+                                            };
                                         });
-                                })
-                                .catch(function (err) {
-                                    done && done(err);
+                                    });
+                                    job.progress(index + 1, count);
                                 });
-                        })
-                        .then(function () {
-                            done && done(null, files);
                         })
                         .catch(function (err) {
                             done && done(err);
                         });
+                })
+                .then(function () {
+                    fs.unlinkSync(croppedFile);
+                    done && done(null, files);
+                })
+                .catch(function (err) {
+                    done && done(err);
                 });
         })
         .catch(function (err) {
