@@ -1,3 +1,15 @@
+var AWS = require('aws-sdk'),
+    elasticbeanstalk = new AWS.ElasticBeanstalk();
+
+var params = {
+    EnvironmentName: 'mercher_staging'
+};
+
+elasticbeanstalk.describeEnvironmentResources(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+});
+
 var kue = require('kue'),
     queue = kue.createQueue();
 
@@ -124,13 +136,6 @@ queue.process('crop image', function (job, done) {
         .then(function (croppedFile) {
             renameImage(croppedFile)
                 .then(function (croppedFile) {
-                    files["max"] = {
-                        "file":     path.basename(croppedFile),
-                        dimensions: {
-                            height: job.data.cropGeometry.height,
-                            width:  job.data.cropGeometry.width
-                        }
-                    };
                     job.progress(1, resizeDimensions.length + 1);
                     Promise
                         .each(resizeDimensions, function (item, index, count) {
@@ -147,6 +152,13 @@ queue.process('crop image', function (job, done) {
                                 });
                         })
                         .then(function () {
+                            files["max"] = {
+                                "file":     path.basename(croppedFile),
+                                dimensions: {
+                                    height: job.data.cropGeometry.height,
+                                    width:  job.data.cropGeometry.width
+                                }
+                            };
                             done && done(null, files);
                         })
                         .catch(function (err) {
