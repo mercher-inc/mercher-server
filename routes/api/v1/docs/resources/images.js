@@ -15,72 +15,6 @@ router.get('/', function (req, res) {
         ],
         "apis":           [
             {
-                "path":       "/api/v1/images",
-                "operations": [
-                    {
-                        "method":           "GET",
-                        "summary":          "List images",
-                        "type":             "ImagesList",
-                        "nickname":         "list",
-                        "parameters":       [
-                            {
-                                "name":        "limit",
-                                "description": "Amount of images to fetch",
-                                "required":    false,
-                                "type":        "integer",
-                                "paramType":   "query"
-                            },
-                            {
-                                "name":        "offset",
-                                "description": "Amount of images to skip",
-                                "required":    false,
-                                "type":        "integer",
-                                "paramType":   "query"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":          200,
-                                "message":       "OK",
-                                "responseModel": "ImagesList"
-                            },
-                            {
-                                "code":          400,
-                                "message":       "Bad request",
-                                "responseModel": "RequestError"
-                            }
-                        ]
-                    },
-                    {
-                        "method":           "POST",
-                        "summary":          "Upload image",
-                        "type":             "Image",
-                        "nickname":         "upload",
-                        "parameters":       [
-                            {
-                                "name":        "file",
-                                "description": "Image file that needs to be uploaded",
-                                "required":    true,
-                                "type":        "file",
-                                "paramType":   "form"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":          201,
-                                "message":       "Image was created",
-                                "responseModel": "Image"
-                            },
-                            {
-                                "code":          406,
-                                "message":       "Validation failed",
-                                "responseModel": "ValidationError"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
                 "path":       "/api/v1/images/{imageId}",
                 "operations": [
                     {
@@ -125,7 +59,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Image object that needs to be updated",
                                 "required":    true,
-                                "type":        "Image",
+                                "type":        "ImageRequest",
                                 "paramType":   "body"
                             },
                             {
@@ -195,6 +129,7 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "Image":             require('../models/image'),
+            "ImageRequest":      require('../models/request/image'),
             "ImagesList":        require('../collections/images'),
             "RequestError":      require('../errors/request'),
             "UnauthorizedError": require('../errors/unauthorized'),

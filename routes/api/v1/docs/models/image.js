@@ -3,6 +3,8 @@ module.exports = {
     "required":    [
         "id",
         "key",
+        "origin",
+        "dimensions",
         "crop_geometry",
         "files",
         "is_active",
@@ -24,6 +26,12 @@ module.exports = {
         },
         "key":           {
             "type": "string"
+        },
+        "origin":        {
+            "type": "string"
+        },
+        "dimensions":    {
+            "type": "json"
         },
         "crop_geometry": {
             "type": "json"
