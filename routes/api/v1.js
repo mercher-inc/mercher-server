@@ -58,21 +58,7 @@ router.use(function (req, res, next) {
 });
 
 router.get('/env', function (req, res, next) {
-    var data = {
-        env: process.env
-    };
-
-    var fs = require('fs');
-
-    if (fs.existsSync('./test')) {
-        data['test'] = require('./test')
-    }
-
-    if (fs.existsSync('/tmp/cacheclusterconfig')) {
-        data['cacheclusterconfig'] = require('/tmp/cacheclusterconfig')
-    }
-
-    res.json(data);
+    res.json(process.env);
 });
 
 router.use('/auth', require('./v1/auth'));

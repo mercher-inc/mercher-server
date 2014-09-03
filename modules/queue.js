@@ -1,5 +1,10 @@
 var kue = require('kue'),
-    queue = kue.createQueue();
+    queue = kue.createQueue({
+        redis: {
+            port: process.env.REDIS_PORT,
+            host: process.env.REDIS_ENDPOINT
+        }
+    });
 
 queue.process('crop image', function (job, done) {
     var im = require('imagemagick'),
