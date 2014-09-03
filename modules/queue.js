@@ -127,14 +127,21 @@ queue.process('crop image', function (job, done) {
 
     cropImage(originFile, path.join(originPath, 'max' + originExt), job.data.cropGeometry)
         .then(function (croppedFile) {
-            renameImage(croppedFile)
+            return renameImage(croppedFile)
                 .then(function (croppedFile) {
+                    files["max"] = {
+                        "file":     path.basename(croppedFile),
+                        dimensions: {
+                            height: job.data.cropGeometry.height,
+                            width:  job.data.cropGeometry.width
+                        }
+                    };
                     job.progress(1, resizeDimensions.length + 1);
                     Promise
                         .each(resizeDimensions, function (item, index, count) {
                             return resizeImage(croppedFile, item.dst, item.dimensions)
                                 .then(function (resizedFile) {
-                                    renameImage(resizedFile)
+                                    return renameImage(resizedFile)
                                         .then(function (resizedFile) {
                                             files[item.id].file = path.basename(resizedFile);
                                             job.progress(index + 2, count + 1);
@@ -145,13 +152,6 @@ queue.process('crop image', function (job, done) {
                                 });
                         })
                         .then(function () {
-                            files["max"] = {
-                                "file":     path.basename(croppedFile),
-                                dimensions: {
-                                    height: job.data.cropGeometry.height,
-                                    width:  job.data.cropGeometry.width
-                                }
-                            };
                             done && done(null, files);
                         })
                         .catch(function (err) {
