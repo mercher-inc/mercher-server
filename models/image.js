@@ -1,4 +1,5 @@
-var bookshelf = require('../modules/bookshelf');
+var bookshelf = require('../modules/bookshelf'),
+    queue = require('../modules/queue');
 
 var ImageModel = bookshelf.Model.extend(
     {
@@ -6,74 +7,27 @@ var ImageModel = bookshelf.Model.extend(
         hasTimestamps: true,
 
         initialize: function () {
-            this.on('saving', this.cropImage);
-        },
-        cropImage:  function (imageModel, attrs, options) {
-            var Promise = require('bluebird');
-            return new Promise(function (resolve, reject) {
-                if (imageModel.hasChanged('crop_geometry')) {
-                    var uploadsPath = ImageModel.getUploadsPath();
-                    var imagePath = uploadsPath + '/' + imageModel.get('key');
-                    var originFilePath = imagePath + '/' + imageModel.get('files').origin.file;
-                    var cropGeometry = imageModel.get('crop_geometry');
-
-                    var i = originFilePath.lastIndexOf('.');
-                    var ext = (i < 0) ? '' : originFilePath.substr(i);
-
-                    Promise
-                        .props({
-                            'max': ImageModel.convert(originFilePath, imagePath + '/max' + ext, cropGeometry),
-                            'xs':  ImageModel.convert(originFilePath, imagePath + '/xs' + ext, cropGeometry, {height: 100, width: 100}),
-                            's':   ImageModel.convert(originFilePath, imagePath + '/s' + ext, cropGeometry, {height: 200, width: 200}),
-                            'm':   ImageModel.convert(originFilePath, imagePath + '/m' + ext, cropGeometry, {height: 400, width: 400}),
-                            'l':   ImageModel.convert(originFilePath, imagePath + '/l' + ext, cropGeometry, {height: 800, width: 800}),
-                            'xl':  ImageModel.convert(originFilePath, imagePath + '/xl' + ext, cropGeometry, {height: 1600, width: 1600}),
-                            'xxl': ImageModel.convert(originFilePath, imagePath + '/xxl' + ext, cropGeometry, {height: 3200, width: 3200})
-                        })
-                        .then(function (results) {
-                            var files = imageModel.get('files');
-                            files.max = {
-                                "file":   "max" + ext,
-                                "width":  results["max"].width,
-                                "height": results["max"].height
-                            };
-                            files.xs = {
-                                "file":   "xs" + ext,
-                                "width":  results.xs.width,
-                                "height": results.xs.height
-                            };
-                            files.s = {
-                                "file":   "s" + ext,
-                                "width":  results.s.width,
-                                "height": results.s.height
-                            };
-                            files.m = {
-                                "file":   "m" + ext,
-                                "width":  results.m.width,
-                                "height": results.m.height
-                            };
-                            files.l = {
-                                "file":   "l" + ext,
-                                "width":  results.l.width,
-                                "height": results.l.height
-                            };
-                            files.xl = {
-                                "file":   "xl" + ext,
-                                "width":  results.xl.width,
-                                "height": results.xl.height
-                            };
-                            files.xxl = {
-                                "file":   "xxl" + ext,
-                                "width":  results.xxl.width,
-                                "height": results.xxl.height
-                            };
-                            imageModel.set("files", files);
-                            resolve(imageModel);
-                        })
-                        .catch(function (e) {
-                            reject(e);
-                        });
+            this.on('created', this.cropImage);
+            this.on('updating', function () {
+                if (this.hasChanged('crop_geometry')) {
+                    this.cropImage();
                 }
+            });
+        },
+        cropImage:  function (imageModel) {
+            var job = queue
+                    .create('crop image', {
+                        imageId: imageModel.id
+                    })
+                    .priority('low')
+                    .save();
+
+            job.on('complete', function () {
+                console.log("\rJob #" + job.id + " completed");
+            }).on('failed', function () {
+                console.log("\rJob #" + job.id + " failed");
+            }).on('progress', function (progress) {
+                process.stdout.write('\rJob #' + job.id + ' ' + progress + '% complete');
             });
         }
     },

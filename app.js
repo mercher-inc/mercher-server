@@ -5,6 +5,7 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     bookshelf = require('./modules/bookshelf'),
     app = express(),
+    queue = require('./modules/queue'),
     server;
 
 app.use(bodyParser.json());
