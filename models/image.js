@@ -36,6 +36,8 @@ var ImageModel = bookshelf.Model.extend(
     {
         createImage:    function (file, filename) {
             var fs = require('fs'),
+                path = require('path'),
+                crypto = require('crypto'),
                 im = require('imagemagick'),
                 Promise = require('bluebird');
 
@@ -44,18 +46,28 @@ var ImageModel = bookshelf.Model.extend(
                     .then(function (key) {
                         var imageModel = new ImageModel({key: key});
 
-                        var uploadsPath = ImageModel.getUploadsPath();
-                        var imagePath = uploadsPath + '/' + key;
+                        var uploadsPath = ImageModel.getUploadsPath(),
+                            imagePath = path.join(uploadsPath, key),
+                            ext = path.extname(filename),
+                            originFilePath = path.join(imagePath, 'origin' + ext);
+
                         if (fs.existsSync(imagePath)) fs.rmdirSync(imagePath);
                         fs.mkdirSync(imagePath);
 
-                        var i = filename.lastIndexOf('.');
-                        var ext = (i < 0) ? '' : filename.substr(i);
-                        var originFilePath = imagePath + '/origin' + ext;
-
                         var outFS = fs.createWriteStream(originFilePath);
                         file.pipe(outFS);
+
+                        var md5sum = crypto.createHash('md5');
+                        file.on('data', function (d) {
+                            md5sum.update(d);
+                        });
+
                         outFS.on('close', function () {
+
+                            var newOriginFilePath = path.join(imagePath, md5sum.digest('hex') + ext);
+                            fs.renameSync(originFilePath, newOriginFilePath);
+                            originFilePath = newOriginFilePath;
+
                             im.identify(originFilePath, function (err, features) {
                                 var cropGeometry = {
                                     "width":  features.width,
@@ -81,7 +93,7 @@ var ImageModel = bookshelf.Model.extend(
 
                                 imageModel
                                     .save({
-                                        "origin":        'origin' + ext,
+                                        "origin":        path.basename(originFilePath),
                                         "dimensions":    originalDimensions,
                                         "crop_geometry": cropGeometry
                                     })
@@ -123,34 +135,6 @@ var ImageModel = bookshelf.Model.extend(
                     })
                     .catch(ImageModel.NotFoundError, function () {
                         resolve(key);
-                    });
-            });
-        },
-        convert:        function (srcFile, dstFile, cropGeometry, dimensions) {
-            var Promise = require('bluebird'),
-                im = require('imagemagick');
-
-            dimensions = dimensions || {width: cropGeometry.width, height: cropGeometry.height};
-            dimensions.width = Math.min(dimensions.width, cropGeometry.width);
-            dimensions.height = Math.min(dimensions.height, cropGeometry.height);
-            return new Promise(function (resolve, reject) {
-                im.convert(
-                    [
-                        srcFile,
-                        '-crop', cropGeometry.width + 'x' + cropGeometry.height + '+' + cropGeometry.left + '+' + cropGeometry.top,
-                        '-resize', dimensions.width + 'x' + dimensions.height,
-                        dstFile
-                    ],
-                    function (err) {
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
-                        resolve({
-                            file:   dstFile,
-                            width:  dimensions.width,
-                            height: dimensions.height
-                        });
                     });
             });
         }
