@@ -15,15 +15,17 @@ var ImageModel = bookshelf.Model.extend(
             });
         },
         cropImage:  function (imageModel) {
-            var job = queue
-                    .create('crop image', {
-                        imageId: imageModel.id
-                    })
-                    .priority('low')
-                    .save();
+            var path = require('path'),
+                params = {
+                    originFile:   path.join(ImageModel.getUploadsPath(), imageModel.get('key'), imageModel.get('origin')),
+                    cropGeometry: imageModel.get('crop_geometry')
+                };
 
-            job.on('complete', function () {
+            var job = queue.create('crop image', params).save();
+
+            job.on('complete', function (files) {
                 console.log("\rJob #" + job.id + " completed");
+                imageModel.save({files: files, is_active: true});
             }).on('failed', function () {
                 console.log("\rJob #" + job.id + " failed");
             }).on('progress', function (progress) {
@@ -79,14 +81,9 @@ var ImageModel = bookshelf.Model.extend(
 
                                 imageModel
                                     .save({
-                                        "crop_geometry": cropGeometry,
-                                        "files":         {
-                                            "origin": {
-                                                "file":   'origin' + ext,
-                                                "width":  originalDimensions.width,
-                                                "height": originalDimensions.height
-                                            }
-                                        }
+                                        "origin":        'origin' + ext,
+                                        "dimensions":    originalDimensions,
+                                        "crop_geometry": cropGeometry
                                     })
                                     .then(function (imageModel) {
                                         resolve(imageModel);

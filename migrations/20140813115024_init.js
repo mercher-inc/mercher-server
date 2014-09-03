@@ -8,9 +8,18 @@ exports.up = function (knex, Promise) {
                     table.increments('id');
                     table.string('title');
                     table.text('description');
-                    table.string('key');
-                    table.json('crop_geometry');
+                    table.string('key')
+                        .notNullable();
+                    table.string('origin')
+                        .notNullable();
+                    table.json('dimensions')
+                        .notNullable();
+                    table.json('crop_geometry')
+                        .notNullable();
                     table.json('files');
+                    table.boolean('is_active')
+                        .defaultTo(false)
+                        .notNullable();
                     table.boolean('is_banned')
                         .defaultTo(false)
                         .notNullable();
