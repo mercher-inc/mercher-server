@@ -4,7 +4,6 @@
     "version":         "0.0.1",
     "private":         true,
     "dependencies":    {
-        "aws-sdk":        "^2.0.15",
         "bluebird":       "^2.3.0",
         "body-parser":    "~1.0.0",
         "bookshelf":      "^0.7.7",
