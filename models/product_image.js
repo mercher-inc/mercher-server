@@ -1,8 +1,9 @@
 var bookshelf = require('../modules/bookshelf'),
+    BaseModel = require('./base'),
     ImageModel = require('./image'),
     ProductModel = require('./product');
 
-var ProductImageModel = bookshelf.Model.extend(
+var ProductImageModel = BaseModel.extend(
     {
         tableName:     'product_image',
         hasTimestamps: true,
