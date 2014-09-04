@@ -127,7 +127,6 @@ var UserModel = BaseModel.extend(
                                 first_name: model.first_name,
                                 last_name:  model.last_name,
                                 last_login: (new Date()).toISOString(),
-                                is_active:  false,
                                 is_banned:  false
                             })
                             .then(function (userModel) {
