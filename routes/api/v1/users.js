@@ -1,5 +1,6 @@
 var express = require('express'),
     router = express.Router(),
+    Promise = require("bluebird"),
     UsersCollection = require('../../../collections/users'),
     UserModel = require('../../../models/user'),
     expressAsyncValidator = require('../../../modules/express-async-validator/module');
@@ -16,15 +17,28 @@ router.get('/', require('./middleware/collection_params_check'));
 // Fetch users collection
 router.get('/', function (req, res, next) {
     var usersCollection = new UsersCollection();
-    usersCollection
-        .query(function (qb) {
-            qb.limit(req.query.limit).offset(req.query.offset);
+    var userModel = new UserModel();
+    Promise
+        .props({
+            users: usersCollection
+                       .query(function (qb) {
+                            qb.limit(req.query.limit).offset(req.query.offset);
+                        })
+                       .fetch({
+                            withRelated: ['image']
+                        }),
+            total: userModel
+                       .query()
+                       .count(userModel.idAttribute)
+                       .then(function (result) {
+                            return parseInt(result[0].count);
+                        })
         })
-        .fetch({
-            withRelated: ['image']
+        .then(function (results) {
+            res.json(results);
         })
-        .then(function (collection) {
-            res.json(collection);
+        .catch(function (err) {
+            next(err);
         });
 });
 
