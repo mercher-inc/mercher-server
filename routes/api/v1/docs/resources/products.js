@@ -158,7 +158,7 @@ router.get('/', function (req, res) {
                                 "responseModel": "NotFoundError"
                             }
                         ]
-                    },
+                    }/*,
                     {
                         "method":           "DELETE",
                         "summary":          "Delete product",
@@ -189,7 +189,7 @@ router.get('/', function (req, res) {
                                 "responseModel": "NotFoundError"
                             }
                         ]
-                    }
+                    }*/
                 ]
             },
             {
