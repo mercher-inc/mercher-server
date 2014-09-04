@@ -4,7 +4,8 @@ var bookshelf = require('../modules/bookshelf'),
     crypto = require('crypto'),
     expressAsyncValidator = require('../modules/express-async-validator/module'),
     salt = 'Mercher',
-    ImageModel = require('./image');
+    ImageModel = require('./image'),
+    UserEmailModel = require('./user_email');
 
 var UserModel = BaseModel.extend(
     {
@@ -13,9 +14,12 @@ var UserModel = BaseModel.extend(
         image:         function () {
             return this.belongsTo(ImageModel);
         },
+        emails:        function () {
+            return this.hasMany(UserEmailModel);
+        },
 
         initialize:       function () {
-            this.on('updating', this.validateUpdating);
+            //this.on('updating', this.validateUpdating);
         },
         validateUpdating: function (userModel, attrs, options) {
             return new Promise(function (resolve, reject) {
@@ -71,7 +75,7 @@ var UserModel = BaseModel.extend(
                                 },
                                 "uniqueRecord": {
                                     "message": "Email already used",
-                                    "model":   UserModel,
+                                    "model":   UserEmailModel,
                                     "field":   "email"
                                 }
                             },
@@ -118,21 +122,27 @@ var UserModel = BaseModel.extend(
                 )
                     .validate(credentials)
                     .then(function (model) {
-                        new UserModel({
-                            email:      model.email,
-                            password:   crypto.pbkdf2Sync(model.password, salt, 10, 20).toString('hex'),
-                            first_name: model.first_name,
-                            last_name:  model.last_name,
-                            last_login: (new Date()).toISOString(),
-                            is_active:  false,
-                            is_banned:  false
-                        })
-                            .save()
+                        new UserModel()
+                            .save({
+                                first_name: model.first_name,
+                                last_name:  model.last_name,
+                                last_login: (new Date()).toISOString(),
+                                is_active:  false,
+                                is_banned:  false
+                            })
                             .then(function (userModel) {
-                                require('./activation_code')
-                                    .generate(userModel, 'email_activation');
-
-                                resolve(userModel);
+                                new UserEmailModel()
+                                    .save({
+                                        user_id:   userModel.id,
+                                        email:     model.email,
+                                        password:  crypto.pbkdf2Sync(model.password, salt, 10, 20).toString('hex'),
+                                        is_active: false
+                                    })
+                                    .then(function (userEmailModel) {
+                                        require('./activation_code')
+                                            .generate(userEmailModel, 'email_activation');
+                                        resolve(userModel);
+                                    });
                             })
                     })
                     .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
@@ -168,19 +178,23 @@ var UserModel = BaseModel.extend(
                 )
                     .validate(credentials)
                     .then(function (model) {
-                        new UserModel()
+                        new UserEmailModel()
                             .where({
                                 email:    model.email,
                                 password: crypto.pbkdf2Sync(model.password, salt, 10, 20).toString('hex')
                             })
                             .fetch({require: true})
-                            .then(function (userModel) {
-                                userModel
-                                    .save({
-                                        last_login: (new Date()).toISOString()
-                                    })
+                            .then(function (userEmailModel) {
+                                new UserModel({id: userEmailModel.get('user_id')})
+                                    .fetch()
                                     .then(function (userModel) {
-                                        resolve(userModel);
+                                        userModel
+                                            .save({
+                                                last_login: (new Date()).toISOString()
+                                            })
+                                            .then(function (userModel) {
+                                                resolve(userModel);
+                                            });
                                     });
                             })
                             .catch(UserModel.NotFoundError, function (error) {

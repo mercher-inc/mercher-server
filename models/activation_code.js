@@ -8,7 +8,7 @@ var ActivationCodeModel = bookshelf.Model.extend(
         hasTimestamps: true
     },
     {
-        generate: function (userModel, purpose) {
+        generate: function (userEmailModel, purpose) {
             var ActivationCodeModel = this;
             return new Promise(function (resolve, reject) {
                 var hash = crypto.createHash('sha1');
@@ -17,9 +17,9 @@ var ActivationCodeModel = bookshelf.Model.extend(
                 var code = hash.digest('hex');
 
                 var activationCodeModel = new ActivationCodeModel({
-                    user_id: userModel.id,
-                    purpose: purpose,
-                    code:    code
+                    user_email_id: userEmailModel.id,
+                    purpose:       purpose,
+                    code:          code
                 });
 
                 activationCodeModel

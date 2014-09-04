@@ -2,8 +2,6 @@ module.exports = {
     "id":          "User",
     "required":    [
         "id",
-        "email",
-        "is_active",
         "is_banned"
     ],
     "description": "User model",
@@ -25,17 +23,10 @@ module.exports = {
             "type":         "string",
             "defaultValue": null
         },
-        "email":      {
-            "type": "string"
-        },
         "last_login": {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
-        },
-        "is_active":  {
-            "type":         "boolean",
-            "defaultValue": true
         },
         "is_banned":  {
             "type":         "boolean",

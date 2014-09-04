@@ -38,20 +38,30 @@ exports.up = function (knex, Promise) {
                         .onUpdate('CASCADE');
                     table.string('first_name');
                     table.string('last_name');
+                    table.timestamp('last_login');
+                    table.boolean('is_banned')
+                        .defaultTo(false)
+                        .notNullable();
+                    table.timestamps();
+                }),
+            trx.schema
+                .createTable('user_email', function (table) {
+                    table.increments('id');
+                    table.integer('user_id')
+                        .references('id')
+                        .inTable('user')
+                        .onDelete('CASCADE')
+                        .onUpdate('CASCADE');
                     table.string('email')
                         .notNullable();
                     table.string('password', 40);
-                    table.timestamp('last_login');
                     table.boolean('is_active')
-                        .defaultTo(false)
-                        .notNullable();
-                    table.boolean('is_banned')
                         .defaultTo(false)
                         .notNullable();
                     table.timestamps();
                 })
                 .then(function () {
-                    return trx.schema.raw('CREATE UNIQUE INDEX "u_user_email" ON "user" ("email")');
+                    return trx.schema.raw('CREATE UNIQUE INDEX "u_user_email_email" ON "user_email" ("email")');
                 }),
             trx.schema
                 .raw('CREATE TYPE "third_party_account_provider" AS ENUM (\'facebook\', \'google\')'),
@@ -93,9 +103,9 @@ exports.up = function (knex, Promise) {
             trx.schema
                 .createTable('activation_code', function (table) {
                     table.increments('id');
-                    table.integer('user_id')
+                    table.integer('user_email_id')
                         .references('id')
-                        .inTable('user')
+                        .inTable('user_email')
                         .onDelete('CASCADE')
                         .onUpdate('CASCADE');
                     table.specificType('purpose', 'activation_code_purpose')
@@ -106,7 +116,7 @@ exports.up = function (knex, Promise) {
                 .then(function () {
                     return Promise.all([
                         trx.schema.raw('CREATE UNIQUE INDEX "u_activation_code_purpose_code" ON "activation_code" ("code")'),
-                        trx.schema.raw('CREATE UNIQUE INDEX "u_activation_code_purpose_user_id_purpose" ON "activation_code" ("user_id", "purpose")')
+                        trx.schema.raw('CREATE UNIQUE INDEX "u_activation_code_purpose_user_id_purpose" ON "activation_code" ("user_email_id", "purpose")')
                     ]);
                 }),
             trx.schema
@@ -321,6 +331,7 @@ exports.down = function (knex, Promise) {
             trx.schema.dropTable('access_token'),
             trx.schema.dropTable('user_third_party_account'),
             trx.schema.raw('DROP TYPE "third_party_account_provider"'),
+            trx.schema.dropTable('user_email'),
             trx.schema.dropTable('user'),
             trx.schema.dropTable('image')
         ])
