@@ -108,7 +108,11 @@ router.param('userId', function (req, res, next) {
 });
 
 router.get('/:userId', function (req, res) {
-    res.json(req.user);
+    req.user
+        .load('image')
+        .then(function () {
+            res.json(req.user);
+        });
 });
 
 module.exports = router;
