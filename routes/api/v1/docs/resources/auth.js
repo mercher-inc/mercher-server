@@ -77,6 +77,38 @@ router.get('/', function (req, res) {
                         ]
                     }
                 ]
+            },
+            {
+                "path":       "/api/v1/auth/facebook",
+                "operations": [
+                    {
+                        "method":           "POST",
+                        "summary":          "Facebook authorization",
+                        "type":             "AccessToken",
+                        "nickname":         "facebook",
+                        "parameters":       [
+                            {
+                                "name":        "access_token",
+                                "description": "Facebook Access Token",
+                                "required":    true,
+                                "type":        "string",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          201,
+                                "message":       "Access Token was created successfully",
+                                "responseModel": "AccessToken"
+                            },
+                            {
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
+                            }
+                        ]
+                    }
+                ]
             }
         ],
         "models":         {
