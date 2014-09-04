@@ -44,21 +44,20 @@ var ImageModel = BaseModel.extend(
             var job = queue.create('crop image', params).save();
 
             job.on('complete', function (files) {
-                console.log("\rJob #" + job.id + " completed", files);
+//                console.log("\rJob #" + job.id + " completed");
                 var _ = require('underscore'),
-                    path = require('path'),
-                    fs = require('fs');
+                    path = require('path');
                 _.each(imageModel.get('files'), function(sizeFiles){
                     _.each(sizeFiles, function(resolutionFile){
                         var oldFileName = path.join(ImageModel.getUploadsPath(), imageModel.get('key'), resolutionFile.file);
-                        if (fs.existsSync(oldFileName)) fs.unlinkSync(oldFileName);
+                        queue.create('delete file', {fileName: oldFileName}).save();
                     });
                 });
                 imageModel.save({files: files, is_active: true});
-            }).on('failed', function () {
+            /*}).on('failed', function () {
                 console.log("\rJob #" + job.id + " failed");
             }).on('progress', function (progress) {
-                process.stdout.write('\rJob #' + job.id + ' ' + progress + '% complete');
+                process.stdout.write('\rJob #' + job.id + ' ' + progress + '% complete');*/
             });
         }
     },

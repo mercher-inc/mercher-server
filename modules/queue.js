@@ -149,4 +149,23 @@ queue.process('crop image', function (job, done) {
         });
 });
 
+queue.process('delete file', function (job, done) {
+    var fs = require('fs'),
+        path = require('path');
+
+    var fileName = path.normalize(job.data.fileName);
+    if (!fs.existsSync(fileName)) {
+        done && done();
+        return;
+    }
+
+    fs.unlink(fileName, function(err){
+        if (err) {
+            done && done(err);
+        } else {
+            done && done();
+        }
+    });
+});
+
 module.exports = queue;
