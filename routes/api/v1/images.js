@@ -109,4 +109,54 @@ router.post('/', function (req, res) {
     });
 });
 
+router.use('/:imageId', function (req, res, next) {
+    res.set({
+        'Access-Control-Allow-Methods': 'GET'
+    });
+    next();
+});
+
+router.param('imageId', function (req, res, next) {
+    req
+        .model({
+            "imageId": {
+                "rules":      {
+                    "required":  {
+                        "message": "Image ID is required"
+                    },
+                    "isNumeric": {
+                        "message": "Image ID should be numeric"
+                    },
+                    "toInt":     {}
+                },
+                "source":     ["params"],
+                "allowEmpty": false
+            }
+        })
+        .validate()
+        .then(function () {
+            var imageModel = new ImageModel({id: req.params.imageId});
+            imageModel.fetch({require: true})
+                .then(function (model) {
+                    req.image = model;
+                    next();
+                })
+                .catch(ImageModel.NotFoundError, function () {
+                    var notFoundError = new (require('./errors/not_found'))("Image was not found");
+                    next(notFoundError);
+                })
+                .catch(function (err) {
+                    next(err);
+                });
+        })
+        .catch(function (error) {
+            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
+            next(badRequestError);
+        });
+});
+
+router.get('/:imageId', function (req, res) {
+    res.json(req.image);
+});
+
 module.exports = router;
