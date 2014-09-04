@@ -7,7 +7,7 @@ var kue = require('kue'),
     }),
     _ = require('underscore');
 
-queue.process('crop image', function (job, done) {
+queue.process('crop image', 1, function (job, done) {
     var im = require('imagemagick'),
         Promise = require('bluebird'),
         fs = require('fs'),
@@ -149,7 +149,7 @@ queue.process('crop image', function (job, done) {
         });
 });
 
-queue.process('delete file', function (job, done) {
+queue.process('delete file', 10, function (job, done) {
     var fs = require('fs'),
         path = require('path');
 
@@ -166,7 +166,6 @@ queue.process('delete file', function (job, done) {
             }
         }
     });
-
 });
 
 module.exports = queue;
