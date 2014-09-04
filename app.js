@@ -4,6 +4,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     bookshelf = require('./modules/bookshelf'),
+    favicon = require('serve-favicon'),
     app = express(),
     queue = require('./modules/queue'),
     server;
@@ -11,6 +12,7 @@ var express = require('express'),
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(expressAsyncValidator());
 app.disable('x-powered-by');
 
