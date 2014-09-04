@@ -1,16 +1,58 @@
 var bookshelf = require('../modules/bookshelf'),
+    BaseModel = require('./base'),
     Promise = require('bluebird'),
     crypto = require('crypto'),
     expressAsyncValidator = require('../modules/express-async-validator/module'),
     salt = 'Mercher',
     ImageModel = require('./image');
 
-var UserModel = bookshelf.Model.extend(
+var UserModel = BaseModel.extend(
     {
         tableName:     'user',
         hasTimestamps: true,
         image:         function () {
             return this.belongsTo(ImageModel);
+        },
+
+        initialize:       function () {
+            this.on('updating', this.validateUpdating);
+        },
+        validateUpdating: function (userModel, attrs, options) {
+            return new Promise(function (resolve, reject) {
+                userModel
+                    .checkPermission(options.req.currentUser)
+                    .then(function () {
+                        new (expressAsyncValidator.model)(validateUpdatingConfig)
+                            .validate(attrs)
+                            .then(function (attrs) {
+                                resolve(attrs);
+                            })
+                            .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
+                                reject(new UserModel.ValidationError("User validation failed", error.fields));
+                            })
+                            .catch(function () {
+                                reject(new UserModel.InternalServerError());
+                            });
+                    })
+                    .catch(UserModel.PermissionError, function (error) {
+                        reject(new UserModel.PermissionError("You are not allowed to modify this user"));
+                    })
+                    .catch(function () {
+                        reject(new UserModel.InternalServerError());
+                    });
+            });
+        },
+        checkPermission:  function (currentUserModel) {
+            var userModel = this,
+                userId = userModel.get('id'),
+                currentUserId = currentUserModel.get('id');
+            return new Promise(function (resolve, reject) {
+                if (userId === currentUserId) {
+                    resolve(userModel);
+                } else {
+                    reject(new UserModel.PermissionError());
+                }
+            });
         }
     },
     {
@@ -152,5 +194,18 @@ var UserModel = bookshelf.Model.extend(
         }
     }
 );
+
+var validateUpdatingConfig = {
+    "image_id": {
+        "rules":        {
+            "isInt": {
+                "message": "Image ID should be integer"
+            },
+            "toInt": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    }
+};
 
 module.exports = UserModel;

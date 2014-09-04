@@ -115,4 +115,36 @@ router.get('/:userId', function (req, res) {
         });
 });
 
+router.put('/:userId', require('./middleware/auth_check'));
+
+router.put('/:userId', function (req, res, next) {
+    req.user
+        .save(req.body, {req: req})
+        .then(function (userModel) {
+            new UserModel({id: userModel.id})
+                .fetch({
+                    withRelated: ['image']
+                })
+                .then(function (userModel) {
+                    res.status(200).json(userModel);
+                });
+        })
+        .catch(UserModel.PermissionError, function (error) {
+            var forbiddenError = new (require('./errors/forbidden'))(error.message);
+            next(forbiddenError);
+        })
+        .catch(UserModel.ValidationError, function (error) {
+            var validationError = new (require('./errors/validation'))("Validation failed", error);
+            next(validationError);
+        })
+        .catch(UserModel.InternalServerError, function (error) {
+            var internalServerError = new (require('./errors/internal'))(error.message);
+            next(internalServerError);
+        })
+        .catch(function (error) {
+            var internalServerError = new (require('./errors/internal'))();
+            next(internalServerError);
+        });
+});
+
 module.exports = router;
