@@ -80,6 +80,50 @@ router.get('/', function (req, res) {
                                 "responseModel": "NotFoundError"
                             }
                         ]
+                    },
+                    {
+                        "method":           "PUT",
+                        "summary":          "Update image",
+                        "type":             "Image",
+                        "nickname":         "update",
+                        "parameters":       [
+                            {
+                                "name":        "body",
+                                "description": "Image object that needs to be updated",
+                                "required":    true,
+                                "type":        "ImageRequest",
+                                "paramType":   "body"
+                            },
+                            {
+                                "name":        "imageId",
+                                "description": "ID of the image that needs to be updated",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "Image"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            },
+                            {
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
+                            },
+                            {
+                                "code":          404,
+                                "message":       "Image not found",
+                                "responseModel": "NotFoundError"
+                            }
+                        ]
                     }
                 ]
             }

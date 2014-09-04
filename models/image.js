@@ -1,17 +1,37 @@
 var bookshelf = require('../modules/bookshelf'),
-    queue = require('../modules/queue');
+    BaseModel = require('./base'),
+    Promise = require("bluebird"),
+    queue = require('../modules/queue'),
+    expressAsyncValidator = require('../modules/express-async-validator/module');
 
-var ImageModel = bookshelf.Model.extend(
+var ImageModel = BaseModel.extend(
     {
         tableName:     'image',
         hasTimestamps: true,
 
         initialize: function () {
             this.on('created', this.cropImage);
+            this.on('updating', this.validateUpdating);
             this.on('updating', function () {
                 if (this.hasChanged('crop_geometry')) {
-                    this.cropImage();
+                    this.cropImage(this);
                 }
+            });
+        },
+        validateUpdating: function (imageModel, attrs, options) {
+            return new Promise(function (resolve, reject) {
+                new (expressAsyncValidator.model)(validateUpdatingConfig)
+                    .validate(attrs)
+                    .then(function (attrs) {
+                        imageModel.set(attrs);
+                        resolve(attrs);
+                    })
+                    .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
+                        reject(new ImageModel.ValidationError("Image validation failed", error.fields));
+                    })
+                    .catch(function () {
+                        reject(new ImageModel.InternalServerError());
+                    });
             });
         },
         cropImage:  function (imageModel) {
@@ -24,7 +44,16 @@ var ImageModel = bookshelf.Model.extend(
             var job = queue.create('crop image', params).save();
 
             job.on('complete', function (files) {
-                console.log("\rJob #" + job.id + " completed");
+                console.log("\rJob #" + job.id + " completed", files);
+                var _ = require('underscore'),
+                    path = require('path'),
+                    fs = require('fs');
+                _.each(imageModel.get('files'), function(sizeFiles){
+                    _.each(sizeFiles, function(resolutionFile){
+                        var oldFileName = path.join(ImageModel.getUploadsPath(), imageModel.get('key'), resolutionFile.file);
+                        if (fs.existsSync(oldFileName)) fs.unlinkSync(oldFileName);
+                    });
+                });
                 imageModel.save({files: files, is_active: true});
             }).on('failed', function () {
                 console.log("\rJob #" + job.id + " failed");
@@ -139,5 +168,30 @@ var ImageModel = bookshelf.Model.extend(
         }
     }
 );
+
+var validateUpdatingConfig = {
+    "title":           {
+        "rules":      {
+            "toString": {},
+            "trim":     {},
+            "escape":   {},
+            "isLength": {
+                "message": "Image's title should be at least 3 characters long and less then 250 characters",
+                "min":     3,
+                "max":     250
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "description":     {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    }
+};
 
 module.exports = ImageModel;
