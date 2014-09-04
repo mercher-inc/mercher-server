@@ -122,18 +122,18 @@ router.get('/', function (req, res) {
                         "nickname":         "update",
                         "parameters":       [
                             {
-                                "name":        "body",
-                                "description": "Shop object that needs to be updated",
-                                "required":    true,
-                                "type":        "ShopRequest",
-                                "paramType":   "body"
-                            },
-                            {
                                 "name":        "shopId",
                                 "description": "ID of the shop that needs to be updated",
                                 "required":    true,
                                 "type":        "integer",
                                 "paramType":   "path"
+                            },
+                            {
+                                "name":        "body",
+                                "description": "Shop object that needs to be updated",
+                                "required":    true,
+                                "type":        "ShopRequest",
+                                "paramType":   "body"
                             }
                         ],
                         "responseMessages": [

@@ -15,62 +15,14 @@ router.get('/', function (req, res) {
         ],
         "apis":           [
             {
-                "path":       "/api/v1/shops/{shopId}/managers",
+                "path":       "/api/v1/managers",
                 "operations": [
-                    {
-                        "method":           "GET",
-                        "summary":          "List managers",
-                        "type":             "ManagersList",
-                        "nickname":         "list",
-                        "parameters":       [
-                            {
-                                "name":        "shopId",
-                                "description": "ID of the shop",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            },
-                            {
-                                "name":        "limit",
-                                "description": "Amount of managers to fetch",
-                                "required":    false,
-                                "type":        "integer",
-                                "paramType":   "query"
-                            },
-                            {
-                                "name":        "offset",
-                                "description": "Amount of managers to skip",
-                                "required":    false,
-                                "type":        "integer",
-                                "paramType":   "query"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":          200,
-                                "message":       "OK",
-                                "responseModel": "ManagersList"
-                            },
-                            {
-                                "code":          400,
-                                "message":       "Bad request",
-                                "responseModel": "RequestError"
-                            }
-                        ]
-                    },
                     {
                         "method":           "POST",
                         "summary":          "Create manager",
                         "type":             "Manager",
                         "nickname":         "create",
                         "parameters":       [
-                            {
-                                "name":        "shopId",
-                                "description": "ID of the shop",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            },
                             {
                                 "name":        "body",
                                 "description": "Manager object that needs to be created",
@@ -95,7 +47,7 @@ router.get('/', function (req, res) {
                 ]
             },
             {
-                "path":       "/api/v1/shops/{shopId}/managers/{managerId}",
+                "path":       "/api/v1/managers/{managerId}",
                 "operations": [
                     {
                         "method":           "GET",
@@ -103,13 +55,6 @@ router.get('/', function (req, res) {
                         "type":             "Manager",
                         "nickname":         "read",
                         "parameters":       [
-                            {
-                                "name":        "shopId",
-                                "description": "ID of the shop",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            },
                             {
                                 "name":        "managerId",
                                 "description": "ID of the manager that needs to be fetched",
@@ -142,13 +87,6 @@ router.get('/', function (req, res) {
                         "type":             "Manager",
                         "nickname":         "update",
                         "parameters":       [
-                            {
-                                "name":        "shopId",
-                                "description": "ID of the shop",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            },
                             {
                                 "name":        "managerId",
                                 "description": "ID of the manager that needs to be updated",
@@ -184,6 +122,52 @@ router.get('/', function (req, res) {
                                 "code":          404,
                                 "message":       "Manager not found",
                                 "responseModel": "NotFoundError"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "path":       "/api/v1/shops/{shopId}/managers",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List managers for shop",
+                        "type":             "ManagersList",
+                        "nickname":         "list_for_shop",
+                        "parameters":       [
+                            {
+                                "name":        "shopId",
+                                "description": "ID of the shop",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of managers to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of managers to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ManagersList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
                             }
                         ]
                     }

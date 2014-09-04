@@ -122,18 +122,18 @@ router.get('/', function (req, res) {
                         "nickname":         "update",
                         "parameters":       [
                             {
-                                "name":        "body",
-                                "description": "Product object that needs to be updated",
-                                "required":    true,
-                                "type":        "ProductRequest",
-                                "paramType":   "body"
-                            },
-                            {
                                 "name":        "productId",
                                 "description": "ID of the product that needs to be updated",
                                 "required":    true,
                                 "type":        "integer",
                                 "paramType":   "path"
+                            },
+                            {
+                                "name":        "body",
+                                "description": "Product object that needs to be updated",
+                                "required":    true,
+                                "type":        "ProductRequest",
+                                "paramType":   "body"
                             }
                         ],
                         "responseMessages": [
@@ -156,6 +156,52 @@ router.get('/', function (req, res) {
                                 "code":          404,
                                 "message":       "Product not found",
                                 "responseModel": "NotFoundError"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "path":       "/api/v1/shops/{shopId}/products/{productId}",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List products for shop",
+                        "type":             "ProductsList",
+                        "nickname":         "list_for_shop",
+                        "parameters":       [
+                            {
+                                "name":        "shopId",
+                                "description": "ID of the shop",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of products to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of products to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ProductsList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
                             }
                         ]
                     }

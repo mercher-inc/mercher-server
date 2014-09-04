@@ -102,18 +102,18 @@ router.get('/', function (req, res) {
                         "notes":            "\"{userId}\" could have a special value \"me\", which points to current user's profile.",
                         "parameters":       [
                             {
-                                "name":        "body",
-                                "description": "User object that needs to be updated",
-                                "required":    true,
-                                "type":        "User",
-                                "paramType":   "body"
-                            },
-                            {
                                 "name":        "userId",
                                 "description": "ID of the user that needs to be updated",
                                 "required":    true,
                                 "type":        "integer",
                                 "paramType":   "path"
+                            },
+                            {
+                                "name":        "body",
+                                "description": "User object that needs to be updated",
+                                "required":    true,
+                                "type":        "User",
+                                "paramType":   "body"
                             }
                         ],
                         "responseMessages": [
