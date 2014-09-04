@@ -153,19 +153,20 @@ queue.process('delete file', function (job, done) {
     var fs = require('fs'),
         path = require('path');
 
-    var fileName = path.normalize(job.data.fileName);
-    if (!fs.existsSync(fileName)) {
-        done && done();
-        return;
-    }
-
-    fs.unlink(fileName, function(err){
-        if (err) {
-            done && done(err);
-        } else {
+    fs.exists(job.data.fileName, function (exists) {
+        if (!exists) {
             done && done();
+        } else {
+            try {
+                fs.unlink(job.data.fileName, function () {
+                    done && done();
+                });
+            } catch (e) {
+                done && done(e);
+            }
         }
     });
+
 });
 
 module.exports = queue;
