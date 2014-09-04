@@ -158,37 +158,6 @@ router.get('/', function (req, res) {
                                 "responseModel": "NotFoundError"
                             }
                         ]
-                    },
-                    {
-                        "method":           "DELETE",
-                        "summary":          "Delete craftsman",
-                        "type":             "void",
-                        "nickname":         "delete",
-                        "parameters":       [
-                            {
-                                "name":        "craftsmanId",
-                                "description": "ID of the craftsman that needs to be deleted",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":    200,
-                                "message": "Craftsman was deleted"
-                            },
-                            {
-                                "code":          400,
-                                "message":       "Bad request",
-                                "responseModel": "RequestError"
-                            },
-                            {
-                                "code":          404,
-                                "message":       "Craftsman not found",
-                                "responseModel": "NotFoundError"
-                            }
-                        ]
                     }
                 ]
             }

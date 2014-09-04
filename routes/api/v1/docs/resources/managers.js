@@ -15,7 +15,7 @@ router.get('/', function (req, res) {
         ],
         "apis":           [
             {
-                "path":       "/api/v1/managers",
+                "path":       "/api/v1/shops/{shopId}/managers",
                 "operations": [
                     {
                         "method":           "GET",
@@ -23,6 +23,13 @@ router.get('/', function (req, res) {
                         "type":             "ManagersList",
                         "nickname":         "list",
                         "parameters":       [
+                            {
+                                "name":        "shopId",
+                                "description": "ID of the shop",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
                             {
                                 "name":        "limit",
                                 "description": "Amount of managers to fetch",
@@ -58,6 +65,13 @@ router.get('/', function (req, res) {
                         "nickname":         "create",
                         "parameters":       [
                             {
+                                "name":        "shopId",
+                                "description": "ID of the shop",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
                                 "name":        "body",
                                 "description": "Manager object that needs to be created",
                                 "required":    true,
@@ -81,7 +95,7 @@ router.get('/', function (req, res) {
                 ]
             },
             {
-                "path":       "/api/v1/managers/{managerId}",
+                "path":       "/api/v1/shops/{shopId}/managers/{managerId}",
                 "operations": [
                     {
                         "method":           "GET",
@@ -89,6 +103,13 @@ router.get('/', function (req, res) {
                         "type":             "Manager",
                         "nickname":         "read",
                         "parameters":       [
+                            {
+                                "name":        "shopId",
+                                "description": "ID of the shop",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
                             {
                                 "name":        "managerId",
                                 "description": "ID of the manager that needs to be fetched",
@@ -122,11 +143,11 @@ router.get('/', function (req, res) {
                         "nickname":         "update",
                         "parameters":       [
                             {
-                                "name":        "body",
-                                "description": "Manager object that needs to be updated",
+                                "name":        "shopId",
+                                "description": "ID of the shop",
                                 "required":    true,
-                                "type":        "Manager",
-                                "paramType":   "body"
+                                "type":        "integer",
+                                "paramType":   "path"
                             },
                             {
                                 "name":        "managerId",
@@ -134,6 +155,13 @@ router.get('/', function (req, res) {
                                 "required":    true,
                                 "type":        "integer",
                                 "paramType":   "path"
+                            },
+                            {
+                                "name":        "body",
+                                "description": "Manager object that needs to be updated",
+                                "required":    true,
+                                "type":        "Manager",
+                                "paramType":   "body"
                             }
                         ],
                         "responseMessages": [
@@ -151,37 +179,6 @@ router.get('/', function (req, res) {
                                 "code":          406,
                                 "message":       "Validation failed",
                                 "responseModel": "ValidationError"
-                            },
-                            {
-                                "code":          404,
-                                "message":       "Manager not found",
-                                "responseModel": "NotFoundError"
-                            }
-                        ]
-                    },
-                    {
-                        "method":           "DELETE",
-                        "summary":          "Delete manager",
-                        "type":             "void",
-                        "nickname":         "delete",
-                        "parameters":       [
-                            {
-                                "name":        "managerId",
-                                "description": "ID of the manager that needs to be deleted",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":    200,
-                                "message": "Manager was deleted"
-                            },
-                            {
-                                "code":          400,
-                                "message":       "Bad request",
-                                "responseModel": "RequestError"
                             },
                             {
                                 "code":          404,
