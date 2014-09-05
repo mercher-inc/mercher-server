@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router(),
     Promise = require("bluebird"),
+    Bookshelf = require('../../../modules/bookshelf'),
     ProductsCollection = require('../../../collections/products'),
     ProductModel = require('../../../models/product'),
     expressAsyncValidator = require('../../../modules/express-async-validator/module');
@@ -17,21 +18,28 @@ router.get('/', require('./middleware/collection_params_check'));
 router.get('/', function (req, res, next) {
     var productsCollection = new ProductsCollection();
     var productModel = new ProductModel();
+
+    var collectionRequest = productsCollection
+        .query(function (qb) {
+            qb
+                .limit(req.query.limit)
+                .offset(req.query.offset);
+        })
+        .fetch({
+            withRelated: ['shop.image']
+        });
+
+    var totalRequest = Bookshelf
+        .knex(productModel.tableName)
+        .count(productModel.idAttribute)
+        .then(function (result) {
+            return parseInt(result[0].count);
+        });
+
     Promise
         .props({
-            products: productsCollection
-                .query(function (qb) {
-                    qb.limit(req.query.limit).offset(req.query.offset);
-                })
-                .fetch({
-                    withRelated: ['shop.image']
-                }),
-            total:    productModel
-                .query()
-                .count(productModel.idAttribute)
-                .then(function (result) {
-                    return parseInt(result[0].count);
-                })
+            products: collectionRequest,
+            total:    totalRequest
         })
         .then(function (results) {
             res.json(results);
@@ -161,4 +169,5 @@ router.put('/:productId', function (req, res, next) {
 });
 
 router.use('/:productId/product_images', require('./products/product_images'));
+
 module.exports = router;

@@ -131,4 +131,6 @@ router.put('/:orderId', function (req, res, next) {
         });
 });
 
+router.use('/:orderId/order_items', require('./orders/order_items'));
+
 module.exports = router;
