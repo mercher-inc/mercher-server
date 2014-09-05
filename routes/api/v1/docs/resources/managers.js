@@ -206,6 +206,52 @@ router.get('/', function (req, res) {
                         ]
                     }
                 ]
+            },
+            {
+                "path":       "/api/v1/users/{userId}/managers",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List manager profiles of user",
+                        "type":             "ManagersList",
+                        "nickname":         "list_for_user",
+                        "parameters":       [
+                            {
+                                "name":        "userId",
+                                "description": "ID of the user",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of managers to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of managers to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ManagersList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    }
+                ]
             }
         ],
         "models":         {

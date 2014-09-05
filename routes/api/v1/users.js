@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router(),
-    Promise = require("bluebird"),
+    Promise = require('bluebird'),
+    Bookshelf = require('../../../modules/bookshelf'),
     UsersCollection = require('../../../collections/users'),
     UserModel = require('../../../models/user'),
     expressAsyncValidator = require('../../../modules/express-async-validator/module');
@@ -18,21 +19,28 @@ router.get('/', require('./middleware/collection_params_check'));
 router.get('/', function (req, res, next) {
     var usersCollection = new UsersCollection();
     var userModel = new UserModel();
+
+    var collectionRequest = usersCollection
+        .query(function (qb) {
+            qb
+                .limit(req.query.limit)
+                .offset(req.query.offset);
+        })
+        .fetch({
+            withRelated: ['image']
+        });
+
+    var totalRequest = Bookshelf
+        .knex(userModel.tableName)
+        .count(userModel.idAttribute)
+        .then(function (result) {
+            return parseInt(result[0].count);
+        });
+
     Promise
         .props({
-            users: usersCollection
-                       .query(function (qb) {
-                            qb.limit(req.query.limit).offset(req.query.offset);
-                        })
-                       .fetch({
-                            withRelated: ['image']
-                        }),
-            total: userModel
-                       .query()
-                       .count(userModel.idAttribute)
-                       .then(function (result) {
-                            return parseInt(result[0].count);
-                        })
+            users: collectionRequest,
+            total: totalRequest
         })
         .then(function (results) {
             res.json(results);
@@ -146,5 +154,7 @@ router.put('/:userId', function (req, res, next) {
             next(internalServerError);
         });
 });
+
+router.use('/:userId/managers', require('./users/managers'));
 
 module.exports = router;
