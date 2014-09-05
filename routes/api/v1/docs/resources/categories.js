@@ -61,7 +61,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Category object that needs to be created",
                                 "required":    true,
-                                "type":        "Category",
+                                "type":        "CategoryRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -122,18 +122,18 @@ router.get('/', function (req, res) {
                         "nickname":         "update",
                         "parameters":       [
                             {
-                                "name":        "body",
-                                "description": "Category object that needs to be updated",
-                                "required":    true,
-                                "type":        "Category",
-                                "paramType":   "body"
-                            },
-                            {
                                 "name":        "categoryId",
                                 "description": "ID of the category that needs to be updated",
                                 "required":    true,
                                 "type":        "integer",
                                 "paramType":   "path"
+                            },
+                            {
+                                "name":        "body",
+                                "description": "Category object that needs to be updated",
+                                "required":    true,
+                                "type":        "CategoryRequest",
+                                "paramType":   "body"
                             }
                         ],
                         "responseMessages": [
@@ -164,6 +164,7 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "Category":          require('../models/category'),
+            "CategoryRequest":   require('../models/request/category'),
             "Image":             require('../models/image'),
             "CategoriesList":    require('../collections/categories'),
             "RequestError":      require('../errors/request'),

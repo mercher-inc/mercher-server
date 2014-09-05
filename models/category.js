@@ -1,9 +1,15 @@
-var bookshelf = require('../modules/bookshelf');
+var bookshelf = require('../modules/bookshelf'),
+    BaseModel = require('./base'),
+    ImageModel = require('./image');
 
-var CategoryModel = bookshelf.Model.extend(
+var CategoryModel = BaseModel.extend(
     {
         tableName:     'category',
-        hasTimestamps: true
+        hasTimestamps: true,
+
+        image: function () {
+            return this.belongsTo(ImageModel);
+        }
     }
 );
 

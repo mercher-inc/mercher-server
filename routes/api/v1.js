@@ -63,6 +63,7 @@ router.get('/env', function (req, res, next) {
 
 router.use('/auth', require('./v1/auth'));
 router.use('/images', require('./v1/images'));
+router.use('/categories', require('./v1/categories'));
 router.use('/users', require('./v1/users'));
 router.use('/shops', require('./v1/shops'));
 router.use('/managers', require('./v1/managers'));
