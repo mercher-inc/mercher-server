@@ -1,9 +1,18 @@
-var bookshelf = require('../modules/bookshelf');
+var bookshelf = require('../modules/bookshelf'),
+    BaseModel = require('./base'),
+    UserModel = require('./user'),
+    ShopModel = require('./shop');
 
-var ManagerModel = bookshelf.Model.extend(
+var ManagerModel = BaseModel.extend(
     {
         tableName:     'manager',
-        hasTimestamps: true
+        hasTimestamps: true,
+        user:          function () {
+            return this.belongsTo(UserModel);
+        },
+        shop:          function () {
+            return this.belongsTo(ShopModel);
+        }
     }
 );
 

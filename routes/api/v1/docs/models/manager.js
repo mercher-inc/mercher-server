@@ -2,9 +2,9 @@ module.exports = {
     "id":          "Manager",
     "required":    [
         "id",
-        "shop_id",
         "user_id",
-        "is_active",
+        "shop_id",
+        "is_public",
         "is_banned"
     ],
     "description": "Manager model",
@@ -13,19 +13,19 @@ module.exports = {
             "type":   "integer",
             "format": "int32"
         },
-        "shop_id":    {
+        "user_id":    {
             "type":   "integer",
             "format": "int32"
         },
-        "user_id":    {
+        "shop_id":    {
             "type":   "integer",
             "format": "int32"
         },
         "role":       {
             "type": "string",
-            "enum": ['owner', "sales", "content"]
+            "enum": ["editor", "seller", "owner"]
         },
-        "is_active":  {
+        "is_public":  {
             "type":         "boolean",
             "defaultValue": true
         },

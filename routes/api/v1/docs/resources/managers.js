@@ -18,6 +18,40 @@ router.get('/', function (req, res) {
                 "path":       "/api/v1/managers",
                 "operations": [
                     {
+                        "method":           "GET",
+                        "summary":          "List managers",
+                        "type":             "ManagersList",
+                        "nickname":         "list",
+                        "parameters":       [
+                            {
+                                "name":        "limit",
+                                "description": "Amount of managers to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of managers to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ManagersList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    },
+                    {
                         "method":           "POST",
                         "summary":          "Create manager",
                         "type":             "Manager",
@@ -27,7 +61,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Manager object that needs to be created",
                                 "required":    true,
-                                "type":        "Manager",
+                                "type":        "ManagerRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -98,7 +132,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Manager object that needs to be updated",
                                 "required":    true,
-                                "type":        "Manager",
+                                "type":        "ManagerRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -176,6 +210,7 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "Manager":           require('../models/manager'),
+            "ManagerRequest":    require('../models/request/manager'),
             "Shop":              require('../models/shop'),
             "User":              require('../models/user'),
             "Image":             require('../models/image'),

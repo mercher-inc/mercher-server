@@ -62,11 +62,12 @@ router.get('/env', function (req, res, next) {
 });
 
 router.use('/auth', require('./v1/auth'));
+router.use('/images', require('./v1/images'));
+router.use('/users', require('./v1/users'));
 router.use('/shops', require('./v1/shops'));
+router.use('/managers', require('./v1/managers'));
 router.use('/products', require('./v1/products'));
 router.use('/product_images', require('./v1/product_images'));
-router.use('/users', require('./v1/users'));
-router.use('/images', require('./v1/images'));
 
 // documentation
 router.use('/docs', require('./v1/docs'));

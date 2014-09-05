@@ -160,6 +160,52 @@ router.get('/', function (req, res) {
                         ]
                     }
                 ]
+            },
+            {
+                "path":       "/api/v1/users/{userId}/shops",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List shops for user",
+                        "type":             "ShopsList",
+                        "nickname":         "list_for_user",
+                        "parameters":       [
+                            {
+                                "name":        "userId",
+                                "description": "ID of the user",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of shops to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of shops to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ShopsList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    }
+                ]
             }
         ],
         "models":         {
