@@ -190,5 +190,6 @@ router.put('/:shopId', function (req, res, next) {
 });
 
 router.use('/:shopId/managers', require('./shops/managers'));
+router.use('/:shopId/orders', require('./shops/orders'));
 
 module.exports = router;

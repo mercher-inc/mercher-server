@@ -24,7 +24,7 @@ module.exports = {
         },
         "status":              {
             "type": "string",
-            "enum": ["draft", "new", "open"]
+            "enum": ["draft", "submitted", "received", "rejected", "completed"]
         },
         "price_total":         {
             "type":         "number",

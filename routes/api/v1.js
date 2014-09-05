@@ -69,6 +69,7 @@ router.use('/shops', require('./v1/shops'));
 router.use('/managers', require('./v1/managers'));
 router.use('/products', require('./v1/products'));
 router.use('/product_images', require('./v1/product_images'));
+router.use('/orders', require('./v1/orders'));
 
 // documentation
 router.use('/docs', require('./v1/docs'));

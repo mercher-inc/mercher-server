@@ -15,6 +15,38 @@ router.get('/', function (req, res) {
         ],
         "apis":           [
             {
+                "path":       "/api/v1/orders",
+                "operations": [
+                    {
+                        "method":           "POST",
+                        "summary":          "Create order",
+                        "type":             "Order",
+                        "nickname":         "create",
+                        "parameters":       [
+                            {
+                                "name":        "body",
+                                "description": "Order object that needs to be created",
+                                "required":    true,
+                                "type":        "OrderRequest",
+                                "paramType":   "body"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          201,
+                                "message":       "Order was created",
+                                "responseModel": "Order"
+                            },
+                            {
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 "path":       "/api/v1/orders/{orderId}",
                 "operations": [
                     {
@@ -66,7 +98,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Order object that needs to be updated",
                                 "required":    true,
-                                "type":        "Order",
+                                "type":        "OrderRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -138,43 +170,6 @@ router.get('/', function (req, res) {
                                 "responseModel": "RequestError"
                             }
                         ]
-                    },
-                    {
-                        "method":           "POST",
-                        "summary":          "Create orders for user",
-                        "type":             "OrdersList",
-                        "nickname":         "create_for_user",
-                        "parameters":       [
-                            {
-                                "name":        "userId",
-                                "description": "ID of the user",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            },
-                            {
-                                "name":        "body",
-                                "description": "Products IDs to be added to order",
-                                "required":    true,
-                                "type":        "array",
-                                "items":       {
-                                    "type": "integer"
-                                },
-                                "paramType":   "body"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":          201,
-                                "message":       "Order was created",
-                                "responseModel": "Order"
-                            },
-                            {
-                                "code":          406,
-                                "message":       "Validation failed",
-                                "responseModel": "ValidationError"
-                            }
-                        ]
                     }
                 ]
             },
@@ -227,6 +222,7 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "Order":             require('../models/order'),
+            "OrderRequest":      require('../models/request/order'),
             "OrdersList":        require('../collections/orders'),
             "OrderItem":         require('../models/order_item'),
             "User":              require('../models/user'),
