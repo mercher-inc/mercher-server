@@ -19,7 +19,7 @@ router.post('/', function (req, res, next) {
         .then(function (orderModel) {
             new OrderModel({id: orderModel.id})
                 .fetch({
-                    withRelated: ['user.image', 'shop.image', 'orderItems.product']
+                    withRelated: ['total', 'user.image', 'shop.image', 'orderItems.product']
                 })
                 .then(function (orderModel) {
                     res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/orders/' + orderModel.id);
@@ -93,7 +93,7 @@ router.param('orderId', function (req, res, next) {
 
 router.get('/:orderId', function (req, res) {
     req.order
-        .load(['user.image', 'shop.image', 'orderItems.product'])
+        .load(['total', 'user.image', 'shop.image', 'orderItems.product'])
         .then(function () {
             res.json(req.order);
         });
@@ -107,7 +107,7 @@ router.put('/:orderId', function (req, res, next) {
         .then(function (orderModel) {
             new OrderModel({id: orderModel.id})
                 .fetch({
-                    withRelated: ['user.image', 'shop.image', 'orderItems.product']
+                    withRelated: ['total', 'user.image', 'shop.image', 'orderItems.product']
                 })
                 .then(function (orderModel) {
                     res.status(200).json(orderModel);

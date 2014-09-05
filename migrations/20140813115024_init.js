@@ -284,9 +284,7 @@ exports.up = function (knex, Promise) {
                     table.specificType('status', 'order_status')
                         .defaultTo('draft')
                         .notNullable();
-                    table.decimal('price_total', 12, 2);
-                    table.decimal('shipping_cost_total', 12, 2);
-                    table.decimal('tax_total', 12, 2);
+                    table.float('tax');
                     table.timestamps();
                 }),
             trx.schema
@@ -309,6 +307,18 @@ exports.up = function (knex, Promise) {
                     table.integer('amount');
                     table.timestamps();
                 })
+                .then(function () {
+                    return trx.schema
+                        .raw('CREATE VIEW "order_total" AS ' +
+                            'SELECT ' +
+                            '"order".id, ' +
+                            'SUM("order_item".price * "order_item".amount) AS price, ' +
+                            'SUM("order_item".shipping_cost * "order_item".amount) AS shipping_cost, ' +
+                            '(FLOOR(SUM("order_item".price * "order_item".amount) * "order".tax) / 100)::numeric(12,2) AS tax ' +
+                            'FROM "order" ' +
+                            'LEFT JOIN "order_item" ON ("order_item".order_id = "order".id) ' +
+                            'GROUP BY "order".id');
+                })
         ]);
     });
 };
@@ -316,6 +326,7 @@ exports.up = function (knex, Promise) {
 exports.down = function (knex, Promise) {
     return knex.transaction(function (trx) {
         return Promise.all([
+            trx.schema.raw('DROP VIEW "order_total"'),
             trx.schema.dropTable('order_item'),
             trx.schema.dropTable('order'),
             trx.schema.raw('DROP TYPE "order_status"'),

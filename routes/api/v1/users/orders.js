@@ -28,7 +28,7 @@ router.get('/', function (req, res, next) {
                 .offset(req.query.offset);
         })
         .fetch({
-            withRelated: ['shop.image', 'orderItems.product']
+            withRelated: ['total', 'shop.image', 'orderItems.product']
         });
 
     var totalRequest = Bookshelf
