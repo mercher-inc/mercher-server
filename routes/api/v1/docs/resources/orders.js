@@ -15,164 +15,6 @@ router.get('/', function (req, res) {
         ],
         "apis":           [
             {
-                "path":       "/api/v1/orders",
-                "operations": [
-                    {
-                        "method":           "GET",
-                        "summary":          "List orders",
-                        "type":             "OrdersList",
-                        "nickname":         "list",
-                        "parameters":       [
-                            {
-                                "name":        "limit",
-                                "description": "Amount of orders to fetch",
-                                "required":    false,
-                                "type":        "integer",
-                                "paramType":   "query"
-                            },
-                            {
-                                "name":        "offset",
-                                "description": "Amount of orders to skip",
-                                "required":    false,
-                                "type":        "integer",
-                                "paramType":   "query"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":          200,
-                                "message":       "OK",
-                                "responseModel": "OrdersList"
-                            },
-                            {
-                                "code":          400,
-                                "message":       "Bad request",
-                                "responseModel": "RequestError"
-                            }
-                        ]
-                    },
-                    {
-                        "method":           "POST",
-                        "summary":          "Create order",
-                        "type":             "Order",
-                        "nickname":         "create",
-                        "parameters":       [
-                            {
-                                "name":        "body",
-                                "description": "Order object that needs to be created",
-                                "required":    true,
-                                "type":        "Order",
-                                "paramType":   "body"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":          201,
-                                "message":       "Order was created",
-                                "responseModel": "Order"
-                            },
-                            {
-                                "code":          406,
-                                "message":       "Validation failed",
-                                "responseModel": "ValidationError"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "path":       "/api/v1/users/{userId}/orders",
-                "operations": [
-                    {
-                        "method":           "GET",
-                        "summary":          "List user's orders",
-                        "type":             "OrdersList",
-                        "nickname":         "list_users_orders",
-                        "parameters":       [
-                            {
-                                "name":        "userId",
-                                "description": "ID of the user which orders needs to be fetched",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            },
-                            {
-                                "name":        "limit",
-                                "description": "Amount of orders to fetch",
-                                "required":    false,
-                                "type":        "integer",
-                                "paramType":   "query"
-                            },
-                            {
-                                "name":        "offset",
-                                "description": "Amount of orders to skip",
-                                "required":    false,
-                                "type":        "integer",
-                                "paramType":   "query"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":          200,
-                                "message":       "OK",
-                                "responseModel": "OrdersList"
-                            },
-                            {
-                                "code":          400,
-                                "message":       "Bad request",
-                                "responseModel": "RequestError"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "path":       "/api/v1/shops/{shopId}/orders",
-                "operations": [
-                    {
-                        "method":           "GET",
-                        "summary":          "List shop's orders",
-                        "type":             "OrdersList",
-                        "nickname":         "list_shops_orders",
-                        "parameters":       [
-                            {
-                                "name":        "shopId",
-                                "description": "ID of the shop which orders needs to be fetched",
-                                "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
-                            },
-                            {
-                                "name":        "limit",
-                                "description": "Amount of orders to fetch",
-                                "required":    false,
-                                "type":        "integer",
-                                "paramType":   "query"
-                            },
-                            {
-                                "name":        "offset",
-                                "description": "Amount of orders to skip",
-                                "required":    false,
-                                "type":        "integer",
-                                "paramType":   "query"
-                            }
-                        ],
-                        "responseMessages": [
-                            {
-                                "code":          200,
-                                "message":       "OK",
-                                "responseModel": "OrdersList"
-                            },
-                            {
-                                "code":          400,
-                                "message":       "Bad request",
-                                "responseModel": "RequestError"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
                 "path":       "/api/v1/orders/{orderId}",
                 "operations": [
                     {
@@ -214,18 +56,18 @@ router.get('/', function (req, res) {
                         "nickname":         "update",
                         "parameters":       [
                             {
-                                "name":        "body",
-                                "description": "Order object that needs to be updated",
-                                "required":    true,
-                                "type":        "Order",
-                                "paramType":   "body"
-                            },
-                            {
                                 "name":        "orderId",
                                 "description": "ID of the order that needs to be updated",
                                 "required":    true,
                                 "type":        "integer",
                                 "paramType":   "path"
+                            },
+                            {
+                                "name":        "body",
+                                "description": "Order object that needs to be updated",
+                                "required":    true,
+                                "type":        "Order",
+                                "paramType":   "body"
                             }
                         ],
                         "responseMessages": [
@@ -252,14 +94,146 @@ router.get('/', function (req, res) {
                         ]
                     }
                 ]
+            },
+            {
+                "path":       "/api/v1/users/{userId}/orders",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List user's orders",
+                        "type":             "OrdersList",
+                        "nickname":         "list_for_user",
+                        "parameters":       [
+                            {
+                                "name":        "userId",
+                                "description": "ID of the user which orders needs to be fetched",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of orders to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of orders to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "OrdersList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    },
+                    {
+                        "method":           "POST",
+                        "summary":          "Create orders for user",
+                        "type":             "OrdersList",
+                        "nickname":         "create_for_user",
+                        "parameters":       [
+                            {
+                                "name":        "userId",
+                                "description": "ID of the user",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "body",
+                                "description": "Products IDs to be added to order",
+                                "required":    true,
+                                "type":        "array",
+                                "items":       {
+                                    "type": "integer"
+                                },
+                                "paramType":   "body"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          201,
+                                "message":       "Order was created",
+                                "responseModel": "Order"
+                            },
+                            {
+                                "code":          406,
+                                "message":       "Validation failed",
+                                "responseModel": "ValidationError"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "path":       "/api/v1/shops/{shopId}/orders",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List shop's orders",
+                        "type":             "OrdersList",
+                        "nickname":         "list_for_shop",
+                        "parameters":       [
+                            {
+                                "name":        "shopId",
+                                "description": "ID of the shop which orders needs to be fetched",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of orders to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of orders to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "OrdersList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    }
+                ]
             }
         ],
         "models":         {
             "Order":             require('../models/order'),
             "OrdersList":        require('../collections/orders'),
+            "OrderItem":         require('../models/order_item'),
             "User":              require('../models/user'),
             "Shop":              require('../models/shop'),
+            "Category":          require('../models/category'),
             "Image":             require('../models/image'),
+            "Product":           require('../models/product'),
             "RequestError":      require('../errors/request'),
             "UnauthorizedError": require('../errors/unauthorized'),
             "NotFoundError":     require('../errors/not_found'),

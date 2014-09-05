@@ -1,5 +1,5 @@
 module.exports = {
-    "id":          "Order",
+    "id":          "OrderItem",
     "required":    [
         "id",
         "user_id",
@@ -8,62 +8,52 @@ module.exports = {
     ],
     "description": "Order model",
     "properties":  {
-        "id":                  {
+        "id":            {
             "type":   "integer",
             "format": "int32"
         },
-        "user_id":             {
+        "order_id":      {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
         },
-        "shop_id":             {
+        "product_id":    {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
         },
-        "status":              {
-            "type": "string",
-            "enum": ["draft", "new", "open"]
-        },
-        "price_total":         {
+        "price":         {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "shipping_cost_total": {
+        "shipping_cost": {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "tax_total":           {
-            "type":         "number",
-            "format":       "float",
+        "amount":        {
+            "type":         "integer",
+            "format":       "int32",
             "defaultValue": null
         },
-        "created_at":          {
+        "created_at":    {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updated_at":          {
+        "updated_at":    {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "user":                {
-            "$ref":         "User",
+        "order":         {
+            "$ref":         "Order",
             "defaultValue": null
         },
-        "shop":                {
-            "$ref":         "Shop",
+        "product":       {
+            "$ref":         "Product",
             "defaultValue": null
-        },
-        "orderItems":          {
-            "type":  "array",
-            "items": {
-                "$ref": "OrderItem"
-            }
         }
     }
 };

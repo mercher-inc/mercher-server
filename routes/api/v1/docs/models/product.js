@@ -48,8 +48,8 @@ module.exports = {
             "defaultValue": null
         },
         "amount_in_stock": {
-            "type":         "number",
-            "format":       "float",
+            "type":         "integer",
+            "format":       "int32",
             "defaultValue": null
         },
         "is_unique":       {
