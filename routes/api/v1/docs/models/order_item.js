@@ -13,12 +13,12 @@ module.exports = {
             "format": "int32"
         },
         "order_id":      {
-            "type":         "integer",
-            "format":       "int32"
+            "type":   "integer",
+            "format": "int32"
         },
         "product_id":    {
-            "type":         "integer",
-            "format":       "int32"
+            "type":   "integer",
+            "format": "int32"
         },
         "price":         {
             "type":         "number",
@@ -31,8 +31,8 @@ module.exports = {
             "defaultValue": null
         },
         "amount":        {
-            "type":         "integer",
-            "format":       "int32"
+            "type":   "integer",
+            "format": "int32"
         },
         "created_at":    {
             "type":         "string",

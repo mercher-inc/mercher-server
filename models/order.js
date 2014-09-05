@@ -18,8 +18,22 @@ var OrderModel = BaseModel.extend(
         orderItems:    function () {
             return this.hasMany(OrderItemModel);
         },
-        total:          function () {
+        total:         function () {
             return this.hasOne(OrderTotalModel, 'id');
+        },
+
+        initialize: function () {
+            this.on('saving', this.copyFields);
+        },
+
+        copyFields: function () {
+            var orderModel = this;
+            return orderModel
+                .load('shop')
+                .then(function (orderModel) {
+                    orderModel.set('tax', orderModel.related('shop').get('tax'));
+                    return orderModel;
+                });
         }
     }
 );

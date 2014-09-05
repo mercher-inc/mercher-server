@@ -17,7 +17,7 @@ router.post('/', function (req, res, next) {
         .then(function (orderItemModel) {
             new OrderItemModel({id: orderItemModel.id})
                 .fetch({
-                    withRelated: ['order', 'product']
+                    withRelated: ['order.total', 'product']
                 })
                 .then(function (orderItemModel) {
                     res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/order_items/' + orderItemModel.id);

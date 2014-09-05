@@ -10,6 +10,23 @@ var OrderItemModel = BaseModel.extend(
         },
         product:       function () {
             return this.belongsTo(require('./product'));
+        },
+
+        initialize: function () {
+            this.on('saving', this.copyFields);
+        },
+
+        copyFields: function () {
+            var orderItemModel = this;
+            return orderItemModel
+                .load('product')
+                .then(function (orderItemModel) {
+                    orderItemModel.set({
+                        'price':         orderItemModel.related('product').get('price'),
+                        'shipping_cost': orderItemModel.related('product').get('shipping_cost')
+                    });
+                    return orderItemModel;
+                });
         }
     }
 );
