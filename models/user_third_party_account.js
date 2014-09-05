@@ -1,9 +1,14 @@
-var bookshelf = require('../modules/bookshelf');
+var Bookshelf = require('../modules/bookshelf'),
+    UserModel = require('./user');
 
-var UserThirdPartyAccountModel = bookshelf.Model.extend(
+var UserThirdPartyAccountModel = Bookshelf.Model.extend(
     {
         tableName:     'user_third_party_account',
-        hasTimestamps: true
+        hasTimestamps: true,
+
+        user: function () {
+            return this.belongsTo(UserModel);
+        }
     }
 );
 
