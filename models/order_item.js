@@ -1,17 +1,15 @@
 var bookshelf = require('../modules/bookshelf'),
-    BaseModel = require('./base'),
-    ProductModel = require('./product'),
-    OrderModel = require('./order');
+    BaseModel = require('./base');
 
 var OrderItemModel = BaseModel.extend(
     {
         tableName:     'order_item',
         hasTimestamps: true,
         order:         function () {
-            return this.belongsTo(OrderModel);
+            return this.belongsTo(require('./order'));
         },
         product:       function () {
-            return this.belongsTo(ProductModel);
+            return this.belongsTo(require('./product'));
         }
     }
 );

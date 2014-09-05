@@ -2,6 +2,7 @@ var bookshelf = require('../modules/bookshelf'),
     BaseModel = require('./base'),
     Promise = require("bluebird"),
     ShopModel = require('./shop'),
+    OrderItemModel = require('./order_item'),
     expressAsyncValidator = require('../modules/express-async-validator/module');
 
 var ProductModel = BaseModel.extend(
@@ -10,6 +11,9 @@ var ProductModel = BaseModel.extend(
         hasTimestamps: true,
         shop:          function () {
             return this.belongsTo(ShopModel);
+        },
+        orderItems:    function () {
+            return this.hasMany(OrderItemModel);
         },
 
         initialize:       function () {
