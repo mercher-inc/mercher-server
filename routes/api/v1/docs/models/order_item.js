@@ -2,11 +2,11 @@ module.exports = {
     "id":          "OrderItem",
     "required":    [
         "id",
-        "user_id",
-        "shop_id",
-        "status"
+        "order_id",
+        "product_id",
+        "amount"
     ],
-    "description": "Order model",
+    "description": "Order item model",
     "properties":  {
         "id":            {
             "type":   "integer",
@@ -14,13 +14,11 @@ module.exports = {
         },
         "order_id":      {
             "type":         "integer",
-            "format":       "int32",
-            "defaultValue": null
+            "format":       "int32"
         },
         "product_id":    {
             "type":         "integer",
-            "format":       "int32",
-            "defaultValue": null
+            "format":       "int32"
         },
         "price":         {
             "type":         "number",
@@ -34,8 +32,7 @@ module.exports = {
         },
         "amount":        {
             "type":         "integer",
-            "format":       "int32",
-            "defaultValue": null
+            "format":       "int32"
         },
         "created_at":    {
             "type":         "string",
