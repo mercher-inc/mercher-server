@@ -8,8 +8,11 @@ var ImageModel = BaseModel.extend(
     {
         tableName:     'image',
         hasTimestamps: true,
+        user:          function () {
+            return this.belongsTo(require('./user'));
+        },
 
-        initialize: function () {
+        initialize:       function () {
             this.on('created', this.cropImage);
             this.on('updating', this.validateUpdating);
             this.on('updating', function () {
@@ -34,7 +37,7 @@ var ImageModel = BaseModel.extend(
                     });
             });
         },
-        cropImage:  function (imageModel) {
+        cropImage:        function (imageModel) {
             var path = require('path'),
                 params = {
                     originFile:   path.join(ImageModel.getUploadsPath(), imageModel.get('key'), imageModel.get('origin')),
@@ -47,17 +50,13 @@ var ImageModel = BaseModel.extend(
 //                console.log("\rJob #" + job.id + " completed");
                 var _ = require('underscore'),
                     path = require('path');
-                _.each(imageModel.get('files'), function(sizeFiles){
-                    _.each(sizeFiles, function(resolutionFile){
+                _.each(imageModel.get('files'), function (sizeFiles) {
+                    _.each(sizeFiles, function (resolutionFile) {
                         var oldFileName = path.join(ImageModel.getUploadsPath(), imageModel.get('key'), resolutionFile.file);
                         queue.create('delete file', {fileName: oldFileName}).save();
                     });
                 });
                 imageModel.save({files: files, is_active: true});
-            /*}).on('failed', function () {
-                console.log("\rJob #" + job.id + " failed");
-            }).on('progress', function (progress) {
-                process.stdout.write('\rJob #' + job.id + ' ' + progress + '% complete');*/
             });
         }
     },
@@ -169,8 +168,8 @@ var ImageModel = BaseModel.extend(
 );
 
 var validateUpdatingConfig = {
-    "title":           {
-        "rules":      {
+    "title":       {
+        "rules":        {
             "toString": {},
             "trim":     {},
             "escape":   {},
@@ -183,7 +182,7 @@ var validateUpdatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "description":     {
+    "description": {
         "rules":        {
             "toString": {},
             "escape":   {}

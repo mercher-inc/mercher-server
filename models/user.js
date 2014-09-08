@@ -17,6 +17,9 @@ var UserModel = BaseModel.extend(
         emails:        function () {
             return this.hasMany(UserEmailModel);
         },
+        images:        function () {
+            return this.hasMany(ImageModel);
+        },
 
         initialize:       function () {
             //this.on('updating', this.validateUpdating);

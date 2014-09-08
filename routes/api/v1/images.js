@@ -24,6 +24,13 @@ router.post('/', function (req, res) {
         ImageModel
             .createImage(file, filename)
             .then(function (imageModel) {
+                return imageModel
+                    .save({user_id: req.currentUser.id})
+                    .then(function (imageModel) {
+                        return imageModel;
+                    })
+            })
+            .then(function (imageModel) {
                 new ImageModel({id: imageModel.id})
                     .fetch()
                     .then(function (imageModel) {
@@ -83,7 +90,11 @@ router.param('imageId', function (req, res, next) {
 });
 
 router.get('/:imageId', function (req, res) {
-    res.json(req.image);
+    req.image
+        .load('user')
+        .then(function (imageModel) {
+            res.json(imageModel);
+        });
 });
 
 router.put('/:imageId', require('./middleware/auth_check'));
