@@ -88,11 +88,11 @@ router.get('/', function (req, res) {
                         "nickname":         "facebook",
                         "parameters":       [
                             {
-                                "name":        "access_token",
-                                "description": "Facebook Access Token",
+                                "name":        "body",
+                                "description": "Facebook Auth Credentials model",
                                 "required":    true,
-                                "type":        "string",
-                                "paramType":   "query"
+                                "type":        "FacebookAuthCredentials",
+                                "paramType":   "body"
                             }
                         ],
                         "responseMessages": [
@@ -112,11 +112,12 @@ router.get('/', function (req, res) {
             }
         ],
         "models":         {
-            "AccessToken":           require('../models/access_token'),
-            "UserSignUpCredentials": require('../models/user_sign_up_credentials'),
-            "UserAuthCredentials":   require('../models/user_auth_credentials'),
-            "ValidationError":       require('../errors/validation'),
-            "FieldError":            require('../errors/field')
+            "AccessToken":             require('../models/access_token'),
+            "UserSignUpCredentials":   require('../models/user_sign_up_credentials'),
+            "UserAuthCredentials":     require('../models/user_auth_credentials'),
+            "FacebookAuthCredentials": require('../models/facebook_auth_credentials'),
+            "ValidationError":         require('../errors/validation'),
+            "FieldError":              require('../errors/field')
         }
     });
 });

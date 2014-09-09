@@ -60,7 +60,7 @@ router.post('/basic', function (req, res, next) {
 router.post('/facebook', function (req, res, next) {
 
     var FB = require('fb'),
-        fbAccessToken = req.query.access_token;
+        fbAccessToken = req.body.access_token;
 
     FB.api('oauth/access_token', {
         client_id:     process.env.FB_APP_ID,
