@@ -1,4 +1,6 @@
-var bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    bookshelf = app.get('bookshelf'),
+    io = app.get('io'),
     BaseModel = require('./base'),
     Promise = require("bluebird"),
     queue = require('../modules/queue'),
@@ -19,6 +21,9 @@ var ImageModel = BaseModel.extend(
                 if (this.hasChanged('crop_geometry')) {
                     this.cropImage(this);
                 }
+            });
+            this.on('updated', function(){
+                io.sockets.emit('image updated', this);
             });
         },
         validateUpdating: function (imageModel, attrs, options) {
@@ -47,7 +52,6 @@ var ImageModel = BaseModel.extend(
             var job = queue.create('crop image', params).save();
 
             job.on('complete', function (files) {
-//                console.log("\rJob #" + job.id + " completed");
                 var _ = require('underscore'),
                     path = require('path');
                 _.each(imageModel.get('files'), function (sizeFiles) {
@@ -57,6 +61,8 @@ var ImageModel = BaseModel.extend(
                     });
                 });
                 imageModel.save({files: files, is_active: true});
+            }).on('progress', function(progress){
+                io.sockets.emit('image crop progress changed', {image: imageModel, progress: progress});
             });
         }
     },
