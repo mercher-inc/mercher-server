@@ -1,11 +1,11 @@
 module.exports = {
     "id":          "FacebookAuthCredentials",
     "required":    [
-        "access_token"
+        "fbAccessToken"
     ],
     "description": "Facebook Auth Credentials model",
     "properties":  {
-        "access_token": {
+        "fbAccessToken": {
             "type": "string"
         }
     }
