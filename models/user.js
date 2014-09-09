@@ -1,4 +1,6 @@
-var bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    bookshelf = app.get('bookshelf'),
+    io = app.get('io'),
     BaseModel = require('./base'),
     Promise = require('bluebird'),
     crypto = require('crypto'),
@@ -22,8 +24,11 @@ var UserModel = BaseModel.extend(
         },
 
         initialize:       function () {
-            //this.on('updating', this.validateUpdating);
+            this.on('updated', function(){
+                io.sockets.emit('user updated', this);
+            });
         },
+
         validateUpdating: function (userModel, attrs, options) {
             return new Promise(function (resolve, reject) {
                 userModel

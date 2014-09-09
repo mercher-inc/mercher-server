@@ -1,4 +1,6 @@
-var bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    bookshelf = app.get('bookshelf'),
+    io = app.get('io'),
     BaseModel = require('./base'),
     Promise = require("bluebird"),
     ImageModel = require('./image'),
@@ -16,6 +18,9 @@ var ShopModel = BaseModel.extend(
         initialize:       function () {
             this.on('creating', this.validateCreating);
             this.on('updating', this.validateUpdating);
+            this.on('updated', function(){
+                io.sockets.emit('shop updated', this);
+            });
         },
         validateCreating: function (shopModel, attrs, options) {
             return new Promise(function (resolve, reject) {
