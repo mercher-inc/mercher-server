@@ -52,10 +52,6 @@
         socket.on('disconnect', function () {
             console.log('user disconnected', socket.id);
         });
-
-        socket.on('app_started', function () {
-            console.log('app started', socket.id);
-        });
     });
 
     bookshelf.knex.migrate.latest()
