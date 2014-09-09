@@ -1,4 +1,5 @@
-var bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    io = app.get('io'),
     BaseModel = require('./base'),
     UserModel = require('./user'),
     ShopModel = require('./shop'),
@@ -7,18 +8,18 @@ var bookshelf = require('../modules/bookshelf'),
 
 var OrderModel = BaseModel.extend(
     {
-        tableName:     'order',
-        hasTimestamps: true,
-        user:          function () {
+        tableName: 'order',
+
+        user:       function () {
             return this.belongsTo(UserModel);
         },
-        shop:          function () {
+        shop:       function () {
             return this.belongsTo(ShopModel);
         },
-        orderItems:    function () {
+        orderItems: function () {
             return this.hasMany(OrderItemModel);
         },
-        total:         function () {
+        total:      function () {
             return this.hasOne(OrderTotalModel, 'id');
         },
 

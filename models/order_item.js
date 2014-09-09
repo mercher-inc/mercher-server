@@ -1,14 +1,15 @@
-var bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    io = app.get('io'),
     BaseModel = require('./base');
 
 var OrderItemModel = BaseModel.extend(
     {
-        tableName:     'order_item',
-        hasTimestamps: true,
-        order:         function () {
+        tableName: 'order_item',
+
+        order:   function () {
             return this.belongsTo(require('./order'));
         },
-        product:       function () {
+        product: function () {
             return this.belongsTo(require('./product'));
         },
 
@@ -22,8 +23,8 @@ var OrderItemModel = BaseModel.extend(
                 .load('product')
                 .then(function (orderItemModel) {
                     orderItemModel.set({
-                        'price':         orderItemModel.related('product').get('price'),
-                        'shipping_cost': orderItemModel.related('product').get('shipping_cost')
+                        'price':        orderItemModel.related('product').get('price'),
+                        'shippingCost': orderItemModel.related('product').get('shippingCost')
                     });
                     return orderItemModel;
                 });

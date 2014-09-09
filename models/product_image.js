@@ -1,12 +1,12 @@
-var bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    io = app.get('io'),
     BaseModel = require('./base'),
     ImageModel = require('./image'),
     ProductModel = require('./product');
 
 var ProductImageModel = BaseModel.extend(
     {
-        tableName:     'product_image',
-        hasTimestamps: true,
+        tableName: 'product_image',
 
         image:   function () {
             return this.belongsTo(ImageModel);

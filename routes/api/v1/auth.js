@@ -9,7 +9,6 @@ router.post('/sign_up', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
     });
-    res.removeHeader('Access-Control-Allow-Origin');
 
     UserModel
         .signUp(req.body)
@@ -33,7 +32,6 @@ router.post('/basic', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
     });
-    res.removeHeader('Access-Control-Allow-Origin');
 
     UserModel
         .login(req.body)
@@ -76,7 +74,7 @@ router.post('/facebook', function (req, res, next) {
                     UserThirdPartyAccountModel = require('../../../models/user_third_party_account'),
                     fbUserId = response.data.user_id;
 
-                new UserThirdPartyAccountModel({provider: 'facebook', provider_id: fbUserId})
+                new UserThirdPartyAccountModel({provider: 'facebook', providerId: fbUserId})
                     .fetch({require: true})
                     .then(function (userThirdPartyAccountModel) {
                         return userThirdPartyAccountModel;
@@ -93,19 +91,19 @@ router.post('/facebook', function (req, res, next) {
                                 }
                                 var user = new User();
                                 if (response.first_name) {
-                                    user.set('first_name', response.first_name);
+                                    user.set('firstName', response.first_name);
                                 }
                                 if (response.last_name) {
-                                    user.set('last_name', response.last_name);
+                                    user.set('lastName', response.last_name);
                                 }
                                 user
                                     .save()
                                     .then(function (user) {
                                         new UserThirdPartyAccountModel()
                                             .save({
-                                                user_id:     user.id,
-                                                provider:    'facebook',
-                                                provider_id: response.id
+                                                userId:     user.id,
+                                                provider:   'facebook',
+                                                providerId: response.id
                                             })
                                             .then(function (userThirdPartyAccountModel) {
                                                 resolve(userThirdPartyAccountModel);
@@ -122,7 +120,7 @@ router.post('/facebook', function (req, res, next) {
                     })
                     .then(function (user) {
                         return user.save({
-                            last_login: (new Date()).toISOString()
+                            lastLogin: (new Date()).toISOString()
                         });
                     })
                     .then(function (user) {

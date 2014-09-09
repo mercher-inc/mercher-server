@@ -1,5 +1,4 @@
 var app = require('../app'),
-    bookshelf = app.get('bookshelf'),
     io = app.get('io'),
     BaseModel = require('./base'),
     Promise = require("bluebird"),
@@ -8,9 +7,9 @@ var app = require('../app'),
 
 var ImageModel = BaseModel.extend(
     {
-        tableName:     'image',
-        hasTimestamps: true,
-        user:          function () {
+        tableName: 'image',
+
+        user: function () {
             return this.belongsTo(require('./user'));
         },
 
@@ -18,11 +17,11 @@ var ImageModel = BaseModel.extend(
             this.on('created', this.cropImage);
             this.on('updating', this.validateUpdating);
             this.on('updating', function () {
-                if (this.hasChanged('crop_geometry')) {
+                if (this.hasChanged('cropGeometry')) {
                     this.cropImage(this);
                 }
             });
-            this.on('updated', function(){
+            this.on('updated', function () {
                 io.sockets.emit('image updated', this);
             });
         },
@@ -46,7 +45,7 @@ var ImageModel = BaseModel.extend(
             var path = require('path'),
                 params = {
                     originFile:   path.join(ImageModel.getUploadsPath(), imageModel.get('key'), imageModel.get('origin')),
-                    cropGeometry: imageModel.get('crop_geometry')
+                    cropGeometry: imageModel.get('cropGeometry')
                 };
 
             var job = queue.create('crop image', params).save();
@@ -60,8 +59,8 @@ var ImageModel = BaseModel.extend(
                         queue.create('delete file', {fileName: oldFileName}).save();
                     });
                 });
-                imageModel.save({files: files, is_active: true});
-            }).on('progress', function(progress){
+                imageModel.save({files: files, isActive: true});
+            }).on('progress', function (progress) {
                 io.sockets.emit('image crop progress changed', {image: imageModel, progress: progress});
             });
         }
@@ -125,9 +124,9 @@ var ImageModel = BaseModel.extend(
 
                                 imageModel
                                     .save({
-                                        "origin":        path.basename(originFilePath),
-                                        "dimensions":    originalDimensions,
-                                        "crop_geometry": cropGeometry
+                                        "origin":       path.basename(originFilePath),
+                                        "dimensions":   originalDimensions,
+                                        "cropGeometry": cropGeometry
                                     })
                                     .then(function (imageModel) {
                                         resolve(imageModel);

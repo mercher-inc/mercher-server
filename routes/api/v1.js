@@ -31,7 +31,7 @@ router.use(function (req, res, next) {
         .then(function (accessToken) {
             //everything is ok, getting user
             var User = require('../../models/user');
-            new User({id: accessToken.get('user_id')})
+            new User({id: accessToken.get('userId')})
                 .fetch({require: true})
                 .then(function (user) {
                     req.currentUser = user;
@@ -55,10 +55,6 @@ router.use(function (req, res, next) {
         'Content-Type':                     'application/json; charset=utf-8'
     });
     next();
-});
-
-router.get('/env', function (req, res, next) {
-    res.json(process.env);
 });
 
 router.use('/auth', require('./v1/auth'));

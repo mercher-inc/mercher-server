@@ -1,9 +1,27 @@
-var bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    Bookshelf = app.get('bookshelf'),
+    _ = require('underscore'),
     Promise = require("bluebird");
 
-var BaseModel = bookshelf.Model.extend(
-    {
+_.str = require('underscore.string');
+_.mixin(_.str.exports());
+_.str.include('Underscore.string', 'string');
 
+var BaseModel = Bookshelf.Model.extend(
+    {
+        hasTimestamps: ['createdAt', 'updatedAt'],
+        format:        function (attrs) {
+            return _.reduce(attrs, function (memo, val, key) {
+                memo[_.str.underscored(key)] = val;
+                return memo;
+            }, {});
+        },
+        parse:         function (attrs) {
+            return _.reduce(attrs, function (memo, val, key) {
+                memo[_.str.camelize(key)] = val;
+                return memo;
+            }, {});
+        }
     },
     {
         ValidationError:     require('./errors/validation_error'),

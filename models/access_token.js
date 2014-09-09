@@ -1,11 +1,12 @@
-var bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    io = app.get('io'),
+    BaseModel = require('./base'),
     Promise = require('bluebird'),
     crypto = require('crypto');
 
-var AccessTokenModel = bookshelf.Model.extend(
+var AccessTokenModel = BaseModel.extend(
     {
-        tableName:     'access_token',
-        hasTimestamps: true
+        tableName: 'access_token'
     },
     {
         grant: function (userModel) {
@@ -21,7 +22,7 @@ var AccessTokenModel = bookshelf.Model.extend(
                 var expires = expirationDate.toISOString();
 
                 var accessTokenModel = new AccessTokenModel({
-                    user_id: userModel.id,
+                    userId:  userModel.id,
                     token:   token,
                     expires: expires
                 });

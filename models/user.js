@@ -1,5 +1,4 @@
 var app = require('../app'),
-    bookshelf = app.get('bookshelf'),
     io = app.get('io'),
     BaseModel = require('./base'),
     Promise = require('bluebird'),
@@ -11,20 +10,20 @@ var app = require('../app'),
 
 var UserModel = BaseModel.extend(
     {
-        tableName:     'user',
-        hasTimestamps: true,
-        image:         function () {
+        tableName: 'user',
+
+        image:  function () {
             return this.belongsTo(ImageModel);
         },
-        emails:        function () {
+        emails: function () {
             return this.hasMany(UserEmailModel);
         },
-        images:        function () {
+        images: function () {
             return this.hasMany(ImageModel);
         },
 
-        initialize:       function () {
-            this.on('updated', function(){
+        initialize: function () {
+            this.on('updated', function () {
                 io.sockets.emit('user updated', this);
             });
         },
@@ -73,7 +72,7 @@ var UserModel = BaseModel.extend(
             return new Promise(function (resolve, reject) {
                 new (expressAsyncValidator.model)(
                     {
-                        "email":      {
+                        "email":     {
                             "rules":      {
                                 "required":     {
                                     "message": "Email is required"
@@ -89,7 +88,7 @@ var UserModel = BaseModel.extend(
                             },
                             "allowEmpty": false
                         },
-                        "password":   {
+                        "password":  {
                             "rules":      {
                                 "required": {
                                     "message": "Password is required"
@@ -102,7 +101,7 @@ var UserModel = BaseModel.extend(
                             },
                             "allowEmpty": false
                         },
-                        "first_name": {
+                        "firstName": {
                             "rules":        {
                                 "escape":   {},
                                 "isLength": {
@@ -114,7 +113,7 @@ var UserModel = BaseModel.extend(
                             "allowEmpty":   true,
                             "defaultValue": null
                         },
-                        "last_name":  {
+                        "lastName":  {
                             "rules":        {
                                 "escape":   {},
                                 "isLength": {
@@ -132,18 +131,18 @@ var UserModel = BaseModel.extend(
                     .then(function (model) {
                         new UserModel()
                             .save({
-                                first_name: model.first_name,
-                                last_name:  model.last_name,
-                                last_login: (new Date()).toISOString(),
-                                is_banned:  false
+                                firstName: model.firstName,
+                                lastName:  model.lastName,
+                                lastLogin: (new Date()).toISOString(),
+                                isBanned:  false
                             })
                             .then(function (userModel) {
                                 new UserEmailModel()
                                     .save({
-                                        user_id:   userModel.id,
-                                        email:     model.email,
-                                        password:  crypto.pbkdf2Sync(model.password, salt, 10, 20).toString('hex'),
-                                        is_active: false
+                                        userId:   userModel.id,
+                                        email:    model.email,
+                                        password: crypto.pbkdf2Sync(model.password, salt, 10, 20).toString('hex'),
+                                        isActive: false
                                     })
                                     .then(function (userEmailModel) {
                                         require('./activation_code')
@@ -192,12 +191,12 @@ var UserModel = BaseModel.extend(
                             })
                             .fetch({require: true})
                             .then(function (userEmailModel) {
-                                new UserModel({id: userEmailModel.get('user_id')})
+                                new UserModel({id: userEmailModel.get('userId')})
                                     .fetch()
                                     .then(function (userModel) {
                                         userModel
                                             .save({
-                                                last_login: (new Date()).toISOString()
+                                                lastLogin: (new Date()).toISOString()
                                             })
                                             .then(function (userModel) {
                                                 resolve(userModel);
@@ -217,7 +216,7 @@ var UserModel = BaseModel.extend(
 );
 
 var validateUpdatingConfig = {
-    "image_id": {
+    "imageId": {
         "rules":        {
             "isInt": {
                 "message": "Image ID should be integer"

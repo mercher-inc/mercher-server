@@ -1,11 +1,12 @@
-var bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    io = app.get('io'),
+    BaseModel = require('./base'),
     Promise = require('bluebird'),
     crypto = require('crypto');
 
-var ActivationCodeModel = bookshelf.Model.extend(
+var ActivationCodeModel = BaseModel.extend(
     {
-        tableName:     'activation_code',
-        hasTimestamps: true
+        tableName: 'activation_code'
     },
     {
         generate: function (userEmailModel, purpose) {
@@ -17,9 +18,9 @@ var ActivationCodeModel = bookshelf.Model.extend(
                 var code = hash.digest('hex');
 
                 var activationCodeModel = new ActivationCodeModel({
-                    user_email_id: userEmailModel.id,
-                    purpose:       purpose,
-                    code:          code
+                    userEmailId: userEmailModel.id,
+                    purpose:     purpose,
+                    code:        code
                 });
 
                 activationCodeModel

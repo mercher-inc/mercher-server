@@ -1,11 +1,13 @@
-var Bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    io = app.get('io'),
+    BaseModel = require('./base'),
     OrderModel = require('./order');
 
-var OrderTotalModel = Bookshelf.Model.extend(
+var OrderTotalModel = BaseModel.extend(
     {
-        tableName:     'order_total',
-        hasTimestamps: true,
-        order:          function () {
+        tableName: 'order_total',
+
+        order: function () {
             return this.hasOne(OrderModel, 'id');
         }
     }

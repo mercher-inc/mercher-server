@@ -60,9 +60,9 @@ router.post('/', function (req, res, next) {
                 .then(function (shopModel) {
                     return new ManagerModel()
                         .save({
-                            user_id: req.currentUser.id,
-                            shop_id: shopModel.id,
-                            role:    'owner'
+                            userId: req.currentUser.id,
+                            shopId: shopModel.id,
+                            role:   'owner'
                         }, {
                             transacting: t
                         })

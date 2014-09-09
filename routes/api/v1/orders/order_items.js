@@ -40,7 +40,7 @@ router.get('/', function (req, res, next) {
 
     Promise
         .props({
-            order_items: collectionRequest,
+            orderItems: collectionRequest,
             total:       totalRequest
         })
         .then(function (results) {

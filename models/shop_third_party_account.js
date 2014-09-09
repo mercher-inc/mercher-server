@@ -1,9 +1,10 @@
-var bookshelf = require('../modules/bookshelf');
+var app = require('../app'),
+    io = app.get('io'),
+    BaseModel = require('./base');
 
-var ShopThirdPartyAccountModel = bookshelf.Model.extend(
+var ShopThirdPartyAccountModel = BaseModel.extend(
     {
-        tableName:     'shop_third_party_account',
-        hasTimestamps: true
+        tableName: 'shop_third_party_account'
     }
 );
 

@@ -25,7 +25,7 @@ router.post('/', function (req, res) {
             .createImage(file, filename)
             .then(function (imageModel) {
                 return imageModel
-                    .save({user_id: req.currentUser.id})
+                    .save({userId: req.currentUser.id})
                     .then(function (imageModel) {
                         return imageModel;
                     })

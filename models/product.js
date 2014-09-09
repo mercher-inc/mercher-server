@@ -1,5 +1,4 @@
 var app = require('../app'),
-    bookshelf = app.get('bookshelf'),
     io = app.get('io'),
     BaseModel = require('./base'),
     Promise = require("bluebird"),
@@ -9,19 +8,19 @@ var app = require('../app'),
 
 var ProductModel = BaseModel.extend(
     {
-        tableName:     'product',
-        hasTimestamps: true,
-        shop:          function () {
+        tableName: 'product',
+
+        shop:       function () {
             return this.belongsTo(ShopModel);
         },
-        orderItems:    function () {
+        orderItems: function () {
             return this.hasMany(OrderItemModel);
         },
 
         initialize:       function () {
             this.on('creating', this.validateCreating);
             this.on('updating', this.validateUpdating);
-            this.on('updated', function(){
+            this.on('updated', function () {
                 io.sockets.emit('product updated', this);
             });
         },
@@ -77,7 +76,7 @@ var ProductModel = BaseModel.extend(
         },
         checkPermission:  function (currentUserModel, role) {
             var productModel = this,
-                shopId = productModel.isNew() ? productModel.get('shop_id') : productModel.previous('shop_id'),
+                shopId = productModel.isNew() ? productModel.get('shopId') : productModel.previous('shopId'),
                 userId = currentUserModel.get('id');
             return new Promise(function (resolve, reject) {
                 ProductModel
@@ -94,7 +93,7 @@ var ProductModel = BaseModel.extend(
 );
 
 var validateCreatingConfig = {
-    "shop_id":         {
+    "shopId":         {
         "rules":      {
             "required": {
                 "message": "Shop ID is required"
@@ -106,7 +105,7 @@ var validateCreatingConfig = {
         },
         "allowEmpty": false
     },
-    "category_id":     {
+    "categoryId":     {
         "rules":        {
             "isInt": {
                 "message": "Category ID should be integer"
@@ -116,7 +115,7 @@ var validateCreatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "title":           {
+    "title":          {
         "rules":      {
             "required": {
                 "message": "Product's title is required"
@@ -132,7 +131,7 @@ var validateCreatingConfig = {
         },
         "allowEmpty": false
     },
-    "description":     {
+    "description":    {
         "rules":        {
             "toString": {},
             "escape":   {}
@@ -140,7 +139,7 @@ var validateCreatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "price":           {
+    "price":          {
         "rules":        {
             "isFloat": {
                 "message": "Price should be float"
@@ -150,7 +149,7 @@ var validateCreatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "shipping_cost":   {
+    "shippingCost":   {
         "rules":        {
             "isFloat": {
                 "message": "Shipping cost should be float"
@@ -160,7 +159,7 @@ var validateCreatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "shipping_weight": {
+    "shippingWeight": {
         "rules":        {
             "isFloat": {
                 "message": "Shipping weight should be float"
@@ -170,7 +169,7 @@ var validateCreatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "amount_in_stock": {
+    "amountInStock":  {
         "rules":        {
             "isInt": {
                 "message": "Amount in stock should be integer"
@@ -180,14 +179,14 @@ var validateCreatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "is_unique":       {
+    "isUnique":       {
         "rules":        {
             "toBoolean": {}
         },
         "allowEmpty":   true,
         "defaultValue": false
     },
-    "is_public":       {
+    "isPublic":       {
         "rules":        {
             "toBoolean": {}
         },
@@ -197,7 +196,7 @@ var validateCreatingConfig = {
 };
 
 var validateUpdatingConfig = {
-    "shop_id":         {
+    "shopId":         {
         "rules":      {
             "required": {
                 "message": "Shop ID is required"
@@ -209,7 +208,7 @@ var validateUpdatingConfig = {
         },
         "allowEmpty": false
     },
-    "category_id":     {
+    "categoryId":     {
         "rules":        {
             "isInt": {
                 "message": "Category ID should be integer"
@@ -219,7 +218,7 @@ var validateUpdatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "title":           {
+    "title":          {
         "rules":      {
             "required": {
                 "message": "Product's title is required"
@@ -235,7 +234,7 @@ var validateUpdatingConfig = {
         },
         "allowEmpty": false
     },
-    "description":     {
+    "description":    {
         "rules":        {
             "toString": {},
             "escape":   {}
@@ -243,7 +242,7 @@ var validateUpdatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "price":           {
+    "price":          {
         "rules":        {
             "isFloat": {
                 "message": "Price should be float"
@@ -253,7 +252,7 @@ var validateUpdatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "shipping_cost":   {
+    "shippingCost":   {
         "rules":        {
             "isFloat": {
                 "message": "Shipping cost should be float"
@@ -263,7 +262,7 @@ var validateUpdatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "shipping_weight": {
+    "shippingWeight": {
         "rules":        {
             "isFloat": {
                 "message": "Shipping weight should be float"
@@ -273,7 +272,7 @@ var validateUpdatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "amount_in_stock": {
+    "amountInStock":  {
         "rules":        {
             "isInt": {
                 "message": "Amount in stock should be integer"
@@ -283,14 +282,14 @@ var validateUpdatingConfig = {
         "allowEmpty":   true,
         "defaultValue": null
     },
-    "is_unique":       {
+    "isUnique":       {
         "rules":        {
             "toBoolean": {}
         },
         "allowEmpty":   true,
         "defaultValue": false
     },
-    "is_public":       {
+    "isPublic":       {
         "rules":        {
             "toBoolean": {}
         },

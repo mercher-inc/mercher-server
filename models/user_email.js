@@ -1,11 +1,13 @@
-var bookshelf = require('../modules/bookshelf'),
+var app = require('../app'),
+    io = app.get('io'),
+    BaseModel = require('./base'),
     UserModel = require('./user');
 
-var UserEmailModel = bookshelf.Model.extend(
+var UserEmailModel = BaseModel.extend(
     {
-        tableName:     'user_email',
-        hasTimestamps: true,
-        user:          function () {
+        tableName: 'user_email',
+
+        user: function () {
             return this.belongsTo(UserModel);
         }
     }

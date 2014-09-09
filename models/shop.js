@@ -1,5 +1,4 @@
 var app = require('../app'),
-    bookshelf = app.get('bookshelf'),
     io = app.get('io'),
     BaseModel = require('./base'),
     Promise = require("bluebird"),
@@ -8,17 +7,16 @@ var app = require('../app'),
 
 var ShopModel = BaseModel.extend(
     {
-        tableName:     'shop',
-        hasTimestamps: true,
+        tableName: 'shop',
 
-        image:         function () {
+        image: function () {
             return this.belongsTo(ImageModel);
         },
 
         initialize:       function () {
             this.on('creating', this.validateCreating);
             this.on('updating', this.validateUpdating);
-            this.on('updated', function(){
+            this.on('updated', function () {
                 io.sockets.emit('shop updated', this);
             });
         },
@@ -81,7 +79,7 @@ var ShopModel = BaseModel.extend(
 );
 
 var validateCreatingConfig = {
-    "image_id":    {
+    "imageId":     {
         "rules":        {
             "isInt": {
                 "message": "Image ID should be integer"
@@ -139,7 +137,7 @@ var validateCreatingConfig = {
         "allowEmpty":   true,
         "defaultValue": 0
     },
-    "is_public":   {
+    "isPublic":    {
         "rules":        {
             "toBoolean": {}
         },
@@ -149,7 +147,7 @@ var validateCreatingConfig = {
 };
 
 var validateUpdatingConfig = {
-    "image_id":    {
+    "imageId":     {
         "rules":        {
             "isInt": {
                 "message": "Image ID should be integer"
@@ -207,7 +205,7 @@ var validateUpdatingConfig = {
         "allowEmpty":   true,
         "defaultValue": 0
     },
-    "is_public":   {
+    "isPublic":    {
         "rules":        {
             "toBoolean": {}
         },
