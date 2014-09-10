@@ -162,7 +162,7 @@ router.get('/', function (req, res) {
                 ]
             },
             {
-                "path":       "/api/v1/shops/{shopId}/products/{productId}",
+                "path":       "/api/v1/shops/{shopId}/products",
                 "operations": [
                     {
                         "method":           "GET",
@@ -173,6 +173,52 @@ router.get('/', function (req, res) {
                             {
                                 "name":        "shopId",
                                 "description": "ID of the shop",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "limit",
+                                "description": "Amount of products to fetch",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            },
+                            {
+                                "name":        "offset",
+                                "description": "Amount of products to skip",
+                                "required":    false,
+                                "type":        "integer",
+                                "paramType":   "query"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          200,
+                                "message":       "OK",
+                                "responseModel": "ProductsList"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "path":       "/api/v1/categories/{categoryId}/products",
+                "operations": [
+                    {
+                        "method":           "GET",
+                        "summary":          "List products for category",
+                        "type":             "ProductsList",
+                        "nickname":         "list_for_category",
+                        "parameters":       [
+                            {
+                                "name":        "categoryId",
+                                "description": "ID of the category",
                                 "required":    true,
                                 "type":        "integer",
                                 "paramType":   "path"

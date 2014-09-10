@@ -169,4 +169,6 @@ router.put('/:categoryId', function (req, res, next) {
         });
 });
 
+router.use('/:categoryId/products', require('./categories/products'));
+
 module.exports = router;
