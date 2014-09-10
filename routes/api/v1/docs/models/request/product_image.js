@@ -1,25 +1,25 @@
 module.exports = {
     "id":          "ProductImageRequest",
     "required":    [
-        "product_id",
-        "image_id"
+        "productId",
+        "imageId"
     ],
     "description": "Product Image request model",
     "properties":  {
-        "product_id": {
+        "productId": {
             "type":   "integer",
             "format": "int32"
         },
-        "image_id":   {
+        "imageId":   {
             "type":   "integer",
             "format": "int32"
         },
-        "priority":   {
+        "priority":  {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": 0
         },
-        "is_public":  {
+        "isPublic":  {
             "type":         "boolean",
             "defaultValue": true
         }

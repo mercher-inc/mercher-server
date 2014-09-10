@@ -1,24 +1,24 @@
 module.exports = {
     "id":          "Manager",
     "required":    [
-        "user_id",
-        "shop_id"
+        "userId",
+        "shopId"
     ],
     "description": "Manager model",
     "properties":  {
-        "user_id":   {
+        "userId":   {
             "type":   "integer",
             "format": "int32"
         },
-        "shop_id":   {
+        "shopId":   {
             "type":   "integer",
             "format": "int32"
         },
-        "role":      {
+        "role":     {
             "type": "string",
             "enum": ["editor", "seller", "owner"]
         },
-        "is_public": {
+        "isPublic": {
             "type":         "boolean",
             "defaultValue": true
         }

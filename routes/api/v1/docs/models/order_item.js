@@ -2,53 +2,53 @@ module.exports = {
     "id":          "OrderItem",
     "required":    [
         "id",
-        "order_id",
-        "product_id",
+        "orderId",
+        "productId",
         "amount"
     ],
     "description": "Order item model",
     "properties":  {
-        "id":            {
+        "id":           {
             "type":   "integer",
             "format": "int32"
         },
-        "order_id":      {
+        "orderId":      {
             "type":   "integer",
             "format": "int32"
         },
-        "product_id":    {
+        "productId":    {
             "type":   "integer",
             "format": "int32"
         },
-        "price":         {
+        "price":        {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "shipping_cost": {
+        "shippingCost": {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "amount":        {
+        "amount":       {
             "type":   "integer",
             "format": "int32"
         },
-        "created_at":    {
+        "createdAt":    {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updated_at":    {
+        "updatedAt":    {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "order":         {
+        "order":        {
             "$ref":         "Order",
             "defaultValue": null
         },
-        "product":       {
+        "product":      {
             "$ref":         "Product",
             "defaultValue": null
         }

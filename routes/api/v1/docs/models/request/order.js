@@ -1,23 +1,23 @@
 module.exports = {
     "id":          "OrderRequest",
     "required":    [
-        "user_id",
-        "shop_id",
+        "userId",
+        "shopId",
         "status"
     ],
     "description": "Order request model",
     "properties":  {
-        "user_id": {
+        "userId": {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
         },
-        "shop_id": {
+        "shopId": {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
         },
-        "status":  {
+        "status": {
             "type": "string",
             "enum": ["draft", "submitted", "received", "rejected", "completed"]
         }

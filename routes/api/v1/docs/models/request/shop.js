@@ -5,7 +5,7 @@ module.exports = {
     ],
     "description": "Shop request model",
     "properties":  {
-        "image_id":    {
+        "imageId":     {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
@@ -26,11 +26,7 @@ module.exports = {
             "format":       "float",
             "defaultValue": 0
         },
-        "is_public":   {
-            "type":         "boolean",
-            "defaultValue": false
-        },
-        "is_banned":   {
+        "isPublic":    {
             "type":         "boolean",
             "defaultValue": false
         }

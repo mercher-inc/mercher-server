@@ -2,48 +2,48 @@ module.exports = {
     "id":          "ProductImage",
     "required":    [
         "id",
-        "product_id",
-        "image_id",
+        "productId",
+        "imageId",
         "priority",
-        "is_public"
+        "isPublic"
     ],
     "description": "Product Image model",
     "properties":  {
-        "id":         {
+        "id":        {
             "type":   "integer",
             "format": "int32"
         },
-        "product_id": {
+        "productId": {
             "type":   "integer",
             "format": "int32"
         },
-        "image_id":   {
+        "imageId":   {
             "type":   "integer",
             "format": "int32"
         },
-        "priority":   {
+        "priority":  {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": 0
         },
-        "is_public":  {
+        "isPublic":  {
             "type":         "boolean",
             "defaultValue": true
         },
-        "created_at": {
+        "createdAt": {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updated_at": {
+        "updatedAt": {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "product":    {
+        "product":   {
             "$ref": "Product"
         },
-        "image":      {
+        "image":     {
             "$ref": "Image"
         }
     }

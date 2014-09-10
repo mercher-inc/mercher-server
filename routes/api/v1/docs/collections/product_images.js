@@ -1,12 +1,12 @@
 module.exports = {
     "id":          "ProductImagesList",
     "required":    [
-        "product_images",
+        "productImages",
         "total"
     ],
     "description": "Product Images collection",
     "properties":  {
-        "product_images": {
+        "productImages": {
             "type":  "array",
             "items": {
                 "$ref": "ProductImage"

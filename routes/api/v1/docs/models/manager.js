@@ -2,51 +2,51 @@ module.exports = {
     "id":          "Manager",
     "required":    [
         "id",
-        "user_id",
-        "shop_id",
-        "is_public",
-        "is_banned"
+        "userId",
+        "shopId",
+        "isPublic",
+        "isBanned"
     ],
     "description": "Manager model",
     "properties":  {
-        "id":         {
+        "id":        {
             "type":   "integer",
             "format": "int32"
         },
-        "user_id":    {
+        "userId":    {
             "type":   "integer",
             "format": "int32"
         },
-        "shop_id":    {
+        "shopId":    {
             "type":   "integer",
             "format": "int32"
         },
-        "role":       {
+        "role":      {
             "type": "string",
             "enum": ["editor", "seller", "owner"]
         },
-        "is_public":  {
+        "isPublic":  {
             "type":         "boolean",
             "defaultValue": true
         },
-        "is_banned":  {
+        "isBanned":  {
             "type":         "boolean",
             "defaultValue": false
         },
-        "created_at": {
+        "createdAt": {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updated_at": {
+        "updatedAt": {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "shop":       {
+        "shop":      {
             "$ref": "Shop"
         },
-        "user":       {
+        "user":      {
             "$ref": "User"
         }
     }

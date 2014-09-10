@@ -1,21 +1,21 @@
 module.exports = {
     "id":          "OrderItemRequest",
     "required":    [
-        "order_id",
-        "product_id",
+        "orderId",
+        "productId",
         "amount"
     ],
     "description": "Order item request model",
     "properties":  {
-        "order_id":   {
+        "orderId":   {
             "type":   "integer",
             "format": "int32"
         },
-        "product_id": {
+        "productId": {
             "type":   "integer",
             "format": "int32"
         },
-        "amount":     {
+        "amount":    {
             "type":   "integer",
             "format": "int32"
         }

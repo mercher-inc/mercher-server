@@ -2,47 +2,47 @@ module.exports = {
     "id":          "User",
     "required":    [
         "id",
-        "is_banned"
+        "isBanned"
     ],
     "description": "User model",
     "properties":  {
-        "id":         {
+        "id":        {
             "type":   "integer",
             "format": "int32"
         },
-        "image_id":   {
+        "imageId":   {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
         },
-        "first_name": {
+        "firstName": {
             "type":         "string",
             "defaultValue": null
         },
-        "last_name":  {
+        "lastName":  {
             "type":         "string",
             "defaultValue": null
         },
-        "last_login": {
+        "lastLogin": {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "is_banned":  {
+        "isBanned":  {
             "type":         "boolean",
             "defaultValue": false
         },
-        "created_at": {
+        "createdAt": {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updated_at": {
+        "updatedAt": {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "image":      {
+        "image":     {
             "$ref":         "Image",
             "defaultValue": null
         }

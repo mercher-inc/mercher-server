@@ -5,15 +5,15 @@ module.exports = {
     ],
     "description": "Category model",
     "properties":  {
-        "image_id":  {
+        "imageId":  {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
         },
-        "title":     {
+        "title":    {
             "type": "string"
         },
-        "is_public": {
+        "isPublic": {
             "type":         "boolean",
             "defaultValue": true
         }

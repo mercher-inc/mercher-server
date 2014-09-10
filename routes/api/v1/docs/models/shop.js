@@ -3,10 +3,10 @@ module.exports = {
     "required":    [
         "id",
         "title",
-        "is_public",
-        "is_banned",
-        "created_at",
-        "updated_at"
+        "isPublic",
+        "isBanned",
+        "createdAt",
+        "updatedAt"
     ],
     "description": "Shop model",
     "properties":  {
@@ -14,7 +14,7 @@ module.exports = {
             "type":   "integer",
             "format": "int32"
         },
-        "image_id":    {
+        "imageId":     {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
@@ -35,20 +35,20 @@ module.exports = {
             "format":       "float",
             "defaultValue": 0
         },
-        "is_public":   {
+        "isPublic":    {
             "type":         "boolean",
             "defaultValue": true
         },
-        "is_banned":   {
+        "isBanned":    {
             "type":         "boolean",
             "defaultValue": false
         },
-        "created_at":  {
+        "createdAt":   {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updated_at":  {
+        "updatedAt":   {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null

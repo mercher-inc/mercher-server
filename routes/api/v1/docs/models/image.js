@@ -5,54 +5,54 @@ module.exports = {
         "key",
         "origin",
         "dimensions",
-        "crop_geometry",
+        "cropGeometry",
         "files",
-        "is_active",
-        "is_banned"
+        "isActive",
+        "isBanned"
     ],
     "description": "Image model",
     "properties":  {
-        "id":            {
+        "id":           {
             "type":   "integer",
             "format": "int32"
         },
-        "title":         {
+        "title":        {
             "type":         "string",
             "defaultValue": null
         },
-        "description":   {
+        "description":  {
             "type":         "string",
             "defaultValue": null
         },
-        "key":           {
+        "key":          {
             "type": "string"
         },
-        "origin":        {
+        "origin":       {
             "type": "string"
         },
-        "dimensions":    {
+        "dimensions":   {
             "type": "json"
         },
-        "crop_geometry": {
+        "cropGeometry": {
             "type": "json"
         },
-        "files":         {
+        "files":        {
             "type": "json"
         },
-        "is_active":     {
+        "isActive":     {
             "type":         "boolean",
             "defaultValue": true
         },
-        "is_banned":     {
+        "isBanned":     {
             "type":         "boolean",
             "defaultValue": false
         },
-        "created_at":    {
+        "createdAt":    {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updated_at":    {
+        "updatedAt":    {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null

@@ -3,37 +3,37 @@ module.exports = {
     "required":    [
         "id",
         "title",
-        "is_public"
+        "isPublic"
     ],
     "description": "Category model",
     "properties":  {
-        "id":         {
+        "id":        {
             "type":   "integer",
             "format": "int32"
         },
-        "image_id":   {
+        "imageId":   {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
         },
-        "title":      {
+        "title":     {
             "type": "string"
         },
-        "is_public":  {
+        "isPublic":  {
             "type":         "boolean",
             "defaultValue": true
         },
-        "created_at": {
+        "createdAt": {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updated_at": {
+        "updatedAt": {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "image":      {
+        "image":     {
             "$ref":         "Image",
             "defaultValue": null
         }

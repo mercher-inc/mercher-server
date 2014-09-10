@@ -1,58 +1,49 @@
 module.exports = {
     "id":          "ProductRequest",
     "required":    [
-        "shop_id",
+        "shopId",
         "title"
     ],
     "description": "Product request model",
     "properties":  {
-        "shop_id":         {
+        "shopId":         {
             "type":   "integer",
             "format": "int32"
         },
-        "category_id":     {
-            "type":         "integer",
-            "format":       "int32",
-            "defaultValue": null
-        },
-        "title":           {
+        "title":          {
             "type": "string"
         },
-        "description":     {
+        "description":    {
             "type":         "string",
             "defaultValue": null
         },
-        "price":           {
+        "price":          {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "shipping_cost":   {
+        "shippingCost":   {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "shipping_weight": {
+        "shippingWeight": {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "amount_in_stock": {
+        "amountInStock":  {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "is_unique":       {
+        "isUnique":       {
             "type":         "boolean",
             "defaultValue": true
         },
-        "is_public":       {
+        "isPublic":       {
             "type":         "boolean",
             "defaultValue": true
-        },
-        "is_banned":       {
-            "type":         "boolean",
-            "defaultValue": false
         }
     }
 };

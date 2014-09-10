@@ -1,12 +1,12 @@
 module.exports = {
     "id":          "OrderItemsList",
     "required":    [
-        "order_items",
+        "orderItems",
         "total"
     ],
     "description": "Order items collection",
     "properties":  {
-        "order_items": {
+        "orderItems": {
             "type":  "array",
             "items": {
                 "$ref": "OrderItem"

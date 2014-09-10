@@ -6,16 +6,16 @@ module.exports = {
     ],
     "description": "User Sign Up Credentials model",
     "properties":  {
-        "email":      {
+        "email":     {
             "type": "string"
         },
-        "password":   {
+        "password":  {
             "type": "string"
         },
-        "first_name": {
+        "firstName": {
             "type": "string"
         },
-        "last_name":  {
+        "lastName":  {
             "type": "string"
         }
     }

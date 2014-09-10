@@ -2,82 +2,82 @@ module.exports = {
     "id":          "Product",
     "required":    [
         "id",
-        "shop_id",
+        "shopId",
         "title",
-        "is_unique",
-        "is_public",
-        "is_banned",
-        "created_at",
-        "updated_at"
+        "isUnique",
+        "isPublic",
+        "isBanned",
+        "createdAt",
+        "updatedAt"
     ],
     "description": "Product model",
     "properties":  {
-        "id":              {
+        "id":             {
             "type":   "integer",
             "format": "int32"
         },
-        "shop_id":         {
+        "shopId":         {
             "type":   "integer",
             "format": "int32"
         },
-        "category_id":     {
+        "categoryId":     {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
         },
-        "title":           {
+        "title":          {
             "type": "string"
         },
-        "description":     {
+        "description":    {
             "type":         "string",
             "defaultValue": null
         },
-        "price":           {
+        "price":          {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "shipping_cost":   {
+        "shippingCost":   {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "shipping_weight": {
+        "shippingWeight": {
             "type":         "number",
             "format":       "float",
             "defaultValue": null
         },
-        "amount_in_stock": {
+        "amountInStock":  {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
         },
-        "is_unique":       {
+        "isUnique":       {
             "type":         "boolean",
             "defaultValue": false
         },
-        "is_public":       {
+        "isPublic":       {
             "type":         "boolean",
             "defaultValue": true
         },
-        "is_banned":       {
+        "isBanned":       {
             "type":         "boolean",
             "defaultValue": false
         },
-        "created_at":      {
+        "createdAt":      {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updated_at":      {
+        "updatedAt":      {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "shop":            {
+        "shop":           {
             "$ref": "Shop"
         },
-        "category":        {
+        "category":       {
             "$ref": "Category"
         }
     }

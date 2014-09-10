@@ -1,19 +1,19 @@
 module.exports = {
     "id":          "ImageRequest",
     "required":    [
-        "crop_geometry"
+        "cropGeometry"
     ],
     "description": "Image request model",
     "properties":  {
-        "title":         {
+        "title":        {
             "type":         "string",
             "defaultValue": null
         },
-        "description":   {
+        "description":  {
             "type":         "string",
             "defaultValue": null
         },
-        "crop_geometry": {
+        "cropGeometry": {
             "type": "json"
         }
     }
