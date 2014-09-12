@@ -137,15 +137,16 @@ var ImageModel = BaseModel.extend(
             });
         },
         getUploadsPath: function () {
-            var fs = require('fs');
+            var fs = require('fs'),
+                path = require('path');
 
-            var uploadsPath = __dirname + '/../uploads';
+            var uploadsPath = path.join(fs.realpathSync(path.join(__dirname, '..')), 'uploads');
             if (!fs.existsSync(uploadsPath)) {
-                var externalPath = fs.realpathSync(process.env.HOME) + '/mercher';
+                var externalPath = path.join(fs.realpathSync(process.env.HOME), 'mercher');
                 if (!fs.existsSync(externalPath)) {
                     fs.mkdirSync(externalPath);
                 }
-                externalPath = externalPath + '/uploads';
+                externalPath = path.join(externalPath, 'uploads');
                 if (!fs.existsSync(externalPath)) {
                     fs.mkdirSync(externalPath);
                 }
