@@ -4,22 +4,21 @@ var express = require('express'),
 router.use(function (req, res, next) {
     var ogParams = {
         fb: {
-            admins:     [],
+            admins:     '100001974932720',
             app_id:     process.env.FB_APP_ID,
-            profile_id: ''
+            profile_id: '430253050396911'
         },
         og: {
             title:       'Mercher',
             description: "Description",
             site_name:   'mercher.net',
-            url:         'http://mercher.net',
+            url:         'http://staging.mercherdev.com/',
             type:        'website',
             image:       {
-                url:            '',
-                secure_url:     '',
-                type:           '',
-                width:          '',
-                height:         '',
+                url:            'http://staging.mercherdev.com/images/logoOnGreen_512.png',
+                type:           'image/png',
+                width:          '512',
+                height:         '512',
                 user_generated: 'false'
             }
         }
