@@ -44,12 +44,7 @@ router.get('/:productId', function (req, res) {
                 req.openGraphObject.og.image = [];
                 productModel.related('productImages').each(function (productImageModel) {
                     var imageModel = productImageModel.related('image');
-                    req.openGraphObject.og.image.push({
-                        url:            'http://staging.mercherdev.com/uploads/' + imageModel.get('key') + '/' + imageModel.get('files').l.mdpi.file,
-                        width:          imageModel.get('files').l.mdpi.size,
-                        height:         imageModel.get('files').l.mdpi.size,
-                        user_generated: 'true'
-                    });
+                    req.openGraphObject.og.image.push('http://staging.mercherdev.com/uploads/' + imageModel.get('key') + '/' + imageModel.get('files').m.mdpi.file);
                 });
             }
             res.render('product', {openGraphObject: req.openGraphObject}, function (err, html) {
