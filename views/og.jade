@@ -1,0 +1,14 @@
+mixin printOpenGraphObject(data, namespace)
+    - console.log(data, namespace)
+    if typeof data == 'object' && data
+        if Array.isArray(data)
+            each row in data
+                +printOpenGraphObject(row, namespace)
+        else
+            each row, subnamespace in data
+                +printOpenGraphObject(row, namespace + ":" + subnamespace)
+    else if data != null && data != undefined
+        meta(property=namespace, content=data)
+
+each data, namespace in openGraphObject
+    +printOpenGraphObject(data, namespace)

@@ -4,16 +4,16 @@ var express = require('express'),
 router.use(function (req, res, next) {
     req.openGraphObject = {
         fb: {
-            admins:     '100001974932720',
+            admins:     ['100001974932720'],
             app_id:     process.env.FB_APP_ID,
             profile_id: '430253050396911'
         },
         og: {
-            title:       'Mercher',
-            site_name:   'Mercher',
-            url:         'http://staging.mercherdev.com/',
-            type:        'website',
-            image:       {
+            title:     'Mercher',
+            site_name: 'Mercher',
+            url:       'http://staging.mercherdev.com/',
+            type:      'website',
+            image:     {
                 url:            'http://staging.mercherdev.com/images/logoOnGreen_512.png',
                 type:           'image/png',
                 width:          '512',
@@ -22,10 +22,15 @@ router.use(function (req, res, next) {
             }
         }
     };
+    next();
 });
 
-router.get('/', function (req, res, next) {
-    res.render('index', req.openGraphObject);
+router.use('/products', require('./products'));
+
+router.use(function (req, res, next) {
+    res.render('index', {openGraphObject: req.openGraphObject}, function (err, html) {
+        res.status(200).type('html').send(html);
+    });
 });
 
 module.exports = router;

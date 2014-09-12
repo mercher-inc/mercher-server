@@ -3,18 +3,26 @@ var app = require('../app'),
     BaseModel = require('./base'),
     Promise = require("bluebird"),
     ShopModel = require('./shop'),
+    CategoryModel = require('./category'),
     OrderItemModel = require('./order_item'),
+    ProductImageModel = require('./product_image'),
     expressAsyncValidator = require('../modules/express-async-validator/module');
 
 var ProductModel = BaseModel.extend(
     {
         tableName: 'product',
 
-        shop:       function () {
+        shop:          function () {
             return this.belongsTo(ShopModel);
         },
-        orderItems: function () {
+        category:      function () {
+            return this.belongsTo(CategoryModel);
+        },
+        orderItems:    function () {
             return this.hasMany(OrderItemModel);
+        },
+        productImages: function () {
+            return this.hasMany(ProductImageModel);
         },
 
         initialize:       function () {
