@@ -38,7 +38,15 @@
     app.use('/views', serveStatic(__dirname + '/public/views'));
 
     app.use(function (req, res, next) {
-        var browserVersion = req.useragent.Version.split('.', 2),
+        if (req.useragent.isBot) {
+            res.json({"you": req.useragent});
+        } else {
+            next();
+        }
+    });
+
+    app.use(function (req, res, next) {
+        var browserVersion = (req.useragent.Version || '0.0').split('.', 2),
             major = parseInt(browserVersion[0] || 0),
             minor = parseInt(browserVersion[1] || 0);
         if (req.url !== '/' && (
@@ -48,14 +56,6 @@
             (req.useragent.isSafari && major < 5)
             )) {
             res.redirect('/#!' + req.url);
-        } else {
-            next();
-        }
-    });
-
-    app.use(function (req, res, next) {
-        if (req.useragent.isBot) {
-            res.json({"you": req.useragent});
         } else {
             next();
         }
