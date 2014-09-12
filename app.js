@@ -49,6 +49,7 @@
         var browserVersion = (req.useragent.Version || '0.0').split('.', 2),
             major = parseInt(browserVersion[0] || 0),
             minor = parseInt(browserVersion[1] || 0);
+        console.log(req.useragent.Browser, req.useragent.Version);
         if (req.url !== '/' && (
             (req.useragent.isIE && major < 10) ||
             (req.useragent.isFirefox && major < 4) ||
