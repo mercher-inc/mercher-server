@@ -141,7 +141,7 @@ var ImageModel = BaseModel.extend(
 
             var uploadsPath = __dirname + '/../uploads';
             if (!fs.existsSync(uploadsPath)) {
-                var externalPath = fs.realpathSync(__dirname + '/../..') + '/uploads';
+                var externalPath = fs.realpathSync(process.env.HOME) + '/mercher/uploads';
                 if (!fs.existsSync(externalPath)) {
                     fs.mkdirSync(externalPath);
                 }
