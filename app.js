@@ -17,6 +17,8 @@
     app.set('queue', queue);
     app.set('io', io);
     app.set('bookshelf', bookshelf);
+    app.set('views', './views');
+    app.set('view engine', 'jade');
 
     app.set('port', process.env.PORT || 3000);
     app.use(bodyParser.json());
@@ -39,23 +41,14 @@
 
     app.use(function (req, res, next) {
         if (req.useragent.isBot) {
-            res.json({"you": req.useragent});
+            require('./routes/index')(req, res, next);
         } else {
             next();
         }
     });
 
     app.use(function (req, res, next) {
-        var browserVersion = (req.useragent.Version || '0.0').split('.', 2),
-            major = parseInt(browserVersion[0] || 0),
-            minor = parseInt(browserVersion[1] || 0);
-        console.log(req.useragent.Browser, req.useragent.Version);
-        if (req.url !== '/' && (
-            (req.useragent.isIE && major < 10) ||
-            (req.useragent.isFirefox && major < 4) ||
-            (req.useragent.isChrome && major < 5) ||
-            (req.useragent.isSafari && major < 5)
-            )) {
+        if (req.url !== '/' && req.useragent.isIE) {
             res.redirect('/#!' + req.url);
         } else {
             next();

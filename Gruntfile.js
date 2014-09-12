@@ -39,6 +39,7 @@ module.exports = function (grunt) {
                             'modules/**/*.js',
                             'routes/**/*.js',
                             'migrations/**/*.js',
+                            'views/**/*.jade',
                             'app.js',
                             'package.json'
                         ]
