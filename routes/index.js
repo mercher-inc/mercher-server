@@ -2,7 +2,7 @@ var express = require('express'),
     router = express.Router();
 
 router.use(function (req, res, next) {
-    var ogParams = {
+    req.openGraphObject = {
         fb: {
             admins:     '100001974932720',
             app_id:     process.env.FB_APP_ID,
@@ -10,8 +10,7 @@ router.use(function (req, res, next) {
         },
         og: {
             title:       'Mercher',
-            description: "Description",
-            site_name:   'mercher.net',
+            site_name:   'Mercher',
             url:         'http://staging.mercherdev.com/',
             type:        'website',
             image:       {
@@ -23,7 +22,10 @@ router.use(function (req, res, next) {
             }
         }
     };
-    res.render('index', ogParams);
+});
+
+router.get('/', function (req, res, next) {
+    res.render('index', req.openGraphObject);
 });
 
 module.exports = router;
