@@ -140,7 +140,12 @@ var ImageModel = BaseModel.extend(
             var fs = require('fs');
 
             var uploadsPath = __dirname + '/../uploads';
-            if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath);
+            if (!fs.existsSync(uploadsPath)) {
+                if (!fs.existsSync('~/uploads')) {
+                    fs.mkdirSync('~/uploads');
+                }
+                fs.symlinkSync('~/uploads', uploadsPath);
+            }
             return fs.realpathSync(uploadsPath);
         },
         findUnusedKey:  function (key) {
