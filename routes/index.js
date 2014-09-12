@@ -13,13 +13,7 @@ router.use(function (req, res, next) {
             site_name: 'Mercher',
             url:       'http://staging.mercherdev.com/',
             type:      'website',
-            image:     {
-                url:            'http://staging.mercherdev.com/images/logoOnGreen_512.png',
-                type:           'image/png',
-                width:          '512',
-                height:         '512',
-                user_generated: 'false'
-            }
+            image:     'http://staging.mercherdev.com/images/logoOnGreen_512.png'
         }
     };
     next();
