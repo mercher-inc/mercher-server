@@ -6,6 +6,8 @@
         bodyParser = require('body-parser'),
         cookieParser = require('cookie-parser'),
         favicon = require('serve-favicon'),
+        serveStatic = require('serve-static'),
+        useragent = require('express-useragent'),
         app = module.exports = express(),
         queue = module.exports.queue = require('./modules/queue'),
         server = http.createServer(app),
@@ -19,17 +21,52 @@
     app.set('port', process.env.PORT || 3000);
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded());
+    app.use(useragent.express());
     app.use(cookieParser());
     app.use(favicon(__dirname + '/public/favicon.ico'));
     app.use(expressAsyncValidator());
     app.disable('x-powered-by');
 
-    app.use('/swagger', express.static(__dirname + '/swagger'));
+    app.use('/swagger', serveStatic(__dirname + '/swagger'));
     app.use('/api/v1', require('./routes/api/v1'));
-    app.use('/uploads', express.static(__dirname + '/uploads'));
-    app.use(express.static(__dirname + '/public'));
+
+    app.use('/uploads', serveStatic(__dirname + '/uploads'));
+    app.use('/fonts', serveStatic(__dirname + '/public/fonts'));
+    app.use('/images', serveStatic(__dirname + '/public/images'));
+    app.use('/scripts', serveStatic(__dirname + '/public/scripts'));
+    app.use('/styles', serveStatic(__dirname + '/public/styles'));
+    app.use('/views', serveStatic(__dirname + '/public/views'));
+
+    app.use(function (req, res, next) {
+        var browserVersion = req.useragent.Version.split('.', 2),
+            major = parseInt(browserVersion[0] || 0),
+            minor = parseInt(browserVersion[1] || 0);
+        if (req.url !== '/' && (
+            (req.useragent.isIE && major < 10) ||
+            (req.useragent.isFirefox && major < 4) ||
+            (req.useragent.isChrome && major < 5) ||
+            (req.useragent.isSafari && major < 5)
+            )) {
+            res.redirect('/#!' + req.url);
+        } else {
+            next();
+        }
+    });
+
+    app.use(function (req, res, next) {
+        if (req.useragent.isBot) {
+            res.json({"you": req.useragent});
+        } else {
+            next();
+        }
+    });
+
+    app.use(function (req, res, next) {
+        res.sendFile(__dirname + '/public/index.html');
+    });
 
     app.use(function (err, req, res, next) {
+        console.log(err);
         res.format({
             'text/plain':       function () {
                 res.status(err.status).send(err.message);
