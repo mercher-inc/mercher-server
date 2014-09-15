@@ -6,6 +6,10 @@ var app = require('../app'),
 var CategoryModel = BaseModel.extend(
     {
         tableName: 'category',
+        defaults:  {
+            imageId:  null,
+            isPublic: true
+        },
 
         image: function () {
             return this.belongsTo(ImageModel);

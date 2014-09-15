@@ -11,6 +11,17 @@ var app = require('../app'),
 var ProductModel = BaseModel.extend(
     {
         tableName: 'product',
+        defaults:  {
+            categoryId:     null,
+            description:    null,
+            price:          null,
+            shippingCost:   null,
+            shippingWeight: null,
+            amountInStock:  null,
+            isUnique:       false,
+            isPublic:       true,
+            isBanned:       false
+        },
 
         shop:          function () {
             return this.belongsTo(ShopModel);

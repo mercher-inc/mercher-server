@@ -11,6 +11,13 @@ var app = require('../app'),
 var UserModel = BaseModel.extend(
     {
         tableName: 'user',
+        defaults:  {
+            imageId:    null,
+            firstName:  null,
+            lastName:   null,
+            last_login: null,
+            isBanned:   false
+        },
 
         image:  function () {
             return this.belongsTo(ImageModel);

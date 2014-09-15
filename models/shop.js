@@ -8,6 +8,14 @@ var app = require('../app'),
 var ShopModel = BaseModel.extend(
     {
         tableName: 'shop',
+        defaults:  {
+            imageId:     null,
+            description: null,
+            location:    null,
+            tax:         0,
+            isPublic:    true,
+            isBanned:    false
+        },
 
         image: function () {
             return this.belongsTo(ImageModel);

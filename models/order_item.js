@@ -5,6 +5,11 @@ var app = require('../app'),
 var OrderItemModel = BaseModel.extend(
     {
         tableName: 'order_item',
+        defaults:  {
+            price:        null,
+            shippingCost: null,
+            amount:       null
+        },
 
         order:   function () {
             return this.belongsTo(require('./order'));

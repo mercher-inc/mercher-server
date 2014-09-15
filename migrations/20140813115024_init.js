@@ -48,6 +48,7 @@ exports.up = function (knex, Promise) {
                 .createTable('user_email', function (table) {
                     table.increments('id');
                     table.integer('user_id')
+                        .notNullable()
                         .references('id')
                         .inTable('user')
                         .onDelete('CASCADE')
@@ -69,6 +70,7 @@ exports.up = function (knex, Promise) {
                 .createTable('user_third_party_account', function (table) {
                     table.increments('id');
                     table.integer('user_id')
+                        .notNullable()
                         .references('id')
                         .inTable('user')
                         .onDelete('CASCADE')
@@ -86,11 +88,13 @@ exports.up = function (knex, Promise) {
                 .createTable('access_token', function (table) {
                     table.increments('id');
                     table.integer('user_id')
+                        .notNullable()
                         .references('id')
                         .inTable('user')
                         .onDelete('CASCADE')
                         .onUpdate('CASCADE');
-                    table.string('token', 40);
+                    table.string('token', 40)
+                        .notNullable();
                     table.timestamp('expires')
                         .notNullable();
                     table.timestamps();
@@ -104,13 +108,15 @@ exports.up = function (knex, Promise) {
                 .createTable('activation_code', function (table) {
                     table.increments('id');
                     table.integer('user_email_id')
+                        .notNullable()
                         .references('id')
                         .inTable('user_email')
                         .onDelete('CASCADE')
                         .onUpdate('CASCADE');
                     table.specificType('purpose', 'activation_code_purpose')
                         .notNullable();
-                    table.string('code', 40);
+                    table.string('code', 40)
+                        .notNullable();
                     table.timestamps();
                 })
                 .then(function () {
@@ -146,6 +152,7 @@ exports.up = function (knex, Promise) {
                 .createTable('shop_third_party_account', function (table) {
                     table.increments('id');
                     table.integer('shop_id')
+                        .notNullable()
                         .references('id')
                         .inTable('shop')
                         .onDelete('CASCADE')
@@ -165,11 +172,13 @@ exports.up = function (knex, Promise) {
                 .createTable('manager', function (table) {
                     table.increments('id');
                     table.integer('user_id')
+                        .notNullable()
                         .references('id')
                         .inTable('user')
                         .onDelete('CASCADE')
                         .onUpdate('CASCADE');
                     table.integer('shop_id')
+                        .notNullable()
                         .references('id')
                         .inTable('shop')
                         .onDelete('CASCADE')
@@ -304,7 +313,9 @@ exports.up = function (knex, Promise) {
                         .onUpdate('CASCADE');
                     table.decimal('price', 8, 2);
                     table.decimal('shipping_cost', 8, 2);
-                    table.integer('amount');
+                    table.integer('amount')
+                        .defaultTo(0)
+                        .notNullable();
                     table.timestamps();
                 })
                 .then(function () {

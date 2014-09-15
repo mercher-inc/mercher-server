@@ -5,6 +5,10 @@ var app = require('../app'),
 var ProductImageModel = BaseModel.extend(
     {
         tableName: 'product_image',
+        defaults:  {
+            priority: 0,
+            isPublic: true
+        },
 
         image:   function () {
             return this.belongsTo(require('./image'));

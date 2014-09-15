@@ -9,6 +9,11 @@ var app = require('../app'),
 var OrderModel = BaseModel.extend(
     {
         tableName: 'order',
+        defaults:  {
+            managerId: null,
+            status:    'draft',
+            tax:       0
+        },
 
         user:       function () {
             return this.belongsTo(UserModel);

@@ -6,6 +6,10 @@ var app = require('../app'),
 var UserEmailModel = BaseModel.extend(
     {
         tableName: 'user_email',
+        defaults:  {
+            password: null,
+            isActive: false
+        },
 
         user: function () {
             return this.belongsTo(UserModel);

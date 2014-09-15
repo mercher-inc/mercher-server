@@ -7,6 +7,11 @@ var app = require('../app'),
 var ManagerModel = BaseModel.extend(
     {
         tableName: 'manager',
+        defaults:  {
+            role:     null,
+            isPublic: true,
+            isBanned: false
+        },
 
         user: function () {
             return this.belongsTo(UserModel);
