@@ -23,7 +23,7 @@ module.exports = function (job, done) {
             var userEmailModel = activationCodeModel.related('userEmail'),
                 userModel = userEmailModel.related('user'),
                 to = userEmailModel.get('email'),
-                template = jade.compileFile(path.normalize(__dirname + '../../../views/emails/activation_code.jade'), {pretty: true});
+                template = jade.compileFile(path.normalize(__dirname + '../../../views/emails/activation_code.jade'));
 
             var userName = [];
             if (userModel.get('firstName')) {
