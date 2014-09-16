@@ -35,7 +35,7 @@ module.exports = function (job, done) {
             if (userName.length) {
                 userName = userName.join(' ');
                 to = {
-                    name:    userName.join(' '),
+                    name:    userName,
                     address: userEmailModel.get('email')
                 };
             } else {
