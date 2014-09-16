@@ -1,0 +1,12 @@
+doctype transitional
+html
+    head
+    body
+        p= 'Dear ' + userName + ','
+        p
+            | We are glad you've joined us!
+            a(href=activationUrl) Activate your email!
+        p
+            | If you have problems with a link - use this code:
+            span
+                =activationCode

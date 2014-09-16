@@ -1,4 +1,6 @@
-var nodemailer = require('nodemailer'),
+var jade = require('jade'),
+    path = require('path'),
+    nodemailer = require('nodemailer'),
     smtpTransport = require('nodemailer-smtp-transport'),
     transporter = nodemailer.createTransport(
         smtpTransport({
@@ -20,7 +22,8 @@ module.exports = function (job, done) {
         .then(function (activationCodeModel) {
             var userEmailModel = activationCodeModel.related('userEmail'),
                 userModel = userEmailModel.related('user'),
-                to = userEmailModel.get('email');
+                to = userEmailModel.get('email'),
+                template = jade.compileFile(path.normalize(__dirname + '../../../views/emails/activation_code.jade'), {pretty: true});
 
             var userName = [];
             if (userModel.get('firstName')) {
@@ -30,11 +33,21 @@ module.exports = function (job, done) {
                 userName.push(userModel.get('lastName'));
             }
             if (userName.length) {
+                userName = userName.join(' ');
                 to = {
                     name:    userName.join(' '),
                     address: userEmailModel.get('email')
                 };
+            } else {
+                userName = 'Customer';
             }
+
+            var htmlBody = template({
+                userName:       userName,
+                email:          userEmailModel.get('email'),
+                activationCode: activationCodeModel.get('code'),
+                activationUrl:  'http://staging.mercherdev.com/auth/acrivateEmail/' + activationCodeModel.get('code')
+            });
 
             transporter.sendMail({
                 from:    {
@@ -43,7 +56,8 @@ module.exports = function (job, done) {
                 },
                 to:      to,
                 subject: 'Email activation code',
-                text:    activationCodeModel.get('code')
+                text:    activationCodeModel.get('code'),
+                html:    htmlBody
             }, function (err, info) {
                 if (err) {
                     done && done(err);

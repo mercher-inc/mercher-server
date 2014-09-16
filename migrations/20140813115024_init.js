@@ -59,6 +59,9 @@ exports.up = function (knex, Promise) {
                     table.boolean('is_active')
                         .defaultTo(false)
                         .notNullable();
+                    table.boolean('is_banned')
+                        .defaultTo(false)
+                        .notNullable();
                     table.timestamps();
                 })
                 .then(function () {
