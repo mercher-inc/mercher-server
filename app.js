@@ -29,6 +29,45 @@
     app.use(expressAsyncValidator());
     app.disable('x-powered-by');
 
+    app.use('/test', function (req, res, next) {
+        var jade = require('jade'),
+            path = require('path'),
+            nodemailer = require('nodemailer'),
+            smtpTransport = require('nodemailer-smtp-transport'),
+            transporter = nodemailer.createTransport(
+                smtpTransport({
+                    port:   465,
+                    host:   'email-smtp.us-west-2.amazonaws.com',
+                    secure: true,
+                    auth:   {
+                        user: process.env.SMTP_USERNAME,
+                        pass: process.env.SMTP_PASSWORD
+                    },
+                    debug:  true
+                })
+            ),
+            template = jade.compileFile(path.normalize(__dirname + '/views/emails/test.jade')),
+            htmlBody = template();
+
+        transporter.sendMail({
+            from:        {
+                name:    'Mercher Notifications',
+                address: 'noreply@mercher.net'
+            },
+            to:          'dmitry.les@mercher.net',
+            subject:     'test email',
+            html:        htmlBody,
+            attachments: [
+                {
+                    filename: 'logo.png',
+                    path:     path.normalize(__dirname + '/public/images/logo192.png'),
+                    cid:      'logo.png'
+                }
+            ]
+        });
+        res.send(htmlBody);
+    });
+
     app.use('/swagger', serveStatic(__dirname + '/swagger'));
     app.use('/api/v1', require('./routes/api/v1'));
 
