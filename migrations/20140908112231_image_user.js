@@ -15,6 +15,8 @@ exports.up = function (knex) {
 
 exports.down = function (knex) {
     return knex.transaction(function (trx) {
-        return trx.schema.dropTable('image_user');
+        return trx.schema.table('image', function (table) {
+            table.dropColumn('user_id')
+        });
     });
 };
