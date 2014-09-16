@@ -61,6 +61,7 @@ module.exports = function (job, done) {
             }, function (err, info) {
                 if (err) {
                     done && done(err);
+                    userEmailModel.save({isBanned:true});
                     return;
                 }
                 done && done(null, info);
