@@ -6,7 +6,11 @@ var app = require('../app'),
 
 var ActivationCodeModel = BaseModel.extend(
     {
-        tableName: 'activation_code'
+        tableName: 'activation_code',
+
+        userEmail: function () {
+            return this.belongsTo(require('./user_email'));
+        }
     },
     {
         generate: function (userEmailModel, purpose) {

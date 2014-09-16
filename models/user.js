@@ -153,7 +153,13 @@ var UserModel = BaseModel.extend(
                                     })
                                     .then(function (userEmailModel) {
                                         require('./activation_code')
-                                            .generate(userEmailModel, 'email_activation');
+                                            .generate(userEmailModel, 'email_activation')
+                                            .then(function(activationCodeModel){
+                                                require('../modules/queue').create('send email', {
+                                                    type:             'activation_code',
+                                                    activationCodeId: activationCodeModel.id
+                                                }).save();
+                                            });
                                         resolve(userModel);
                                     });
                             })

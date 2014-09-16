@@ -1,7 +1,6 @@
 var app = require('../app'),
     io = app.get('io'),
-    BaseModel = require('./base'),
-    UserModel = require('./user');
+    BaseModel = require('./base');
 
 var UserEmailModel = BaseModel.extend(
     {
@@ -12,7 +11,7 @@ var UserEmailModel = BaseModel.extend(
         },
 
         user: function () {
-            return this.belongsTo(UserModel);
+            return this.belongsTo(require('./user'));
         }
     }
 );
