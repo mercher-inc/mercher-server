@@ -29,6 +29,7 @@
     app.use(expressAsyncValidator());
     app.disable('x-powered-by');
 
+    /*
     app.use('/test', function (req, res, next) {
         var jade = require('jade'),
             path = require('path'),
@@ -52,8 +53,9 @@
         transporter.sendMail({
             from:        {
                 name:    'Mercher Notifications',
-                address: 'noreply@mercher.net'
+                address: 'notifications@mercher.net'
             },
+            replyTo:     'support@mercher.net',
             to:          'dmitry.les@mercher.net',
             subject:     'test email',
             html:        htmlBody,
@@ -67,6 +69,7 @@
         });
         res.send(htmlBody);
     });
+    */
 
     app.use('/swagger', serveStatic(__dirname + '/swagger'));
     app.use('/api/v1', require('./routes/api/v1'));
