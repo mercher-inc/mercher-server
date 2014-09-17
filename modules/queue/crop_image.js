@@ -25,6 +25,32 @@ module.exports = function (job, done) {
         });
     };
 
+    var getColors = function (src) {
+        return new Promise(function (resolve, reject) {
+            im.convert(
+                [
+                    src,
+                    '+dither',
+                    '-colors', '16',
+                    '-unique-colors',
+                    '-depth', '8',
+                    'txt:-'
+                ],
+                function (err, stdout) {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    var reg = /#[A-F0-9]{6}/ig;
+                    var colors = [], found;
+                    while ((found = reg.exec(stdout)) !== null) {
+                        colors.push(found[0].toUpperCase());
+                    }
+                    resolve(colors);
+                });
+        });
+    };
+
     var resizeImage = function (src, dst, size) {
         return new Promise(function (resolve, reject) {
             im.convert(
@@ -130,8 +156,11 @@ module.exports = function (job, done) {
                         });
                 })
                 .then(function () {
-                    fs.unlinkSync(croppedFile);
-                    done && done(null, files);
+                    return getColors(croppedFile)
+                        .then(function (colors) {
+                            fs.unlinkSync(croppedFile);
+                            done && done(null, {files: files, colors: colors});
+                        });
                 })
                 .catch(function (err) {
                     done && done(err);

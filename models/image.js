@@ -57,7 +57,7 @@ var ImageModel = BaseModel.extend(
 
             var job = queue.create('crop image', params).save();
 
-            job.on('complete', function (files) {
+            job.on('complete', function (result) {
                 var _ = require('underscore'),
                     path = require('path');
                 _.each(imageModel.get('files'), function (sizeFiles) {
@@ -66,7 +66,7 @@ var ImageModel = BaseModel.extend(
                         queue.create('delete file', {fileName: oldFileName}).save();
                     });
                 });
-                imageModel.save({files: files, isActive: true});
+                imageModel.save({files: result.files, colors: result.colors, isActive: true});
             }).on('progress', function (progress) {
                 io.sockets.emit('image crop progress changed', {image: imageModel, progress: progress});
             });
