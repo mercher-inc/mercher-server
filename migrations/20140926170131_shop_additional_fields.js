@@ -29,6 +29,18 @@ exports.up = function (knex, Promise) {
                         .onDelete('SET NULL')
                         .onUpdate('CASCADE');
                     table.decimal('rating', 2, 1);
+                    table.string('street_address');
+                    table.string('locality');
+                    table.string('region');
+                    table.string('postal_code');
+                    table.specificType('country', 'country_code')
+                        .defaultTo('US')
+                        .notNullable();
+                    table.string('email');
+                    table.string('phone_number');
+                    table.string('fax_number');
+                    table.string('website');
+                    table.json('working_hours');
                     table.specificType('shipping_countries', 'country_code[]');
                 });
         });
@@ -41,6 +53,16 @@ exports.down = function (knex, Promise) {
             .table('shop', function (table) {
                 table.dropColumn('cover_image_id');
                 table.dropColumn('rating');
+                table.dropColumn('street_address');
+                table.dropColumn('locality');
+                table.dropColumn('region');
+                table.dropColumn('postal_code');
+                table.dropColumn('country');
+                table.dropColumn('email');
+                table.dropColumn('phone_number');
+                table.dropColumn('fax_number');
+                table.dropColumn('website');
+                table.dropColumn('working_hours');
                 table.dropColumn('shipping_countries');
             })
             .then(function () {
