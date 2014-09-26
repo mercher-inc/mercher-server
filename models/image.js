@@ -66,7 +66,7 @@ var ImageModel = BaseModel.extend(
                         queue.create('delete file', {fileName: oldFileName}).save();
                     });
                 });
-                imageModel.save({files: result.files, colors: result.colors, isActive: true});
+                imageModel.save({files: result.files, colors: result.colors, mainColor: result.mainColor, isActive: true});
             }).on('progress', function (progress) {
                 io.sockets.emit('image crop progress changed', {image: imageModel, progress: progress});
             });

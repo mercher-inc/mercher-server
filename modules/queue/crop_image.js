@@ -3,6 +3,7 @@ var im = require('imagemagick'),
     fs = require('fs'),
     path = require('path'),
     crypto = require('crypto'),
+    color = require('onecolor'),
     _ = require('underscore');
 
 module.exports = function (job, done) {
@@ -159,7 +160,14 @@ module.exports = function (job, done) {
                     return getColors(croppedFile)
                         .then(function (colors) {
                             fs.unlinkSync(croppedFile);
-                            done && done(null, {files: files, colors: colors});
+                            colors.sort(function (a, b) {
+                                var aColor = color(a),
+                                    bColor = color(b),
+                                    aDist = Math.abs(aColor.saturation() - 0.9) + Math.abs(aColor.lightness() - 0.45),
+                                    bDist = Math.abs(bColor.saturation() - 0.9) + Math.abs(bColor.lightness() - 0.45);
+                                return aDist - bDist;
+                            });
+                            done && done(null, {files: files, colors: colors, mainColor: color(colors[0]).saturation(0.9).lightness(.45).hex().toUpperCase()});
                         });
                 })
                 .catch(function (err) {
