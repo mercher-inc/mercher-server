@@ -23,9 +23,7 @@ exports.up = function (knex, Promise) {
         ]).then(function () {
             return trx.schema
                 .table('shop', function (table) {
-                    table.specificType('shipping_countries', 'country_code[]')
-                        .defaultTo('{US}')
-                        .notNullable();
+                    table.specificType('shipping_countries', 'country_code[]');
                 });
         });
     });
