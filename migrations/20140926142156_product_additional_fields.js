@@ -21,6 +21,7 @@ exports.up = function (knex, Promise) {
                     table.specificType('target_gender', 'product_target_gender');
                     table.timestamp('expiration_time');
 
+                    table.decimal('rating', 2, 1);
                     table.string('brand');
                     table.string('manufacturer_part_number');
                     table.string('ean');
@@ -51,6 +52,7 @@ exports.down = function (knex, Promise) {
                 table.dropColumn('condition');
                 table.dropColumn('target_gender');
                 table.dropColumn('expiration_time');
+                table.dropColumn('rating');
                 table.dropColumn('brand');
                 table.dropColumn('manufacturer_part_number');
                 table.dropColumn('ean');

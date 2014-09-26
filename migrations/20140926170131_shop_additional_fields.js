@@ -23,6 +23,12 @@ exports.up = function (knex, Promise) {
         ]).then(function () {
             return trx.schema
                 .table('shop', function (table) {
+                    table.integer('cover_image_id')
+                        .references('id')
+                        .inTable('image')
+                        .onDelete('SET NULL')
+                        .onUpdate('CASCADE');
+                    table.decimal('rating', 2, 1);
                     table.specificType('shipping_countries', 'country_code[]');
                 });
         });
@@ -33,6 +39,8 @@ exports.down = function (knex, Promise) {
     return knex.transaction(function (trx) {
         return trx.schema
             .table('shop', function (table) {
+                table.dropColumn('cover_image_id');
+                table.dropColumn('rating');
                 table.dropColumn('shipping_countries');
             })
             .then(function () {
