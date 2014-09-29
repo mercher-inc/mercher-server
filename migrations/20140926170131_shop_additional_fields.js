@@ -23,6 +23,7 @@ exports.up = function (knex, Promise) {
         ]).then(function () {
             return trx.schema
                 .table('shop', function (table) {
+                    table.string('google_analytics_id');
                     table.integer('cover_image_id')
                         .references('id')
                         .inTable('image')
@@ -51,6 +52,7 @@ exports.down = function (knex, Promise) {
     return knex.transaction(function (trx) {
         return trx.schema
             .table('shop', function (table) {
+                table.dropColumn('google_analytics_id');
                 table.dropColumn('cover_image_id');
                 table.dropColumn('rating');
                 table.dropColumn('street_address');
