@@ -167,7 +167,14 @@ module.exports = function (job, done) {
                                     bDist = Math.abs(bColor.saturation() - 0.9) + Math.abs(bColor.lightness() - 0.45);
                                 return aDist - bDist;
                             });
-                            done && done(null, {files: files, colors: colors, mainColor: color(colors[0]).saturation(0.9).lightness(.45).hex().toUpperCase()});
+                            var mainColor = color(colors[0]).hex().toUpperCase(),
+                                colorSchema = 'light';
+
+                            if (color(mainColor).lightness() > 0.75) {
+                                colorSchema = 'dark';
+                            }
+
+                            done && done(null, {files: files, colors: colors, mainColor: mainColor, colorSchema: colorSchema});
                         });
                 })
                 .catch(function (err) {
