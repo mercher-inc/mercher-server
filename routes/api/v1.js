@@ -67,6 +67,7 @@ router.use('/products', require('./v1/products'));
 router.use('/product_images', require('./v1/product_images'));
 router.use('/orders', require('./v1/orders'));
 router.use('/order_items', require('./v1/order_items'));
+router.use('/paypal_accounts', require('./v1/paypal_accounts'));
 
 // documentation
 router.use('/docs', require('./v1/docs'));

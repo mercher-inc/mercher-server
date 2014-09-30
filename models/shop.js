@@ -21,6 +21,10 @@ var ShopModel = BaseModel.extend(
             return this.belongsTo(ImageModel);
         },
 
+        payPalAccounts: function () {
+            return this.belongsToMany(require('./paypal_account'), 'shop_paypal_account');
+        },
+
         initialize:       function () {
             this.on('creating', this.validateCreating);
             this.on('updating', this.validateUpdating);

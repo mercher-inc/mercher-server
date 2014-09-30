@@ -191,5 +191,6 @@ router.put('/:shopId', function (req, res, next) {
 
 router.use('/:shopId/managers', require('./shops/managers'));
 router.use('/:shopId/orders', require('./shops/orders'));
+router.use('/:shopId/paypal_accounts', require('./shops/paypal_accounts'));
 
 module.exports = router;
