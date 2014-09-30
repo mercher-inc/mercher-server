@@ -10,35 +10,30 @@ var PayPalAccountModel = BaseModel.extend(
     {
         register: function (credentials) {
             var PayPalAccountModel = this,
-                payPalAccountModel = new PayPalAccountModel(),
                 PayPal = require('../modules/paypal'),
                 payPalClient = new PayPal,
-                ShopPayPalAuthRequestModel = require('../models/shop_paypal_auth_request'),
-                ShopPayPalAccountModel = require('../models/shop_paypal_account');
+                ShopPayPalAuthRequestModel = require('../models/shop_paypal_auth_request');
 
             return new Promise(function (resolve, reject) {
                 new ShopPayPalAuthRequestModel({requestToken: credentials.requestToken})
-                    .fetch({require: true})
+                    .fetch({require: true, withRelated: ['shop']})
                     .then(function (shopPayPalAuthRequestModel) {
-//                        console.log(shopPayPalAuthRequestModel);
+//                        console.log('shopPayPalAuthRequestModel:', shopPayPalAuthRequestModel.attributes);
+
+                        return shopPayPalAuthRequestModel.related('shop');
+                    })
+                    .then(function (shopModel) {
+//                        console.log('shopModel:', shopModel.attributes);
 
                         //Getting access token
-                        payPalClient
+                        return payPalClient
                             .send('Permissions/GetAccessToken', {
                                 token:    credentials.requestToken,
                                 verifier: credentials.verificationCode
                             })
-                            .then(function (payPalResponse) {
-//                                console.log(payPalResponse);
-                                //Setting access token
-                                payPalAccountModel.set({
-                                    token:              payPalResponse.token,
-                                    secret:             payPalResponse.tokenSecret,
-                                    accountPermissions: payPalResponse.scope
-                                });
-
+                            .then(function (accessTokenResponse) {
                                 //Getting personal data
-                                payPalClient
+                                return payPalClient
                                     .send('Permissions/GetAdvancedPersonalData', {
                                         attributeList: {
                                             attribute: [
@@ -57,64 +52,79 @@ var PayPalAccountModel = BaseModel.extend(
                                             ]
                                         }
                                     }, {
-                                        token:        payPalResponse.token,
-                                        token_secret: payPalResponse.tokenSecret
+                                        token:        accessTokenResponse.token,
+                                        token_secret: accessTokenResponse.tokenSecret
                                     })
-                                    .then(function (payPalResponse) {
-//                                        console.log(payPalResponse.response.personalData);
-                                        Object.keys(payPalResponse.response.personalData).map(function (i) {
-                                            switch (payPalResponse.response.personalData[i].personalDataKey) {
+                                    .then(function (advancedPersonalDataResponse) {
+                                        var personalData = {};
+                                        Object.keys(advancedPersonalDataResponse.response.personalData).map(function (i) {
+                                            switch (advancedPersonalDataResponse.response.personalData[i].personalDataKey) {
                                                 case 'http://axschema.org/namePerson/first':
-                                                    payPalAccountModel.set('firstName', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['firstName'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'http://axschema.org/namePerson/last':
-                                                    payPalAccountModel.set('lastName', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['lastName'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'http://axschema.org/contact/email':
-                                                    payPalAccountModel.set('accountEmail', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['accountEmail'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'http://axschema.org/company/name':
-                                                    payPalAccountModel.set('businessName', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['businessName'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'http://axschema.org/contact/country/home':
-                                                    payPalAccountModel.set('country', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['country'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'http://axschema.org/contact/postalCode/home':
-                                                    payPalAccountModel.set('postalCode', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['postalCode'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'http://schema.openid.net/contact/street1':
-                                                    payPalAccountModel.set('street1', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['street1'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'http://schema.openid.net/contact/street2':
-                                                    payPalAccountModel.set('street2', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['street2'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'http://axschema.org/contact/city/home':
-                                                    payPalAccountModel.set('city', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['city'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'http://axschema.org/contact/state/home':
-                                                    payPalAccountModel.set('state', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['state'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'http://axschema.org/contact/phone/default':
-                                                    payPalAccountModel.set('phone', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['phone'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                                 case 'https://www.paypal.com/webapps/auth/schema/payerID':
-                                                    payPalAccountModel.set('accountId', payPalResponse.response.personalData[i].personalDataValue);
+                                                    personalData['accountId'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
                                             }
                                         });
-                                        payPalAccountModel
-                                            .save()
+
+                                        return new PayPalAccountModel({accountEmail: personalData['accountEmail']})
+                                            .fetch()
                                             .then(function (payPalAccountModel) {
-                                                resolve(payPalAccountModel);
-                                            });
+//                                                console.log('payPalAccountModel:', payPalAccountModel.attributes);
+                                                //Setting personal data
+                                                payPalAccountModel.set(personalData);
+                                                //Setting access token
+                                                payPalAccountModel.set({
+                                                    token:              accessTokenResponse.token,
+                                                    secret:             accessTokenResponse.tokenSecret,
+                                                    accountPermissions: accessTokenResponse.scope
+                                                });
+                                                return payPalAccountModel.save();
+                                            })
                                     })
-                                    .catch(function (e) {
-                                        reject(e);
+                            })
+                            .then(function (payPalAccountModel) {
+                                return shopModel
+                                    .related('payPalAccounts')
+                                    .attach(payPalAccountModel)
+                                    .then(function () {
+                                        return payPalAccountModel;
                                     });
                             })
-                            .catch(function (e) {
-                                reject(e);
-                            });
+                            .then(function (payPalAccountModel) {
+                                resolve(payPalAccountModel);
+                            })
                     })
                     .catch(ShopPayPalAuthRequestModel.NotFoundError, function (e) {
                         reject(e);

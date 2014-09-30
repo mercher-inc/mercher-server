@@ -4,7 +4,11 @@ var app = require('../app'),
 
 var ShopPayPalAuthRequestModel = BaseModel.extend(
     {
-        tableName: 'shop_paypal_auth_request'
+        tableName: 'shop_paypal_auth_request',
+
+        shop: function () {
+            return this.belongsTo(require('./shop'));
+        }
     }
 );
 
