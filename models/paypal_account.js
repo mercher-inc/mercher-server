@@ -45,7 +45,6 @@ var PayPalAccountModel = BaseModel.extend(
                                                 'http://axschema.org/namePerson/first',
                                                 'http://axschema.org/namePerson/last',
                                                 'http://axschema.org/contact/email',
-                                                'http://schema.openid.net/contact/fullname',
                                                 'http://axschema.org/company/name',
                                                 'http://axschema.org/contact/country/home',
                                                 'http://axschema.org/contact/postalCode/home',
@@ -65,17 +64,38 @@ var PayPalAccountModel = BaseModel.extend(
 //                                        console.log(payPalResponse.response.personalData);
                                         Object.keys(payPalResponse.response.personalData).map(function (i) {
                                             switch (payPalResponse.response.personalData[i].personalDataKey) {
-                                                case 'http://axschema.org/company/name':
-                                                    payPalAccountModel.set('businessName', payPalResponse.response.personalData[i].personalDataValue);
-                                                    break;
-                                                case 'http://axschema.org/contact/email':
-                                                    payPalAccountModel.set('accountEmail', payPalResponse.response.personalData[i].personalDataValue);
-                                                    break;
                                                 case 'http://axschema.org/namePerson/first':
                                                     payPalAccountModel.set('firstName', payPalResponse.response.personalData[i].personalDataValue);
                                                     break;
                                                 case 'http://axschema.org/namePerson/last':
                                                     payPalAccountModel.set('lastName', payPalResponse.response.personalData[i].personalDataValue);
+                                                    break;
+                                                case 'http://axschema.org/contact/email':
+                                                    payPalAccountModel.set('accountEmail', payPalResponse.response.personalData[i].personalDataValue);
+                                                    break;
+                                                case 'http://axschema.org/company/name':
+                                                    payPalAccountModel.set('businessName', payPalResponse.response.personalData[i].personalDataValue);
+                                                    break;
+                                                case 'http://axschema.org/contact/country/home':
+                                                    payPalAccountModel.set('country', payPalResponse.response.personalData[i].personalDataValue);
+                                                    break;
+                                                case 'http://axschema.org/contact/postalCode/home':
+                                                    payPalAccountModel.set('postalCode', payPalResponse.response.personalData[i].personalDataValue);
+                                                    break;
+                                                case 'http://schema.openid.net/contact/street1':
+                                                    payPalAccountModel.set('street1', payPalResponse.response.personalData[i].personalDataValue);
+                                                    break;
+                                                case 'http://schema.openid.net/contact/street2':
+                                                    payPalAccountModel.set('street2', payPalResponse.response.personalData[i].personalDataValue);
+                                                    break;
+                                                case 'http://axschema.org/contact/city/home':
+                                                    payPalAccountModel.set('city', payPalResponse.response.personalData[i].personalDataValue);
+                                                    break;
+                                                case 'http://axschema.org/contact/state/home':
+                                                    payPalAccountModel.set('state', payPalResponse.response.personalData[i].personalDataValue);
+                                                    break;
+                                                case 'http://axschema.org/contact/phone/default':
+                                                    payPalAccountModel.set('phone', payPalResponse.response.personalData[i].personalDataValue);
                                                     break;
                                                 case 'https://www.paypal.com/webapps/auth/schema/payerID':
                                                     payPalAccountModel.set('accountId', payPalResponse.response.personalData[i].personalDataValue);

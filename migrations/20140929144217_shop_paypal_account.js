@@ -52,6 +52,13 @@ exports.up = function (knex, Promise) {
                         .notNullable();
                     table.string('business_name')
                         .notNullable();
+                    table.specificType('country', 'country_code');
+                    table.string('postal_code');
+                    table.string('street1');
+                    table.string('street2');
+                    table.string('city');
+                    table.string('state');
+                    table.string('phone');
                     table.specificType('account_type', 'paypal_account_type');
                     table.specificType('account_permissions', 'paypal_account_permission[]');
                     table.string('token')
