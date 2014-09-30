@@ -40,14 +40,8 @@ exports.up = function (knex, Promise) {
             trx.schema.raw('CREATE TYPE "paypal_account_type" AS ENUM (\'' + payPalAccountTypes.join('\', \'') + '\')')
         ]).then(function () {
             return trx.schema
-                .createTable('shop_paypal_account', function (table) {
+                .createTable('paypal_account', function (table) {
                     table.increments('id');
-                    table.integer('shop_id')
-                        .notNullable()
-                        .references('id')
-                        .inTable('shop')
-                        .onDelete('CASCADE')
-                        .onUpdate('CASCADE');
                     table.string('account_email')
                         .notNullable();
                     table.string('account_id')
@@ -64,16 +58,69 @@ exports.up = function (knex, Promise) {
                         .notNullable();
                     table.string('secret')
                         .notNullable();
+                    table.boolean('is_verified');
+                    table.boolean('is_active')
+                        .defaultTo(true)
+                        .notNullable();
                     table.timestamps();
-                });
+                })
+                .then(function () {
+                    return Promise.all([
+                        trx.schema
+                            .table('shop', function (table) {
+                                table.integer('paypal_account_id')
+                                    .references('id')
+                                    .inTable('paypal_account')
+                                    .onDelete('SET NULL')
+                                    .onUpdate('CASCADE');
+                            }),
+                        trx.schema
+                            .createTable('shop_paypal_account', function (table) {
+                                table.integer('shop_id')
+                                    .notNullable()
+                                    .references('id')
+                                    .inTable('shop')
+                                    .onDelete('CASCADE')
+                                    .onUpdate('CASCADE');
+                                table.integer('paypal_account_id')
+                                    .notNullable()
+                                    .references('id')
+                                    .inTable('paypal_account')
+                                    .onDelete('CASCADE')
+                                    .onUpdate('CASCADE');
+                            }),
+                        trx.schema
+                            .createTable('shop_paypal_auth_request', function (table) {
+                                table.increments('id');
+                                table.integer('shop_id')
+                                    .notNullable()
+                                    .references('id')
+                                    .inTable('shop')
+                                    .onDelete('CASCADE')
+                                    .onUpdate('CASCADE');
+                                table.string('request_token')
+                                    .notNullable();
+                                table.timestamps();
+                            })
+                    ]);
+                })
         });
     });
 };
 
 exports.down = function (knex, Promise) {
     return knex.transaction(function (trx) {
-        return trx.schema
-            .dropTable('shop_paypal_account')
+        return Promise
+            .all([
+                trx.schema.dropTable('shop_paypal_auth_request'),
+                trx.schema.dropTable('shop_paypal_account'),
+                trx.schema.table('shop', function (table) {
+                    table.dropColumn('paypal_account_id')
+                })
+            ])
+            .then(function () {
+                return trx.schema.dropTable('paypal_account');
+            })
             .then(function () {
                 return Promise.all([
                     trx.schema.raw('DROP TYPE "paypal_account_permission"'),

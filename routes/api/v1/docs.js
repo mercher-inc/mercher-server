@@ -45,6 +45,10 @@ router.get('/', function (req, res) {
             {
                 "path":        "/images",
                 "description": "Image resource"
+            },
+            {
+                "path":        "/paypal_accounts",
+                "description": "PayPal accounts resource"
             }
         ],
         "info":           {
@@ -65,5 +69,6 @@ router.use('/managers', require('./docs/resources/managers'));
 router.use('/orders', require('./docs/resources/orders'));
 router.use('/order_items', require('./docs/resources/order_items'));
 router.use('/images', require('./docs/resources/images'));
+router.use('/paypal_accounts', require('./docs/resources/paypal_accounts'));
 
 module.exports = router;

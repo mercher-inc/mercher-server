@@ -144,7 +144,7 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "User":              require('../models/user'),
-            "UserRequest":              require('../models/request/user'),
+            "UserRequest":       require('../models/request/user'),
             "Image":             require('../models/image'),
             "UsersList":         require('../collections/users'),
             "RequestError":      require('../errors/request'),

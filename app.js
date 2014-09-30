@@ -30,55 +30,10 @@
     app.disable('x-powered-by');
 
     app.use('/test', function (req, res, next) {
-        var PayPal = require('./modules/paypal'),
-            payPalClient = new PayPal;
-
-        if (req.query['request_token'] && req.query['verification_code']) {
-            payPalClient
-                .send('Permissions/GetAccessToken', {
-                    token:    req.query['request_token'],
-                    verifier: req.query['verification_code']
-                })
-                .then(function (payPalResponse) {
-                    payPalClient
-                        .send('Permissions/GetAdvancedPersonalData', {
-                            attributeList: {
-                                attribute: [
-                                    'http://axschema.org/company/name',
-                                    'http://axschema.org/contact/email'
-                                ]
-                            }
-                        }, {
-                            token:        payPalResponse.token,
-                            token_secret: payPalResponse.tokenSecret
-                        })
-                        .then(function (payPalResponse) {
-                            res.json(payPalResponse);
-                        })
-                        .catch(function (e) {
-                            res.json(e);
-                        });
-                })
-                .catch(function (e) {
-                    res.json(e);
-                });
-        } else {
-            payPalClient
-                .send('Permissions/RequestPermissions', {
-                    scope:    [
-                        'REFUND',
-                        'ACCESS_BASIC_PERSONAL_DATA',
-                        'ACCESS_ADVANCED_PERSONAL_DATA'
-                    ],
-                    callback: 'http://local.mercherdev.com/test'
-                })
-                .then(function (payPalResponse) {
-                    res.send('<a href="https://sandbox.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token=' + payPalResponse.token + '" target="_blank">login</a>');
-                })
-                .catch(function (e) {
-                    res.json(e);
-                });
-        }
+        res.json({
+            "requestToken":     req.query['request_token'],
+            "verificationCode": req.query['verification_code']
+        });
     });
 
     app.use('/swagger', serveStatic(__dirname + '/swagger'));

@@ -28,6 +28,55 @@
             sandbox:       true
         };
 
+        this.genSign = function (consumerKey, consumerSecret, token, tokenSecret, httpMethod, endpoint) {
+            var data = {
+                "oauth_consumer_key":     consumerKey,
+                "oauth_signature_method": "HMAC-SHA1",
+                "oauth_timestamp":        Math.round((new Date()).getTime() / 1000),
+                "oauth_token":            token,
+                "oauth_version":          "1.0"
+            };
+
+            var dataString = Object.keys(data).sort().map(function (i) {
+                return i + '=' + data[i]
+            }).join('&');
+
+            var dataArray = [
+                httpMethod.toUpperCase(),
+                endpoint,
+                dataString
+            ];
+
+            var baseString = dataArray.map(function (i) {
+                return rfc3986(i).replace(/(%[A-Za-z0-9]{2})/g, function (s) {
+                    return s.toLowerCase();
+                });
+            }).join('&');
+
+            var keyParts = [
+                consumerSecret,
+                tokenSecret ? tokenSecret : ""
+            ];
+
+            var key = keyParts.map(function (i) {
+                return rfc3986(i).replace(/(%[A-Za-z0-9]{2})/g, function (s) {
+                    return s.toLowerCase();
+                });
+            }).join('&');
+
+            var hmac = crypto.createHmac('sha1', key);
+            hmac.update(baseString);
+            data["oauth_signature"] = hmac.digest('base64');
+            return data;
+        };
+
+        this.generateFullAuthString = function (consumerKey, consumerSecret, token, tokenSecret, httpMethod, endpoint) {
+            var response = this.genSign(consumerKey, consumerSecret, token, tokenSecret, httpMethod, endpoint);
+            return "token=" + response['oauth_token'] +
+                ",signature=" + response['oauth_signature'] +
+                ",timestamp=" + response['oauth_timestamp'];
+        };
+
         this.send = function (endpoint, data, oauth) {
             var client = this;
             return new Promise(function (resolve, reject) {
@@ -49,61 +98,14 @@
                     }
                 };
                 if (oauth) {
-                    oauth.consumer_key = client.options.userId;
-                    oauth.consumer_secret = client.options.password;
-
-                    var oAuthData = {
-                        "oauth_consumer_key":     oauth.consumer_key,
-                        "oauth_signature_method": "HMAC-SHA1",
-                        "oauth_timestamp":        Math.round((new Date()).getTime() / 1000),
-                        "oauth_token":            oauth.token,
-                        "oauth_version":          "1.0"
-                    };
-
-                    var oAuthDataString = Object.keys(oAuthData).sort().map(function (i) {
-                        return i + '=' + oAuthData[i]
-                    }).join('&');
-
-                    var dataArray = [
+                    requestOptions.headers["X-PAYPAL-AUTHORIZATION"] = client.generateFullAuthString(
+                        client.options.userId,
+                        client.options.password,
+                        oauth.token,
+                        oauth.token_secret,
                         requestOptions.method,
-                        requestOptions.url,
-                        oAuthDataString
-                    ];
-
-                    console.log(dataArray);
-
-                    var baseString = dataArray.map(function (i) {
-                        return rfc3986(i).replace(/(%[A-Za-z0-9]{2})/g, function (s) {
-                            return s.toLowerCase();
-                        });
-                    }).join('&');
-
-                    console.log(baseString);
-
-                    var keyParts = [
-                        oauth.consumer_secret,
-                        oauth.token_secret ? oauth.token_secret : ""
-                    ];
-                    console.log(keyParts);
-
-                    var key = keyParts.map(function (i) {
-                        return rfc3986(i).replace(/(%[A-Za-z0-9]{2})/g, function (s) {
-                            return s.toLowerCase();
-                        });
-                    }).join('&');
-                    console.log(key);
-
-                    var hmac = crypto.createHmac('sha1', key);
-                    hmac.update(baseString);
-                    var signature = hmac.digest('base64');
-                    console.log(signature);
-
-                    console.log(oauth);
-                    console.log(oAuthData);
-
-                    requestOptions.headers["X-PAYPAL-AUTHORIZATION"] = "token=" + oauth.token + ",signature=" + signature + ",timestamp=" + oAuthData['oauth_timestamp'];
-                    console.log(requestOptions.headers["X-PAYPAL-AUTHORIZATION"]);
-
+                        requestOptions.url
+                    );
                 } else {
                     requestOptions.headers["X-PAYPAL-SECURITY-USERID"] = client.options.userId;
                     requestOptions.headers["X-PAYPAL-SECURITY-PASSWORD"] = client.options.password;
@@ -127,15 +129,3 @@
     };
 
 })(module, require);
-
-
-/*
- POST&https%3a%2f%2fsvcs%2esandbox%2epaypal%2ecom%2fPermissions%2fGetAdvancedPersonalData&oauth_consumer_key%3ddmitriy%2es%2eles%2dfacilitator_api1%2egmail%2ecom%26oauth_signature_method%3dHMAC%2dSHA1%26oauth_timestamp%3d1412071471%26oauth_token%3dUUvJK9iUQuNUKoAwxkH29I53sZPoPtGy3JAPQ%2e71khmMlqf3ptApyw%26oauth_version%3d1%2e0
- POST&https%3a%2f%2fsvcs%2esandbox%2epaypal%2ecom%2fPermissions%2fGetAdvancedPersonalData&oauth_consumer_key%3ddmitriy%2es%2eles%2dfacilitator_api1%2egmail%2ecom%26oauth_signature_method%3dHMAC%2dSHA1%26oauth_timestamp%3d1412071471%26oauth_token%3dUUvJK9iUQuNUKoAwxkH29I53sZPoPtGy3JAPQ%2e71khmMlqf3ptApyw%26oauth_version%3d1%2e0
-
- 1391764851&m6BC04aB8Q0aw%2dX3T%2eHsxGv%2d%2elk
- 1391764851&m6BC04aB8Q0aw%2dX3T%2eHsxGv%2d%2elk
-
- +uAa1SLWZxkWcGNPNfVLbaWkxcw=
- +uAa1SLWZxkWcGNPNfVLbaWkxcw=
- */
