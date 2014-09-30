@@ -3,7 +3,7 @@ var express = require('express'),
     router = express.Router(),
     ShopModel = require('../../../../models/shop');
 
-router.get('/auth_link', function (req, res, next) {
+router.post('/request', function (req, res, next) {
     var PayPal = require('../../../../modules/paypal'),
         payPalClient = new PayPal,
         ShopPayPalAuthRequestModel = require('../../../../models/shop_paypal_auth_request'),
@@ -22,10 +22,11 @@ router.get('/auth_link', function (req, res, next) {
             shopPayPalAuthRequestModel
                 .save({requestToken: payPalResponse.token})
                 .then(function (shopPayPalAuthRequestModel) {
-                    res.status(201).json({
-                        "authLink": 'https://sandbox.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token=' + payPalResponse.token,
-                        "model":    shopPayPalAuthRequestModel
-                    });
+                    if (req.query.redirect === 'true') {
+                        res.redirect('https://sandbox.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token=' + payPalResponse.token);
+                    } else {
+                        res.status(201).json(shopPayPalAuthRequestModel);
+                    }
                 });
         })
         .catch(function (e) {

@@ -15,13 +15,13 @@ router.get('/', function (req, res) {
         ],
         "apis":           [
             {
-                "path":       "/api/v1/shops/{shopId}/paypal_accounts/auth_link",
+                "path":       "/api/v1/shops/{shopId}/paypal_accounts/request",
                 "operations": [
                     {
-                        "method":           "GET",
-                        "summary":          "Generate auth link",
-                        "type":             "PayPalAuthLink",
-                        "nickname":         "generate_auth_link",
+                        "method":           "POST",
+                        "summary":          "Create PayPal account request",
+                        "type":             "ShopPayPalAuthRequest",
+                        "nickname":         "create_request",
                         "parameters":       [
                             {
                                 "name":        "shopId",
@@ -29,13 +29,20 @@ router.get('/', function (req, res) {
                                 "required":    true,
                                 "type":        "integer",
                                 "paramType":   "path"
+                            },
+                            {
+                                "name":        "redirect",
+                                "description": "Redirect to auth page",
+                                "required":    true,
+                                "type":        "boolean",
+                                "paramType":   "query"
                             }
                         ],
                         "responseMessages": [
                             {
-                                "code":          200,
+                                "code":          201,
                                 "message":       "OK",
-                                "responseModel": "PayPalAuthLink"
+                                "responseModel": "ShopPayPalAuthRequest"
                             },
                             {
                                 "code":          400,
@@ -81,6 +88,8 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "PayPalAccount":            require('../models/paypal_account'),
+            "ShopPayPalAuthRequest":    require('../models/shop_paypal_auth_request'),
+            "Shop":                     require('../models/shop'),
             "PayPalAccountCredentials": require('../models/request/paypal_account_credentials'),
             "ValidationError":          require('../errors/validation'),
             "FieldError":               require('../errors/field')
