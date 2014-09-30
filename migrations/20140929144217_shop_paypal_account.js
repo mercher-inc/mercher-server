@@ -50,8 +50,7 @@ exports.up = function (knex, Promise) {
                         .notNullable();
                     table.string('last_name')
                         .notNullable();
-                    table.string('business_name')
-                        .notNullable();
+                    table.string('business_name');
                     table.specificType('country', 'country_code');
                     table.string('postal_code');
                     table.string('street1');
@@ -59,13 +58,16 @@ exports.up = function (knex, Promise) {
                     table.string('city');
                     table.string('state');
                     table.string('phone');
-                    table.specificType('account_type', 'paypal_account_type');
-                    table.specificType('account_permissions', 'paypal_account_permission[]');
+                    table.specificType('account_type', 'paypal_account_type')
+                        .notNullable();
+                    table.specificType('account_permissions', 'paypal_account_permission[]')
+                        .notNullable();
                     table.string('token')
                         .notNullable();
                     table.string('secret')
                         .notNullable();
-                    table.boolean('is_verified');
+                    table.boolean('is_verified')
+                        .notNullable();
                     table.timestamps();
                 })
                 .then(function () {
