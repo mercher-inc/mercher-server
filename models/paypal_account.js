@@ -30,7 +30,7 @@ var PayPalAccountModel = BaseModel.extend(
                                 verifier: credentials.verificationCode
                             })
                             // We don't need PayPal Auth request anymore, delete it
-                            .then(function(accessTokenResponse){
+                            .then(function (accessTokenResponse) {
                                 return shopPayPalAuthRequestModel
                                     .destroy()
                                     .then(function () {
@@ -101,9 +101,6 @@ var PayPalAccountModel = BaseModel.extend(
                                                 case 'http://axschema.org/contact/phone/default':
                                                     personalData['phone'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
                                                     break;
-                                                case 'https://www.paypal.com/webapps/auth/schema/payerID':
-                                                    personalData['accountId'] = advancedPersonalDataResponse.response.personalData[i].personalDataValue;
-                                                    break;
                                             }
                                         });
 
@@ -123,9 +120,32 @@ var PayPalAccountModel = BaseModel.extend(
                                                     secret:             accessTokenResponse.tokenSecret,
                                                     accountPermissions: accessTokenResponse.scope
                                                 });
-                                                return payPalAccountModel.save();
+                                                return payPalAccountModel;
                                             })
                                     })
+                            })
+                            // Checking account verification status and account type
+                            .then(function (payPalAccountModel) {
+                                return payPalClient
+                                    .send('AdaptiveAccounts/GetVerifiedStatus', {
+                                        emailAddress:  payPalAccountModel.get('accountEmail'),
+                                        firstName:     payPalAccountModel.get('firstName'),
+                                        lastName:      payPalAccountModel.get('lastName'),
+                                        matchCriteria: 'NAME'
+                                    })
+                                    // Setting verification status and account type
+                                    .then(function (verifiedStatusResponse) {
+                                        payPalAccountModel.set({
+                                            isVerified:  verifiedStatusResponse.accountStatus === 'VERIFIED',
+                                            accountType: verifiedStatusResponse.userInfo.accountType,
+                                            accountId:   verifiedStatusResponse.userInfo.accountId
+                                        });
+                                        return payPalAccountModel;
+                                    })
+                            })
+                            // Saving PayPal Account
+                            .then(function (payPalAccountModel) {
+                                return payPalAccountModel.save();
                             })
                             // Attaching PayPal account to the shop
                             .then(function (payPalAccountModel) {
