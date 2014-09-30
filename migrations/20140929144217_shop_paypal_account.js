@@ -66,9 +66,6 @@ exports.up = function (knex, Promise) {
                     table.string('secret')
                         .notNullable();
                     table.boolean('is_verified');
-                    table.boolean('is_active')
-                        .defaultTo(true)
-                        .notNullable();
                     table.timestamps();
                 })
                 .then(function () {
