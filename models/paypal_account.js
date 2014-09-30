@@ -26,6 +26,13 @@ var PayPalAccountModel = BaseModel.extend(
                                 token:    credentials.requestToken,
                                 verifier: credentials.verificationCode
                             })
+                            .then(function(accessTokenResponse){
+                                return shopPayPalAuthRequestModel
+                                    .destroy()
+                                    .then(function () {
+                                        return accessTokenResponse;
+                                    });
+                            })
                             .then(function (accessTokenResponse) {
                                 //Getting personal data
                                 return payPalClient
@@ -116,13 +123,6 @@ var PayPalAccountModel = BaseModel.extend(
                                 return shopModel
                                     .related('payPalAccounts')
                                     .attach(payPalAccountModel)
-                                    .then(function () {
-                                        return payPalAccountModel;
-                                    });
-                            })
-                            .then(function(payPalAccountModel){
-                                return shopPayPalAuthRequestModel
-                                    .destroy()
                                     .then(function () {
                                         return payPalAccountModel;
                                     });
