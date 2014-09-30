@@ -18,12 +18,7 @@ var PayPalAccountModel = BaseModel.extend(
                 new ShopPayPalAuthRequestModel({requestToken: credentials.requestToken})
                     .fetch({require: true, withRelated: ['shop']})
                     .then(function (shopPayPalAuthRequestModel) {
-//                        console.log('shopPayPalAuthRequestModel:', shopPayPalAuthRequestModel.attributes);
-
-                        return shopPayPalAuthRequestModel.related('shop');
-                    })
-                    .then(function (shopModel) {
-//                        console.log('shopModel:', shopModel.attributes);
+                        var shopModel = shopPayPalAuthRequestModel.related('shop');
 
                         //Getting access token
                         return payPalClient
@@ -102,6 +97,9 @@ var PayPalAccountModel = BaseModel.extend(
                                             .fetch()
                                             .then(function (payPalAccountModel) {
 //                                                console.log('payPalAccountModel:', payPalAccountModel.attributes);
+                                                if (!payPalAccountModel) {
+                                                    payPalAccountModel = new PayPalAccountModel();
+                                                }
                                                 //Setting personal data
                                                 payPalAccountModel.set(personalData);
                                                 //Setting access token
@@ -118,6 +116,13 @@ var PayPalAccountModel = BaseModel.extend(
                                 return shopModel
                                     .related('payPalAccounts')
                                     .attach(payPalAccountModel)
+                                    .then(function () {
+                                        return payPalAccountModel;
+                                    });
+                            })
+                            .then(function(payPalAccountModel){
+                                return shopPayPalAuthRequestModel
+                                    .destroy()
                                     .then(function () {
                                         return payPalAccountModel;
                                     });
