@@ -15,17 +15,21 @@ var PayPalAccountModel = BaseModel.extend(
                 ShopPayPalAuthRequestModel = require('../models/shop_paypal_auth_request');
 
             return new Promise(function (resolve, reject) {
+                // Getting Shop's PayPal Auth request
                 new ShopPayPalAuthRequestModel({requestToken: credentials.requestToken})
                     .fetch({require: true, withRelated: ['shop']})
                     .then(function (shopPayPalAuthRequestModel) {
+
+                        // Getting the shop of PayPal Auth request
                         var shopModel = shopPayPalAuthRequestModel.related('shop');
 
-                        //Getting access token
+                        // Getting access token
                         return payPalClient
                             .send('Permissions/GetAccessToken', {
                                 token:    credentials.requestToken,
                                 verifier: credentials.verificationCode
                             })
+                            // We don't need PayPal Auth request anymore, delete it
                             .then(function(accessTokenResponse){
                                 return shopPayPalAuthRequestModel
                                     .destroy()
@@ -33,8 +37,9 @@ var PayPalAccountModel = BaseModel.extend(
                                         return accessTokenResponse;
                                     });
                             })
+                            // We've got access token response
                             .then(function (accessTokenResponse) {
-                                //Getting personal data
+                                // Getting personal data with access token
                                 return payPalClient
                                     .send('Permissions/GetAdvancedPersonalData', {
                                         attributeList: {
@@ -57,7 +62,9 @@ var PayPalAccountModel = BaseModel.extend(
                                         token:        accessTokenResponse.token,
                                         token_secret: accessTokenResponse.tokenSecret
                                     })
+                                    // We've got personal info
                                     .then(function (advancedPersonalDataResponse) {
+                                        // Let's parse it into normalized array
                                         var personalData = {};
                                         Object.keys(advancedPersonalDataResponse.response.personalData).map(function (i) {
                                             switch (advancedPersonalDataResponse.response.personalData[i].personalDataKey) {
@@ -100,16 +107,17 @@ var PayPalAccountModel = BaseModel.extend(
                                             }
                                         });
 
+                                        // Looking for existing PayPal Account record with this email
                                         return new PayPalAccountModel({accountEmail: personalData['accountEmail']})
                                             .fetch()
                                             .then(function (payPalAccountModel) {
-//                                                console.log('payPalAccountModel:', payPalAccountModel.attributes);
+                                                // If it's a new account - let's create it!
                                                 if (!payPalAccountModel) {
                                                     payPalAccountModel = new PayPalAccountModel();
                                                 }
-                                                //Setting personal data
+                                                // Setting personal data
                                                 payPalAccountModel.set(personalData);
-                                                //Setting access token
+                                                // Setting access token
                                                 payPalAccountModel.set({
                                                     token:              accessTokenResponse.token,
                                                     secret:             accessTokenResponse.tokenSecret,
@@ -119,6 +127,7 @@ var PayPalAccountModel = BaseModel.extend(
                                             })
                                     })
                             })
+                            // Attaching PayPal account to the shop
                             .then(function (payPalAccountModel) {
                                 return shopModel
                                     .related('payPalAccounts')
@@ -127,10 +136,12 @@ var PayPalAccountModel = BaseModel.extend(
                                         return payPalAccountModel;
                                     });
                             })
+                            // We've done all we needed! Return PayPal account model
                             .then(function (payPalAccountModel) {
                                 resolve(payPalAccountModel);
                             })
                     })
+                    // We don't know this request token!
                     .catch(ShopPayPalAuthRequestModel.NotFoundError, function (e) {
                         reject(e);
                     });
