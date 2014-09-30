@@ -29,47 +29,57 @@
     app.use(expressAsyncValidator());
     app.disable('x-powered-by');
 
-    /*
     app.use('/test', function (req, res, next) {
-        var jade = require('jade'),
-            path = require('path'),
-            nodemailer = require('nodemailer'),
-            smtpTransport = require('nodemailer-smtp-transport'),
-            transporter = nodemailer.createTransport(
-                smtpTransport({
-                    port:   465,
-                    host:   'email-smtp.us-west-2.amazonaws.com',
-                    secure: true,
-                    auth:   {
-                        user: process.env.SMTP_USERNAME,
-                        pass: process.env.SMTP_PASSWORD
-                    },
-                    debug:  true
-                })
-            ),
-            template = jade.compileFile(path.normalize(__dirname + '/views/emails/test.jade')),
-            htmlBody = template();
+        var PayPal = require('./modules/paypal'),
+            payPalClient = new PayPal;
 
-        transporter.sendMail({
-            from:        {
-                name:    'Mercher Notifications',
-                address: 'notifications@mercher.net'
-            },
-            replyTo:     'support@mercher.net',
-            to:          'dmitry.les@mercher.net',
-            subject:     'test email',
-            html:        htmlBody,
-            attachments: [
-                {
-                    filename: 'logo.png',
-                    path:     path.normalize(__dirname + '/public/images/logo192.png'),
-                    cid:      'logo.png'
-                }
-            ]
-        });
-        res.send(htmlBody);
+        if (req.query['request_token'] && req.query['verification_code']) {
+            payPalClient
+                .send('Permissions/GetAccessToken', {
+                    token:    req.query['request_token'],
+                    verifier: req.query['verification_code']
+                })
+                .then(function (payPalResponse) {
+                    payPalClient
+                        .send('Permissions/GetAdvancedPersonalData', {
+                            attributeList: {
+                                attribute: [
+                                    'http://axschema.org/company/name',
+                                    'http://axschema.org/contact/email'
+                                ]
+                            }
+                        }, {
+                            token:        payPalResponse.token,
+                            token_secret: payPalResponse.tokenSecret
+                        })
+                        .then(function (payPalResponse) {
+                            res.json(payPalResponse);
+                        })
+                        .catch(function (e) {
+                            res.json(e);
+                        });
+                })
+                .catch(function (e) {
+                    res.json(e);
+                });
+        } else {
+            payPalClient
+                .send('Permissions/RequestPermissions', {
+                    scope:    [
+                        'REFUND',
+                        'ACCESS_BASIC_PERSONAL_DATA',
+                        'ACCESS_ADVANCED_PERSONAL_DATA'
+                    ],
+                    callback: 'http://local.mercherdev.com/test'
+                })
+                .then(function (payPalResponse) {
+                    res.send('<a href="https://sandbox.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token=' + payPalResponse.token + '" target="_blank">login</a>');
+                })
+                .catch(function (e) {
+                    res.json(e);
+                });
+        }
     });
-    */
 
     app.use('/swagger', serveStatic(__dirname + '/swagger'));
     app.use('/api/v1', require('./routes/api/v1'));
