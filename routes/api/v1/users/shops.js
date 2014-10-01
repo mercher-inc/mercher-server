@@ -4,17 +4,17 @@ var express = require('express'),
     Bookshelf = require('../../../../modules/bookshelf'),
     ShopsCollection = require('../../../../collections/shops'),
     ShopModel = require('../../../../models/shop'),
-    ManagerModel = require('../../../../models/manager');
+    ManagerModel = require('../../../../models/manager'),
+    validator = require('../../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
-        'Access-Control-Allow-Methods': 'GET,POST'
+        'Access-Control-Allow-Methods': 'GET'
     });
     next();
 });
 
-router.post('/', require('../middleware/auth_check'));
-router.get('/', require('../middleware/collection_params_check'));
+router.get('/', validator(require('../validation/shops/collection.json'), {source: 'query', param: 'collectionForm'}));
 
 router.get('/', function (req, res, next) {
     var shopsCollection = new ShopsCollection();
@@ -25,8 +25,8 @@ router.get('/', function (req, res, next) {
             qb
                 .join('manager', 'shop.id', 'manager.shop_id')
                 .where('manager.user_id', '=', req.user.id)
-                .limit(req.query.limit)
-                .offset(req.query.offset);
+                .limit(req['collectionForm'].limit)
+                .offset(req['collectionForm'].offset);
         })
         .fetch({
             withRelated: ['image', 'coverImage']
