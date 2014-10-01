@@ -89,6 +89,10 @@ router.use('/paypal_accounts', require('./v1/paypal_accounts'));
 // documentation
 router.use('/docs', require('./v1/docs'));
 
+router.use(function (req, res, next) {
+    next(new (require('./v1/errors/not_found'))("Edge was not found"));
+});
+
 router.use(function (err, req, res, next) {
     if (err instanceof validator.errors.modelValidationError) {
         res.status(406).json(err);
