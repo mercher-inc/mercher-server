@@ -134,5 +134,6 @@ router.put('/:userId', function (req, res, next) {
 
 router.use('/:userId/managers', require('./users/managers'));
 router.use('/:userId/orders', require('./users/orders'));
+router.use('/:userId/shops', require('./users/shops'));
 
 module.exports = router;
