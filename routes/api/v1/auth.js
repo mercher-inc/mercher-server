@@ -5,7 +5,7 @@ var express = require('express'),
     AccessTokenModel = require('../../../models/access_token'),
     validator = require('../../../modules/express-async-validator/module');
 
-router.post('/sign_up', validator.middleware(require('./validation/auth/sign_up.json'), {param: 'signUpForm'}));
+router.post('/sign_up', validator(require('./validation/auth/sign_up.json'), {param: 'signUpForm'}));
 
 router.post('/sign_up', function (req, res, next) {
     res.set({
@@ -26,7 +26,7 @@ router.post('/sign_up', function (req, res, next) {
         });
 });
 
-router.post('/basic', validator.middleware(require('./validation/auth/login.json'), {param: 'loginForm'}));
+router.post('/basic', validator(require('./validation/auth/login.json'), {param: 'loginForm'}));
 
 router.post('/basic', function (req, res, next) {
     res.set({
@@ -52,7 +52,7 @@ router.post('/basic', function (req, res, next) {
         });
 });
 
-router.post('/facebook', validator.middleware(require('./validation/auth/facebook.json'), {param: 'facebookAuthForm'}));
+router.post('/facebook', validator(require('./validation/auth/facebook.json'), {param: 'facebookAuthForm'}));
 
 router.post('/facebook', function (req, res, next) {
     res.set({

@@ -174,16 +174,7 @@
         };
     }
 
-    module.exports = function () {
-        return function (req, res, next) {
-            req.model = function (defs) {
-                return new RequestModel(req, defs);
-            };
-            return next();
-        }
-    };
-
-    module.exports.middleware = function (defs, options) {
+    module.exports = function (defs, options) {
         defs = defs || {};
         options = options || {};
 
