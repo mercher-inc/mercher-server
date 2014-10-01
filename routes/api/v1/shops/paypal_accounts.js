@@ -22,11 +22,8 @@ router.post('/request', function (req, res, next) {
             shopPayPalAuthRequestModel
                 .save({requestToken: payPalResponse.token})
                 .then(function (shopPayPalAuthRequestModel) {
-                    if (req.query.redirect === 'true') {
-                        res.redirect('https://sandbox.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token=' + payPalResponse.token);
-                    } else {
-                        res.status(201).json(shopPayPalAuthRequestModel);
-                    }
+                    res.location('https://sandbox.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token=' + payPalResponse.token);
+                    res.status(201).json(shopPayPalAuthRequestModel);
                 });
         })
         .catch(function (e) {
