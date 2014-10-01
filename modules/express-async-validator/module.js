@@ -174,150 +174,6 @@
         };
     }
 
-    function RequestModel(req, defs) {
-        this.req = req;
-        this.defs = defs;
-        this.errors = {};
-
-        var sources = {};
-
-        _.each(this.defs, function (def, param) {
-
-            //Set param definition object defaults
-            _.defaults(def, {
-                "rules":        {},
-                "source":       [],
-                "allowEmpty":   true,
-                "defaultValue": null
-            });
-
-        }, this);
-
-        //checks if param is empty
-        this.paramIsEmpty = function (param) {
-            return (this.getParam(param) === undefined || this.getParam(param) === null || this.getParam(param) === '');
-        };
-
-        //Gets param from request
-        this.getParam = function (param) {
-            if (this.defs[param] === undefined) {
-                return undefined;
-            }
-
-            var def = this.defs[param];
-
-            for (var i = 0; i < def.source.length; i++) {
-                switch (def.source[i]) {
-                    case 'query':
-                        if (this.req.query[param] !== undefined) {
-                            sources[param] = 'query';
-                            return this.req.query[param];
-                        }
-                        break;
-                    case 'body':
-                        if (this.req.body[param] !== undefined) {
-                            sources[param] = 'body';
-                            return this.req.body[param];
-                        }
-                        break;
-                    case 'params':
-                        if (this.req.params[param] !== undefined) {
-                            sources[param] = 'params';
-                            return this.req.params[param];
-                        }
-                        break;
-                }
-            }
-        };
-
-        //Sets param to request
-        this.setParam = function (param, value) {
-            switch (sources[param]) {
-                case 'query':
-                    this.req.query[param] = value;
-                    break;
-                case 'body':
-                    this.req.body[param] = value;
-                    break;
-                case 'params':
-                    this.req.params[param] = value;
-                    break;
-            }
-        };
-
-        //Adds error to param
-        this.addError = function (param, error) {
-            this.errors[param] = this.errors[param] || [];
-            this.errors[param].push(error);
-        };
-
-        //Gets all params from request
-        this.getParams = function () {
-            var params = {};
-            _.each(Object.keys(defs), function (param) {
-                params[param] = this.getParam(param);
-            }, this);
-            return params;
-        };
-
-        //Validates the model
-        this.validate = function () {
-
-            var model = this;
-            var paramsPromises = [];
-
-            _.each(this.defs, function (def, param) {
-
-                var promise;
-
-                if (this.paramIsEmpty(param) && def.allowEmpty) {
-                    promise = new Promise(function (resolve) {
-                        resolve(def.defaultValue);
-                    });
-                } else {
-                    promise = new Promise(function (resolve) {
-                        resolve(model.getParam(param));
-                    });
-
-                    _.each(def.rules, function (ruleOptions, validator) {
-                        promise = promise
-                            .then(function (value) {
-                                return (validators[validator])(param, value, ruleOptions);
-                            });
-                    });
-                }
-
-                promise
-                    .then(function (value) {
-                        model.setParam(param, value);
-                    })
-                    .catch(errors.fieldValidationError, function (error) {
-                        model.addError(error.param, error.message);
-                    })
-                    .catch(function (error) {
-                        throw error;
-                    });
-
-                paramsPromises.push(promise);
-
-            }, this);
-
-            return new Promise(function (resolve, reject) {
-                Promise
-                    .all(paramsPromises)
-                    .then(function () {
-                        resolve(model.getParams());
-                    })
-                    .catch(errors.fieldValidationError, function () {
-                        reject(new errors.modelValidationError(model.errors));
-                    })
-                    .catch(function (error) {
-                        reject(error);
-                    });
-            });
-        };
-    }
-
     module.exports = function () {
         return function (req, res, next) {
             req.model = function (defs) {
@@ -325,6 +181,44 @@
             };
             return next();
         }
+    };
+
+    module.exports.middleware = function (defs, options) {
+        defs = defs || {};
+        options = options || {};
+
+        _.defaults(options, {
+            source: 'body',
+            param:  'model'
+        });
+
+        return function (req, res, next) {
+            var model = new Model(defs);
+            var data;
+            switch (options.source) {
+                case 'body':
+                    data = req.body;
+                    break;
+                case 'query':
+                    data = req.query;
+                    break;
+                case 'params':
+                    data = req.params;
+                    break;
+                default:
+                    next(new Error('Unknown source'));
+                    return;
+            }
+            model
+                .validate(data)
+                .then(function (params) {
+                    req[options.param] = params;
+                    next();
+                })
+                .catch(function (error) {
+                    next(error);
+                });
+        };
     };
 
     module.exports.errors = errors;

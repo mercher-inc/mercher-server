@@ -75,99 +75,40 @@ var UserModel = BaseModel.extend(
     },
     {
         signUp: function (credentials) {
-            var UserModel = this;
-            return new Promise(function (resolve, reject) {
-                new (expressAsyncValidator.model)(
-                    {
-                        "email":     {
-                            "rules":      {
-                                "required":     {
-                                    "message": "Email is required"
-                                },
-                                "isEmail":      {
-                                    "message": "Email should be a valid email address"
-                                },
-                                "uniqueRecord": {
-                                    "message": "Email already used",
-                                    "model":   UserEmailModel,
-                                    "field":   "email"
-                                }
-                            },
-                            "allowEmpty": false
-                        },
-                        "password":  {
-                            "rules":      {
-                                "required": {
-                                    "message": "Password is required"
-                                },
-                                "isLength": {
-                                    "message": "Password should be between 8 and 40 characters long",
-                                    "min":     8,
-                                    "max":     40
-                                }
-                            },
-                            "allowEmpty": false
-                        },
-                        "firstName": {
-                            "rules":        {
-                                "escape":   {},
-                                "isLength": {
-                                    "message": "First name should be less then 40 characters long",
-                                    "min":     0,
-                                    "max":     40
-                                }
-                            },
-                            "allowEmpty":   true,
-                            "defaultValue": null
-                        },
-                        "lastName":  {
-                            "rules":        {
-                                "escape":   {},
-                                "isLength": {
-                                    "message": "Last name should be less then 40 characters long",
-                                    "min":     0,
-                                    "max":     40
-                                }
-                            },
-                            "allowEmpty":   true,
-                            "defaultValue": null
-                        }
-                    }
-                )
-                    .validate(credentials)
-                    .then(function (model) {
-                        new UserModel()
-                            .save({
-                                firstName: model.firstName,
-                                lastName:  model.lastName,
-                                lastLogin: (new Date()).toISOString(),
-                                isBanned:  false
-                            })
-                            .then(function (userModel) {
-                                new UserEmailModel()
-                                    .save({
-                                        userId:   userModel.id,
-                                        email:    model.email,
-                                        password: crypto.pbkdf2Sync(model.password, salt, 10, 20).toString('hex'),
-                                        isActive: false
-                                    })
-                                    .then(function (userEmailModel) {
-                                        require('./activation_code')
-                                            .generate(userEmailModel, 'email_activation')
-                                            .then(function (activationCodeModel) {
-                                                require('../modules/queue').create('send email', {
-                                                    type:             'activation_code',
-                                                    activationCodeId: activationCodeModel.id
-                                                }).save();
-                                            });
-                                        resolve(userModel);
-                                    });
-                            })
-                    })
-                    .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
-                        reject(error);
-                    });
-            });
+            var UserModel = this,
+                UserEmailModel = require('./user_email'),
+                ActivationCodeModel = require('./activation_code'),
+                queue = require('../modules/queue');
+
+            return new UserModel()
+                .save({
+                    firstName: credentials.firstName,
+                    lastName:  credentials.lastName,
+                    lastLogin: (new Date()).toISOString(),
+                    isBanned:  false
+                })
+                .then(function (userModel) {
+                    return new UserEmailModel()
+                        .save({
+                            userId:   userModel.id,
+                            email:    credentials.email,
+                            password: crypto.pbkdf2Sync(credentials.password, salt, 10, 20).toString('hex'),
+                            isActive: false
+                        })
+                        .then(function (userEmailModel) {
+                            return ActivationCodeModel.generate(userEmailModel, 'email_activation');
+                        })
+                        .then(function (activationCodeModel) {
+                            queue
+                                .create('send email', {
+                                    type:             'activation_code',
+                                    activationCodeId: activationCodeModel.id
+                                })
+                                .save();
+
+                            return userModel;
+                        });
+                });
         },
         login:  function (credentials) {
             var UserModel = this;

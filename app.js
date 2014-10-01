@@ -67,16 +67,21 @@
     });
 
     app.use(function (err, req, res, next) {
-        console.log(err);
+        if (err.status) {
+            res.status(err.status);
+        } else {
+            res.status(500);
+        }
+
         res.format({
             'text/plain':       function () {
-                res.status(err.status).send(err.message);
+                res.send(err.message);
             },
             'text/html':        function () {
-                res.status(err.status).send(err.message);
+                res.send(err.message);
             },
             'application/json': function () {
-                res.status(err.status).send({
+                res.send({
                     "error":   err.name,
                     "message": err.message
                 });

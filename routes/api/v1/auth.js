@@ -3,7 +3,9 @@ var express = require('express'),
     router = express.Router(),
     UserModel = require('../../../models/user'),
     AccessTokenModel = require('../../../models/access_token'),
-    expressAsyncValidator = require('../../../modules/express-async-validator/module');
+    validator = require('../../../modules/express-async-validator/module');
+
+router.post('/sign_up', validator.middleware(require('./validation/auth/sign_up.json'), {param: 'signUpForm'}));
 
 router.post('/sign_up', function (req, res, next) {
     res.set({
@@ -11,7 +13,7 @@ router.post('/sign_up', function (req, res, next) {
     });
 
     UserModel
-        .signUp(req.body)
+        .signUp(req.signUpForm)
         .then(function (userModel) {
             AccessTokenModel
                 .grant(userModel)
@@ -21,10 +23,6 @@ router.post('/sign_up', function (req, res, next) {
                         "expires": accessTokenModel.get("expires")
                     });
                 });
-        })
-        .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
         });
 });
 
@@ -49,7 +47,7 @@ router.post('/basic', function (req, res, next) {
             var notFoundError = new (require('./errors/not_found'))("User with these credentials was not found");
             next(notFoundError);
         })
-        .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
+        .catch(validator.errors.modelValidationError, function (error) {
             var validationError = new (require('./errors/validation'))("Validation failed", error);
             next(validationError);
         });

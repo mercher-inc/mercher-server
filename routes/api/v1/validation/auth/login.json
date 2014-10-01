@@ -1,0 +1,21 @@
+{
+    "email":    {
+        "rules":      {
+            "required": {
+                "message": "Email is required"
+            },
+            "isEmail":  {
+                "message": "Email should be a valid email address"
+            }
+        },
+        "allowEmpty": false
+    },
+    "password": {
+        "rules":      {
+            "required": {
+                "message": "Password is required"
+            }
+        },
+        "allowEmpty": false
+    }
+}

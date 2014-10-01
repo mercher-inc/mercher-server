@@ -1,20 +1,22 @@
 var express = require('express'),
     router = express.Router(),
-    expressAsyncValidator = require('../../modules/express-async-validator/module'),
-    Promise = require('bluebird');
+    validator = require('../../modules/express-async-validator/module'),
+    Promise = require('bluebird'),
+    app = require('../../app'),
+    Bookshelf = app.get('bookshelf'),
+    knex = Bookshelf.knex;
 
-expressAsyncValidator.validators.uniqueRecord = function (param, value, options) {
+validator.validators.uniqueRecord = function (param, value, options) {
     return new Promise(function (resolve, reject) {
-        var query = {};
-        query[options.field] = value;
-        var model = new options.model(query);
-        model
-            .fetch({require: true})
-            .then(function () {
-                reject(new (expressAsyncValidator.errors.fieldValidationError)(param, value, options.message));
-            })
-            .catch(options.model.NotFoundError, function () {
-                resolve(value);
+        knex(options.table)
+            .where(options.field, value)
+            .count(options.field)
+            .then(function (result) {
+                if (parseInt(result[0].count)) {
+                    reject(new (validator.errors.fieldValidationError)(param, value, options.message));
+                } else {
+                    resolve(value);
+                }
             });
     });
 };
@@ -73,10 +75,16 @@ router.use('/paypal_accounts', require('./v1/paypal_accounts'));
 router.use('/docs', require('./v1/docs'));
 
 router.use(function (err, req, res, next) {
+    if (err instanceof validator.errors.modelValidationError) {
+        res.status(406).json(err);
+        return;
+    }
+
     if (err instanceof require('./v1/errors/api_error')) {
         res.status(err.status).json(err.error);
         return;
     }
+
     next(err);
 });
 

@@ -1,0 +1,55 @@
+{
+    "email":     {
+        "rules":      {
+            "required":     {
+                "message": "Email is required"
+            },
+            "isEmail":      {
+                "message": "Email should be a valid email address"
+            },
+            "uniqueRecord": {
+                "message": "Email already used",
+                "table":   "user_email",
+                "field":   "email"
+            }
+        },
+        "allowEmpty": false
+    },
+    "password":  {
+        "rules":      {
+            "required": {
+                "message": "Password is required"
+            },
+            "isLength": {
+                "message": "Password should be between 8 and 40 characters long",
+                "min":     8,
+                "max":     40
+            }
+        },
+        "allowEmpty": false
+    },
+    "firstName": {
+        "rules":        {
+            "escape":   {},
+            "isLength": {
+                "message": "First name should be less then 40 characters long",
+                "min":     0,
+                "max":     40
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "lastName":  {
+        "rules":        {
+            "escape":   {},
+            "isLength": {
+                "message": "Last name should be less then 40 characters long",
+                "min":     0,
+                "max":     40
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    }
+}
