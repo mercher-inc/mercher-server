@@ -13,7 +13,7 @@ router.post('/sign_up', function (req, res, next) {
     });
 
     UserModel
-        .signUp(req.signUpForm)
+        .signUp(req['signUpForm'])
         .then(function (userModel) {
             AccessTokenModel
                 .grant(userModel)
@@ -26,13 +26,17 @@ router.post('/sign_up', function (req, res, next) {
         });
 });
 
+router.post('/basic', validator.middleware(require('./validation/auth/login.json'), {param: 'loginForm'}));
+
 router.post('/basic', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
     });
 
+    var UserEmailModel = require('../../../models/user_email');
+
     UserModel
-        .login(req.body)
+        .login(req['loginForm'])
         .then(function (userModel) {
             AccessTokenModel
                 .grant(userModel)
@@ -43,13 +47,8 @@ router.post('/basic', function (req, res, next) {
                     });
                 });
         })
-        .catch(UserModel.NotFoundError, function () {
-            var notFoundError = new (require('./errors/not_found'))("User with these credentials was not found");
-            next(notFoundError);
-        })
-        .catch(validator.errors.modelValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
+        .catch(UserEmailModel.NotFoundError, function () {
+            next(new (require('./errors/not_found'))('Email/password pair is incorrect'));
         });
 });
 

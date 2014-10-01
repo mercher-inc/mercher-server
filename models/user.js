@@ -111,60 +111,21 @@ var UserModel = BaseModel.extend(
                 });
         },
         login:  function (credentials) {
-            var UserModel = this;
-            return new Promise(function (resolve, reject) {
-                new (expressAsyncValidator.model)(
-                    {
-                        "email":    {
-                            "rules":      {
-                                "required": {
-                                    "message": "Email is required"
-                                },
-                                "isEmail":  {
-                                    "message": "Email should be a valid email address"
-                                }
-                            },
-                            "allowEmpty": false
-                        },
-                        "password": {
-                            "rules":      {
-                                "required": {
-                                    "message": "Password is required"
-                                }
-                            },
-                            "allowEmpty": false
-                        }
-                    }
-                )
-                    .validate(credentials)
-                    .then(function (model) {
-                        new UserEmailModel()
-                            .where({
-                                email:    model.email,
-                                password: crypto.pbkdf2Sync(model.password, salt, 10, 20).toString('hex')
-                            })
-                            .fetch({require: true})
-                            .then(function (userEmailModel) {
-                                new UserModel({id: userEmailModel.get('userId')})
-                                    .fetch()
-                                    .then(function (userModel) {
-                                        userModel
-                                            .save({
-                                                lastLogin: (new Date()).toISOString()
-                                            })
-                                            .then(function (userModel) {
-                                                resolve(userModel);
-                                            });
-                                    });
-                            })
-                            .catch(UserModel.NotFoundError, function (error) {
-                                reject(error);
-                            });
-                    })
-                    .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
-                        reject(error);
-                    });
-            });
+            var UserEmailModel = require('./user_email');
+
+            return new UserEmailModel()
+                .where({
+                    email:    credentials.email,
+                    password: crypto.pbkdf2Sync(credentials.password, salt, 10, 20).toString('hex')
+                })
+                .fetch({require: true, withRelated: ['user']})
+                .then(function (userEmailModel) {
+                    return userEmailModel
+                        .related('user')
+                        .save({
+                            lastLogin: (new Date()).toISOString()
+                        });
+                });
         }
     }
 );
