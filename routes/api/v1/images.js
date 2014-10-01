@@ -6,7 +6,7 @@ var express = require('express'),
     Promise = require('bluebird'),
     im = require('imagemagick'),
     ImageModel = require('../../../models/image'),
-    expressAsyncValidator = require('../../../modules/express-async-validator/module');
+    validator = require('../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -51,41 +51,18 @@ router.use('/:imageId', function (req, res, next) {
 });
 
 router.param('imageId', function (req, res, next) {
-    req
-        .model({
-            "imageId": {
-                "rules":      {
-                    "required":  {
-                        "message": "Image ID is required"
-                    },
-                    "isNumeric": {
-                        "message": "Image ID should be numeric"
-                    },
-                    "toInt":     {}
-                },
-                "source":     ["params"],
-                "allowEmpty": false
-            }
+    var imageModel = new ImageModel({id: parseInt(req.params.imageId)});
+    imageModel.fetch({require: true})
+        .then(function (model) {
+            req.image = model;
+            next();
         })
-        .validate()
-        .then(function () {
-            var imageModel = new ImageModel({id: req.params.imageId});
-            imageModel.fetch({require: true})
-                .then(function (model) {
-                    req.image = model;
-                    next();
-                })
-                .catch(ImageModel.NotFoundError, function () {
-                    var notFoundError = new (require('./errors/not_found'))("Image was not found");
-                    next(notFoundError);
-                })
-                .catch(function (err) {
-                    next(err);
-                });
+        .catch(ImageModel.NotFoundError, function () {
+            var notFoundError = new (require('./errors/not_found'))("Image was not found");
+            next(notFoundError);
         })
-        .catch(function (error) {
-            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-            next(badRequestError);
+        .catch(function (err) {
+            next(err);
         });
 });
 

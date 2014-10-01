@@ -51,41 +51,18 @@ router.use('/:orderItemId', function (req, res, next) {
 });
 
 router.param('orderItemId', function (req, res, next) {
-    req
-        .model({
-            "orderItemId": {
-                "rules":      {
-                    "required":  {
-                        "message": "Order item ID is required"
-                    },
-                    "isNumeric": {
-                        "message": "Order item ID should be numeric"
-                    },
-                    "toInt":     {}
-                },
-                "source":     ["params"],
-                "allowEmpty": false
-            }
+    var orderItemModel = new OrderItemModel({id: parseInt(req.params.orderItemId)});
+    orderItemModel.fetch({require: true})
+        .then(function (model) {
+            req.orderItem = model;
+            next();
         })
-        .validate()
-        .then(function () {
-            var orderItemModel = new OrderItemModel({id: req.params.orderItemId});
-            orderItemModel.fetch({require: true})
-                .then(function (model) {
-                    req.orderItem = model;
-                    next();
-                })
-                .catch(OrderItemModel.NotFoundError, function () {
-                    var notFoundError = new (require('./errors/not_found'))("Order item was not found");
-                    next(notFoundError);
-                })
-                .catch(function (err) {
-                    next(err);
-                });
+        .catch(OrderItemModel.NotFoundError, function () {
+            var notFoundError = new (require('./errors/not_found'))("Order item was not found");
+            next(notFoundError);
         })
-        .catch(function (error) {
-            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-            next(badRequestError);
+        .catch(function (err) {
+            next(err);
         });
 });
 

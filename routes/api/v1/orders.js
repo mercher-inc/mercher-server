@@ -2,7 +2,7 @@ var express = require('express'),
     router = express.Router(),
     Promise = require("bluebird"),
     OrderModel = require('../../../models/order'),
-    expressAsyncValidator = require('../../../modules/express-async-validator/module');
+    validator = require('../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -53,41 +53,18 @@ router.use('/:orderId', function (req, res, next) {
 });
 
 router.param('orderId', function (req, res, next) {
-    req
-        .model({
-            "orderId": {
-                "rules":      {
-                    "required":  {
-                        "message": "Order ID is required"
-                    },
-                    "isNumeric": {
-                        "message": "Order ID should be numeric"
-                    },
-                    "toInt":     {}
-                },
-                "source":     ["params"],
-                "allowEmpty": false
-            }
+    var orderModel = new OrderModel({id: parseInt(req.params.orderId)});
+    orderModel.fetch({require: true})
+        .then(function (model) {
+            req.order = model;
+            next();
         })
-        .validate()
-        .then(function () {
-            var orderModel = new OrderModel({id: req.params.orderId});
-            orderModel.fetch({require: true})
-                .then(function (model) {
-                    req.order = model;
-                    next();
-                })
-                .catch(OrderModel.NotFoundError, function () {
-                    var notFoundError = new (require('./errors/not_found'))("Order was not found");
-                    next(notFoundError);
-                })
-                .catch(function (err) {
-                    next(err);
-                });
+        .catch(OrderModel.NotFoundError, function () {
+            var notFoundError = new (require('./errors/not_found'))("Order was not found");
+            next(notFoundError);
         })
-        .catch(function (error) {
-            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-            next(badRequestError);
+        .catch(function (err) {
+            next(err);
         });
 });
 

@@ -22,7 +22,7 @@ router.get('/', function (req, res, next) {
     var collectionRequest = productsCollection
         .query(function (qb) {
             qb
-                .where('category_id', '=', req.category.id)
+                .where('shop_id', '=', req.shop.id)
                 .limit(req['collectionForm'].limit)
                 .offset(req['collectionForm'].offset);
         })
@@ -32,7 +32,7 @@ router.get('/', function (req, res, next) {
 
     var totalRequest = Bookshelf
         .knex(productModel.tableName)
-        .where('category_id', '=', req.category.id)
+        .where('shop_id', '=', req.shop.id)
         .count(productModel.idAttribute)
         .then(function (result) {
             return parseInt(result[0].count);
