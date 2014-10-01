@@ -4,7 +4,7 @@ var express = require('express'),
     bookshelf = require('../../../modules/bookshelf'),
     CategoriesCollection = require('../../../collections/categories'),
     CategoryModel = require('../../../models/category'),
-    expressAsyncValidator = require('../../../modules/express-async-validator/module');
+    validator = require('../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -91,41 +91,18 @@ router.use('/:categoryId', function (req, res, next) {
 });
 
 router.param('categoryId', function (req, res, next) {
-    req
-        .model({
-            "categoryId": {
-                "rules":      {
-                    "required":  {
-                        "message": "Category ID is required"
-                    },
-                    "isNumeric": {
-                        "message": "Category ID should be numeric"
-                    },
-                    "toInt":     {}
-                },
-                "source":     ["params"],
-                "allowEmpty": false
-            }
+    var categoryModel = new CategoryModel({id: parseInt(req.params.categoryId)});
+    categoryModel.fetch({require: true})
+        .then(function (model) {
+            req.category = model;
+            next();
         })
-        .validate()
-        .then(function () {
-            var categoryModel = new CategoryModel({id: req.params.categoryId});
-            categoryModel.fetch({require: true})
-                .then(function (model) {
-                    req.category = model;
-                    next();
-                })
-                .catch(CategoryModel.NotFoundError, function () {
-                    var notFoundError = new (require('./errors/not_found'))("Category was not found");
-                    next(notFoundError);
-                })
-                .catch(function (err) {
-                    next(err);
-                });
+        .catch(CategoryModel.NotFoundError, function () {
+            var notFoundError = new (require('./errors/not_found'))("Category was not found");
+            next(notFoundError);
         })
-        .catch(function (error) {
-            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-            next(badRequestError);
+        .catch(function (err) {
+            next(err);
         });
 });
 

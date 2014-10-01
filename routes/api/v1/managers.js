@@ -4,7 +4,7 @@ var express = require('express'),
     bookshelf = require('../../../modules/bookshelf'),
     ManagersCollection = require('../../../collections/managers'),
     ManagerModel = require('../../../models/manager'),
-    expressAsyncValidator = require('../../../modules/express-async-validator/module');
+    validator = require('../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -91,41 +91,18 @@ router.use('/:managerId', function (req, res, next) {
 });
 
 router.param('managerId', function (req, res, next) {
-    req
-        .model({
-            "managerId": {
-                "rules":      {
-                    "required":  {
-                        "message": "Manager ID is required"
-                    },
-                    "isNumeric": {
-                        "message": "Manager ID should be numeric"
-                    },
-                    "toInt":     {}
-                },
-                "source":     ["params"],
-                "allowEmpty": false
-            }
+    var managerModel = new ManagerModel({id: parseInt(req.params.managerId)});
+    managerModel.fetch({require: true})
+        .then(function (model) {
+            req.manager = model;
+            next();
         })
-        .validate()
-        .then(function () {
-            var managerModel = new ManagerModel({id: req.params.managerId});
-            managerModel.fetch({require: true})
-                .then(function (model) {
-                    req.manager = model;
-                    next();
-                })
-                .catch(ManagerModel.NotFoundError, function () {
-                    var notFoundError = new (require('./errors/not_found'))("Manager was not found");
-                    next(notFoundError);
-                })
-                .catch(function (err) {
-                    next(err);
-                });
+        .catch(ManagerModel.NotFoundError, function () {
+            var notFoundError = new (require('./errors/not_found'))("Manager was not found");
+            next(notFoundError);
         })
-        .catch(function (error) {
-            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-            next(badRequestError);
+        .catch(function (err) {
+            next(err);
         });
 });
 
