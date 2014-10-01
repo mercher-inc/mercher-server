@@ -106,7 +106,6 @@
     "country":         {
         "rules":        {
             "toString": {},
-            "escape":   {},
             "isIn":     {
                 "message":     "Country code expected",
                 "coutryCodes": [

@@ -14,7 +14,7 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.get('/', validator(require('../validation/shops/collection.json'), {source: 'query', param: 'collectionForm'}));
+router.get('/', validator(require('../validation/collection.json'), {source: 'query', param: 'collectionForm'}));
 
 router.get('/', function (req, res, next) {
     var shopsCollection = new ShopsCollection();
@@ -44,7 +44,7 @@ router.get('/', function (req, res, next) {
     Promise
         .props({
             shops: collectionRequest,
-            total:  totalRequest
+            total: totalRequest
         })
         .then(function (results) {
             res.json(results);
