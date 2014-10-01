@@ -1,0 +1,248 @@
+{
+    "shopId":                 {
+        "rules":      {
+            "required":     {
+                "message": "Shop ID is required"
+            },
+            "isInt":        {
+                "message": "Shop ID should be integer"
+            },
+            "recordExists": {
+                "message": "Shop does not exists",
+                "table":   "shop",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty": false
+    },
+    "title":                  {
+        "rules":      {
+            "required": {
+                "message": "Product's title is required"
+            },
+            "toString": {},
+            "trim":     {},
+            "escape":   {}
+        },
+        "allowEmpty": false
+    },
+    "description":            {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "brand":                  {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "manufacturerPartNumber": {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "ean":                    {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "isbn":                   {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "upc":                    {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "price":                  {
+        "rules":        {
+            "isFloat": {
+                "message": "Price should be float"
+            },
+            "toFloat": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "shippingCost":           {
+        "rules":        {
+            "isFloat": {
+                "message": "Shipping cost should be float"
+            },
+            "toFloat": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "shippingWeight":         {
+        "rules":        {
+            "isFloat": {
+                "message": "Shipping weight should be float"
+            },
+            "toFloat": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "shippingWeightUnits":    {
+        "rules":        {
+            "toString": {},
+            "isIn":     {
+                "message":     "Weight unit expected",
+                "weightUnits": ["mg", "g", "kg", "lb", "oz"]
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": "kg"
+    },
+    "weight":                 {
+        "rules":        {
+            "isFloat": {
+                "message": "Weight should be float"
+            },
+            "toFloat": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "weightUnits":            {
+        "rules":        {
+            "toString": {},
+            "isIn":     {
+                "message":     "Weight unit expected",
+                "weightUnits": ["mg", "g", "kg", "lb", "oz"]
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": "kg"
+    },
+    "amountInStock":          {
+        "rules":        {
+            "isInt": {
+                "message": "Amount in stock should be integer"
+            },
+            "toInt": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "availability":           {
+        "rules":        {
+            "toString": {},
+            "isIn":     {
+                "message":     "Valid Availability value expected",
+                "weightUnits": ["inStock", "availableForOrder", "outOfStock"]
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": "inStock"
+    },
+    "condition":              {
+        "rules":        {
+            "toString": {},
+            "isIn":     {
+                "message":     "Valid Condition value expected",
+                "weightUnits": ["new", "refurbished", "used"]
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": "new"
+    },
+    "ageGroup":               {
+        "rules":        {
+            "toString": {},
+            "isIn":     {
+                "message":     "Valid Age Group value expected",
+                "weightUnits": ["kids", "adult"]
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "targetGender":           {
+        "rules":        {
+            "toString": {},
+            "isIn":     {
+                "message":     "Valid Target Gender value expected",
+                "weightUnits": ["female", "male", "unisex"]
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "expirationTime":         {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "color":                  {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "material":               {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "pattern":                {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "size":                   {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "isUnique":               {
+        "rules":        {
+            "toBoolean": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": false
+    },
+    "isPublic":               {
+        "rules":        {
+            "toBoolean": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": false
+    }
+}
