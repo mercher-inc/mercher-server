@@ -1,0 +1,53 @@
+{
+    "productId": {
+        "rules":      {
+            "required":     {
+                "message": "Product ID is required"
+            },
+            "isInt":        {
+                "message": "Product ID should be integer"
+            },
+            "recordExists": {
+                "message": "Product does not exists",
+                "table":   "product",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty": false
+    },
+    "imageId":   {
+        "rules":      {
+            "required":     {
+                "message": "Image ID is required"
+            },
+            "isInt":        {
+                "message": "Image ID should be integer"
+            },
+            "recordExists": {
+                "message": "Image does not exists",
+                "table":   "image",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty": false
+    },
+    "priority":  {
+        "rules":        {
+            "isInt": {
+                "message": "Priority should be integer"
+            },
+            "toInt": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": 0
+    },
+    "isPublic":  {
+        "rules":        {
+            "toBoolean": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": false
+    }
+}
