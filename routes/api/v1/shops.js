@@ -14,7 +14,7 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.get('/', validator(require('./validation/shops/collection.json'), {source: 'query', param: 'collectionForm'}));
+router.get('/', validator(require('./validation/collection.json'), {source: 'query', param: 'collectionForm'}));
 
 router.get('/', function (req, res, next) {
     var shopsCollection = new ShopsCollection();
@@ -27,7 +27,7 @@ router.get('/', function (req, res, next) {
                 .offset(req['collectionForm'].offset);
         })
         .fetch({
-            withRelated: ['image']
+            withRelated: ['image', 'coverImage']
         });
 
     var totalRequest = Bookshelf
