@@ -74,7 +74,7 @@ var UserModel = BaseModel.extend(
         }
     },
     {
-        signUp: function (credentials) {
+        signUp:       function (credentials) {
             var UserModel = this,
                 UserEmailModel = require('./user_email'),
                 ActivationCodeModel = require('./activation_code'),
@@ -110,7 +110,7 @@ var UserModel = BaseModel.extend(
                         });
                 });
         },
-        login:  function (credentials) {
+        login:        function (credentials) {
             var UserEmailModel = require('./user_email');
 
             return new UserEmailModel()
@@ -126,6 +126,80 @@ var UserModel = BaseModel.extend(
                             lastLogin: (new Date()).toISOString()
                         });
                 });
+        },
+        facebookAuth: function (credentials) {
+            var FB = require('fb'),
+                UserModel = this,
+                UserThirdPartyAccountModel = require('./user_third_party_account');
+
+            return new Promise(function (resolve, reject) {
+                FB.api('oauth/access_token', {
+                    client_id:     process.env['FB_APP_ID'],
+                    client_secret: process.env['FB_APP_SECRET'],
+                    grant_type:    'client_credentials'
+                }, function (response) {
+                    FB.api('debug_token', {
+                        input_token:  credentials.fbAccessToken,
+                        access_token: response.access_token
+                    }, function (response) {
+                        var fbUserId = response.data['user_id'];
+                        if (response.data['app_id'] == process.env['FB_APP_ID'] && response.data['is_valid']) {
+                            new UserThirdPartyAccountModel({provider: 'facebook', providerId: fbUserId})
+                                .fetch({require: true})
+                                .then(function (userThirdPartyAccountModel) {
+                                    return userThirdPartyAccountModel;
+                                })
+                                .catch(UserThirdPartyAccountModel.NotFoundError, function () {
+                                    var Promise = require('bluebird');
+                                    return new Promise(function (resolve, reject) {
+                                        FB.api('me', {
+                                            access_token: credentials.fbAccessToken
+                                        }, function (response) {
+                                            if (!response || response.error) {
+                                                reject(response.error);
+                                                return;
+                                            }
+                                            var user = new UserModel();
+                                            if (response.first_name) {
+                                                user.set('firstName', response.first_name);
+                                            }
+                                            if (response.last_name) {
+                                                user.set('lastName', response.last_name);
+                                            }
+                                            user
+                                                .save()
+                                                .then(function (user) {
+                                                    new UserThirdPartyAccountModel()
+                                                        .save({
+                                                            userId:     user.id,
+                                                            provider:   'facebook',
+                                                            providerId: response.id
+                                                        })
+                                                        .then(function (userThirdPartyAccountModel) {
+                                                            resolve(userThirdPartyAccountModel);
+                                                        });
+                                                });
+                                        });
+                                    });
+                                })
+                                .then(function (userThirdPartyAccountModel) {
+                                    return userThirdPartyAccountModel.load('user');
+                                })
+                                .then(function (userThirdPartyAccountModel) {
+                                    return userThirdPartyAccountModel.related('user');
+                                })
+                                .then(function (user) {
+                                    return user.save({
+                                        lastLogin: (new Date()).toISOString()
+                                    });
+                                })
+                                .then(function (user) {
+                                    resolve(user);
+                                });
+                        }
+                    });
+                });
+            });
         }
     }
 );

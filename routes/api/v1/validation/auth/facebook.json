@@ -1,0 +1,10 @@
+{
+    "fbAccessToken": {
+        "rules":      {
+            "required": {
+                "message": "Access token is required"
+            }
+        },
+        "allowEmpty": false
+    }
+}
