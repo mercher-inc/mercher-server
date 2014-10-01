@@ -11,7 +11,10 @@ router.post('/sign_up', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
     });
+    next();
+});
 
+router.post('/sign_up', function (req, res, next) {
     UserModel
         .signUp(req['signUpForm'])
         .then(function (userModel) {
@@ -32,7 +35,10 @@ router.post('/basic', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
     });
+    next();
+});
 
+router.post('/basic', function (req, res, next) {
     var UserEmailModel = require('../../../models/user_email');
 
     UserModel
@@ -58,7 +64,10 @@ router.post('/facebook', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'POST'
     });
+    next();
+});
 
+router.post('/facebook', function (req, res, next) {
     UserModel
         .facebookAuth(req['facebookAuthForm'])
         .then(function (userModel) {
