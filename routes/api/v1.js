@@ -21,6 +21,21 @@ validator.validators.uniqueRecord = function (param, value, options) {
     });
 };
 
+validator.validators.recordExists = function (param, value, options) {
+    return new Promise(function (resolve, reject) {
+        knex(options.table)
+            .where(options.field, value)
+            .count(options.field)
+            .then(function (result) {
+                if (!parseInt(result[0].count)) {
+                    reject(new (validator.errors.fieldValidationError)(param, value, options.message));
+                } else {
+                    resolve(value);
+                }
+            });
+    });
+};
+
 router.use(function (req, res, next) {
     if (!req.get('X-Access-Token')) {
         next();

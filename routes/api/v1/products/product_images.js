@@ -41,7 +41,7 @@ router.get('/', function (req, res, next) {
     Promise
         .props({
             productImages: collectionRequest,
-            total:          totalRequest
+            total:         totalRequest
         })
         .then(function (results) {
             res.json(results);

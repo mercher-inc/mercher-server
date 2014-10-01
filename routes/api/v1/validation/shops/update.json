@@ -1,0 +1,200 @@
+{
+    "imageId":         {
+        "rules":        {
+            "isInt":        {
+                "message": "Image ID should be integer"
+            },
+            "recordExists": {
+                "message": "Image does not exists",
+                "table":   "image",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "coverImageId":    {
+        "rules":        {
+            "isInt":        {
+                "message": "Cover image ID should be integer"
+            },
+            "recordExists": {
+                "message": "Image does not exists",
+                "table":   "image",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "title":           {
+        "rules":      {
+            "required": {
+                "message": "Shop's title is required"
+            },
+            "toString": {},
+            "trim":     {},
+            "escape":   {},
+            "isLength": {
+                "message": "Shop's title should be at least 3 characters long and less then 250 characters",
+                "min":     3,
+                "max":     250
+            }
+        },
+        "allowEmpty": false
+    },
+    "description":     {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "tax":             {
+        "rules":        {
+            "isFloat": {
+                "message": "Tax should be float"
+            },
+            "toFloat": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": 0
+    },
+    "street1":         {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "street2":         {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "locality":        {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "region":          {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "postalCode":      {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "country":         {
+        "rules":        {
+            "toString": {},
+            "escape":   {},
+            "isIn":     {
+                "message":     "Country code expected",
+                "coutryCodes": [
+                    "AF", "AX", "AL", "DZ", "AS", "AD", "AO", "AI", "AQ", "AG", "AR", "AM", "AW", "AU", "AT", "AZ",
+                    "BS", "BH", "BD", "BB", "BY", "BE", "BZ", "BJ", "BM", "BT", "BO", "BQ", "BA", "BW", "BV", "BR",
+                    "IO", "BN", "BG", "BF", "BI", "KH", "CM", "CA", "CV", "KY", "CF", "TD", "CL", "CN", "CX", "CC",
+                    "CO", "KM", "CG", "CD", "CK", "CR", "CI", "HR", "CU", "CW", "CY", "CZ", "DK", "DJ", "DM", "DO",
+                    "EC", "EG", "SV", "GQ", "ER", "EE", "ET", "FK", "FO", "FJ", "FI", "FR", "GF", "PF", "TF", "GA",
+                    "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", "GN", "GW", "GY", "HT",
+                    "HM", "VA", "HN", "HK", "HU", "IS", "IN", "ID", "IR", "IQ", "IE", "IM", "IL", "IT", "JM", "JP",
+                    "JE", "JO", "KZ", "KE", "KI", "KP", "KR", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LI",
+                    "LT", "LU", "MO", "MK", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MQ", "MR", "MU", "YT", "MX",
+                    "FM", "MD", "MC", "MN", "ME", "MS", "MA", "MZ", "MM", "NA", "NR", "NP", "NL", "AN", "NC", "NZ",
+                    "NI", "NE", "NG", "NU", "NF", "MP", "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH",
+                    "PN", "PL", "PT", "PR", "QA", "RE", "RO", "RU", "RW", "BL", "SH", "KN", "LC", "MF", "PM", "VC",
+                    "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", "SX", "SK", "SI", "SB", "SO", "ZA", "GS",
+                    "SS", "ES", "LK", "SD", "SR", "SJ", "SZ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TL", "TG",
+                    "TK", "TO", "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA", "AE", "GB", "UK", "US", "UM", "UY",
+                    "UZ", "VU", "VE", "VN", "VG", "VI", "WF", "EH", "YE", "ZM", "ZW"
+                ]
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": "US"
+    },
+    "email":           {
+        "rules":        {
+            "isEmail": {
+                "message": "Email should be a valid email address"
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "phoneNumber":     {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "faxNumber":       {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "website":         {
+        "rules":        {
+            "isURL": {
+                "message": "Website should be a valid url"
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "workingHours":    {
+        "rules":        {
+            "isJSON": {
+                "message": "Working hours should be a valid JSON"
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "paypalAccountId": {
+        "rules":        {
+            "isInt":        {
+                "message": "PayPal Account ID should be integer"
+            },
+            "recordExists": {
+                "message": "PayPal Account does not exists",
+                "table":   "paypal_account",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "isPublic":        {
+        "rules":        {
+            "toBoolean": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": false
+    }
+}
