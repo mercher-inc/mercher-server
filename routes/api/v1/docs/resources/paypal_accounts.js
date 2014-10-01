@@ -29,13 +29,6 @@ router.get('/', function (req, res) {
                                 "required":    true,
                                 "type":        "integer",
                                 "paramType":   "path"
-                            },
-                            {
-                                "name":        "redirect",
-                                "description": "Redirect to auth page",
-                                "required":    true,
-                                "type":        "boolean",
-                                "paramType":   "query"
                             }
                         ],
                         "responseMessages": [
