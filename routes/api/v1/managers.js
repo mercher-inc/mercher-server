@@ -13,8 +13,6 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.get('/', require('./middleware/collection_params_check'));
-
 router.get('/', validator(require('./validation/collection.json'), {source: 'query', param: 'collectionForm'}));
 
 router.get('/', function (req, res, next) {

@@ -4,7 +4,8 @@ var express = require('express'),
     Bookshelf = require('../../../../modules/bookshelf'),
     ImageModel = require('../../../../models/image'),
     OrdersCollection = require('../../../../collections/orders'),
-    OrderModel = require('../../../../models/order');
+    OrderModel = require('../../../../models/order'),
+    validator = require('../../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -13,8 +14,9 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.post('/', require('../middleware/auth_check'));
-router.get('/', require('../middleware/collection_params_check'));
+router.get('/', require('../middleware/auth_check'));
+
+router.get('/', validator(require('../validation/collection.json'), {source: 'query', param: 'collectionForm'}));
 
 router.get('/', function (req, res, next) {
     var ordersCollection = new OrdersCollection();
@@ -24,8 +26,8 @@ router.get('/', function (req, res, next) {
         .query(function (qb) {
             qb
                 .where('shop_id', '=', req.shop.id)
-                .limit(req.query.limit)
-                .offset(req.query.offset);
+                .limit(req['collectionForm'].limit)
+                .offset(req['collectionForm'].offset);
         })
         .fetch({
             withRelated: ['total', 'user.image', 'orderItems.product']
