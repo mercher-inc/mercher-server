@@ -1,0 +1,22 @@
+{
+    "role":     {
+        "rules":      {
+            "required": {
+                "message": "Role is required"
+            },
+            "toString": {},
+            "isIn":     {
+                "message":     "Valid Role value expected",
+                "weightUnits": ["editor", "seller", "owner"]
+            }
+        },
+        "allowEmpty": false
+    },
+    "isPublic": {
+        "rules":        {
+            "toBoolean": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": false
+    }
+}

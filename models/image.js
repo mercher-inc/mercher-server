@@ -9,20 +9,29 @@ var ImageModel = BaseModel.extend(
     {
         tableName: 'image',
         defaults:  {
-            title:       null,
-            description: null,
-            files:       {},
-            isActive:    false,
-            isBanned:    false
+            userId:        null,
+            title:         null,
+            description:   null,
+            key:           null,
+            origin:        null,
+            dimensions:    {},
+            crop_geometry: {},
+            files:         {},
+            colors:        [],
+            main_color:    null,
+            color_schema:  'light',
+            isActive:      false,
+            isBanned:      false,
+            createdAt:     null,
+            updatedAt:     null
         },
 
         user: function () {
             return this.belongsTo(require('./user'));
         },
 
-        initialize:       function () {
+        initialize: function () {
             this.on('created', this.cropImage);
-            this.on('updating', this.validateUpdating);
             this.on('updating', function () {
                 if (this.hasChanged('cropGeometry')) {
                     this.cropImage(this);
@@ -32,23 +41,7 @@ var ImageModel = BaseModel.extend(
                 io.sockets.emit('image updated', this);
             });
         },
-        validateUpdating: function (imageModel, attrs, options) {
-            return new Promise(function (resolve, reject) {
-                new (expressAsyncValidator.model)(validateUpdatingConfig)
-                    .validate(attrs)
-                    .then(function (attrs) {
-                        imageModel.set(attrs);
-                        resolve(attrs);
-                    })
-                    .catch(expressAsyncValidator.errors.modelValidationError, function (error) {
-                        reject(new ImageModel.ValidationError("Image validation failed", error.fields));
-                    })
-                    .catch(function () {
-                        reject(new ImageModel.InternalServerError());
-                    });
-            });
-        },
-        cropImage:        function (imageModel) {
+        cropImage:  function (imageModel) {
             var path = require('path'),
                 params = {
                     originFile:   path.join(ImageModel.getUploadsPath(), imageModel.get('key'), imageModel.get('origin')),
@@ -195,30 +188,5 @@ var ImageModel = BaseModel.extend(
         }
     }
 );
-
-var validateUpdatingConfig = {
-    "title":       {
-        "rules":        {
-            "toString": {},
-            "trim":     {},
-            "escape":   {},
-            "isLength": {
-                "message": "Image's title should be at least 3 characters long and less then 250 characters",
-                "min":     3,
-                "max":     250
-            }
-        },
-        "allowEmpty":   true,
-        "defaultValue": null
-    },
-    "description": {
-        "rules":        {
-            "toString": {},
-            "escape":   {}
-        },
-        "allowEmpty":   true,
-        "defaultValue": null
-    }
-};
 
 module.exports = ImageModel;

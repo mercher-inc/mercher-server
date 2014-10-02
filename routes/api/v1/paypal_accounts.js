@@ -3,21 +3,25 @@ var express = require('express'),
     Promise = require("bluebird"),
     Bookshelf = require('../../../modules/bookshelf'),
     PayPalAccountModel = require('../../../models/paypal_account'),
-    expressAsyncValidator = require('../../../modules/express-async-validator/module'),
-    ShopPayPalAuthRequestModel = require('../../../models/shop_paypal_auth_request');
+    validator = require('../../../modules/express-async-validator/module');
 
-router.post('/', function (req, res, next) {
+router.use('/', function (req, res, next) {
+    res.set({
+        'Access-Control-Allow-Methods': 'POST'
+    });
+    next();
+});
+
+router.post('/register', validator(require('./validation/paypal_accounts/register.json'), {source: 'body', param: 'registerForm'}));
+
+router.post('/register', function (req, res, next) {
     PayPalAccountModel
-        .register(req.body)
+        .register(req['registerForm'])
         .then(function (payPalAccountModel) {
             res.json(payPalAccountModel);
         })
-        .catch(ShopPayPalAuthRequestModel.NotFoundError, function (e) {
-            var notFoundError = new (require('./errors/not_found'))("PayPal Auth request was not found");
-            next(notFoundError);
-        })
         .catch(function (e) {
-            res.json(e);
+            next(e);
         });
 });
 

@@ -1,0 +1,14 @@
+{
+    "amount": {
+        "rules":      {
+            "required": {
+                "message": "Amount is required"
+            },
+            "isInt":    {
+                "message": "Amount should be integer"
+            },
+            "toInt":    {}
+        },
+        "allowEmpty": false
+    }
+}

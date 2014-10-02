@@ -1,0 +1,23 @@
+{
+    "requestToken":     {
+        "rules":      {
+            "required":     {
+                "message": "Request Token is required"
+            },
+            "recordExists": {
+                "message": "PayPal Auth Request does not exists",
+                "table":   "shop_paypal_auth_request",
+                "field":   "request_token"
+            }
+        },
+        "allowEmpty": false
+    },
+    "verificationCode": {
+        "rules":      {
+            "required": {
+                "message": "Verification Code is required"
+            }
+        },
+        "allowEmpty": false
+    }
+}

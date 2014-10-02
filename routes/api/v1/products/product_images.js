@@ -4,7 +4,8 @@ var express = require('express'),
     bookshelf = require('../../../../modules/bookshelf'),
     ImageModel = require('../../../../models/image'),
     ProductImagesCollection = require('../../../../collections/product_images'),
-    ProductImageModel = require('../../../../models/product_image');
+    ProductImageModel = require('../../../../models/product_image'),
+    validator = require('../../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -13,7 +14,7 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.get('/', require('../middleware/collection_params_check'));
+router.get('/', validator(require('../validation/collection.json'), {source: 'query', param: 'collectionForm'}));
 
 router.get('/', function (req, res, next) {
     var productImagesCollection = new ProductImagesCollection();
@@ -23,8 +24,8 @@ router.get('/', function (req, res, next) {
         .query(function (qb) {
             qb
                 .where('product_id', '=', req.product.id)
-                .limit(req.query.limit)
-                .offset(req.query.offset);
+                .limit(req['collectionForm'].limit)
+                .offset(req['collectionForm'].offset);
         })
         .fetch({
             withRelated: ['image']

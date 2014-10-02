@@ -160,6 +160,9 @@ var PayPalAccountModel = BaseModel.extend(
                             .then(function (payPalAccountModel) {
                                 resolve(payPalAccountModel);
                             })
+                            .catch(function (e) {
+                                reject(e);
+                            });
                     })
                     // We don't know this request token!
                     .catch(ShopPayPalAuthRequestModel.NotFoundError, function (e) {

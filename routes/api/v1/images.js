@@ -4,7 +4,6 @@ var express = require('express'),
     router = express.Router(),
     busboy = require('connect-busboy'),
     Promise = require('bluebird'),
-    im = require('imagemagick'),
     ImageModel = require('../../../models/image'),
     validator = require('../../../modules/express-async-validator/module');
 
@@ -20,26 +19,16 @@ router.post('/', require('./middleware/auth_check'));
 
 router.post('/', function (req, res) {
     req.busboy.on('file', function (fieldname, file, filename) {
-
         ImageModel
             .createImage(file, filename)
             .then(function (imageModel) {
-                return imageModel
-                    .save({userId: req.currentUser.id})
-                    .then(function (imageModel) {
-                        return imageModel;
-                    })
+                return imageModel.save({userId: req.currentUser.id});
             })
             .then(function (imageModel) {
-                new ImageModel({id: imageModel.id})
-                    .fetch()
-                    .then(function (imageModel) {
-                        res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/images/' + imageModel.id);
-                        res.status(201).json(imageModel);
-                    });
+                res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/images/' + imageModel.id);
+                res.status(201).json(imageModel);
             });
     });
-
     req.pipe(req.busboy);
 });
 
@@ -76,32 +65,13 @@ router.get('/:imageId', function (req, res) {
 
 router.put('/:imageId', require('./middleware/auth_check'));
 
+router.put('/:imageId', validator(require('./validation/images/update.json'), {source: 'body', param: 'updateForm'}));
+
 router.put('/:imageId', function (req, res, next) {
     req.image
-        .save(req.body, {req: req})
+        .save(req['updateForm'])
         .then(function (imageModel) {
-            new ImageModel({id: imageModel.id})
-                .fetch()
-                .then(function (imageModel) {
-                    res.status(200).json(imageModel);
-                });
-        })
-        .catch(ImageModel.PermissionError, function (error) {
-            var forbiddenError = new (require('./errors/forbidden'))(error.message);
-            next(forbiddenError);
-        })
-        .catch(ImageModel.ValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
-        })
-        .catch(ImageModel.InternalServerError, function (error) {
-            var internalServerError = new (require('./errors/internal'))(error.message);
-            next(internalServerError);
-        })
-        .catch(function (error) {
-            console.log(error);
-            var internalServerError = new (require('./errors/internal'))();
-            next(internalServerError);
+            res.status(200).json(imageModel);
         });
 });
 

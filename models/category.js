@@ -7,8 +7,11 @@ var CategoryModel = BaseModel.extend(
     {
         tableName: 'category',
         defaults:  {
-            imageId:  null,
-            isPublic: true
+            imageId:   null,
+            title:     null,
+            isPublic:  true,
+            createdAt: null,
+            updatedAt: null
         },
 
         image: function () {

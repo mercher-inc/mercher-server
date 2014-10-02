@@ -1,0 +1,48 @@
+{
+    "orderId":   {
+        "rules":      {
+            "required":     {
+                "message": "Order ID is required"
+            },
+            "isInt":        {
+                "message": "Order ID should be integer"
+            },
+            "recordExists": {
+                "message": "Order does not exists",
+                "table":   "order",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty": false
+    },
+    "productId": {
+        "rules":      {
+            "required":     {
+                "message": "Product ID is required"
+            },
+            "isInt":        {
+                "message": "Product ID should be integer"
+            },
+            "recordExists": {
+                "message": "Product does not exists",
+                "table":   "product",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty": false
+    },
+    "amount":    {
+        "rules":      {
+            "required": {
+                "message": "Amount is required"
+            },
+            "isInt":    {
+                "message": "Amount should be integer"
+            },
+            "toInt":    {}
+        },
+        "allowEmpty": false
+    }
+}

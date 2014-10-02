@@ -1,0 +1,13 @@
+{
+    "status": {
+        "rules":        {
+            "toString": {},
+            "isIn":     {
+                "message":     "Valid Status value expected",
+                "weightUnits": ["draft", "submitted", "received", "rejected", "completed"]
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    }
+}

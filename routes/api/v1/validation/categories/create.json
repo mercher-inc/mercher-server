@@ -1,0 +1,40 @@
+{
+    "imageId":  {
+        "rules":        {
+            "isInt":        {
+                "message": "Image ID should be integer"
+            },
+            "recordExists": {
+                "message": "Image does not exists",
+                "table":   "image",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "title":    {
+        "rules":      {
+            "required": {
+                "message": "Category's title is required"
+            },
+            "toString": {},
+            "trim":     {},
+            "escape":   {},
+            "isLength": {
+                "message": "Category's title should be at least 3 characters long and less then 250 characters",
+                "min":     3,
+                "max":     250
+            }
+        },
+        "allowEmpty": false
+    },
+    "isPublic": {
+        "rules":        {
+            "toBoolean": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": false
+    }
+}
