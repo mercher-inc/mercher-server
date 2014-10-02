@@ -60,33 +60,16 @@ router.get('/:orderId', function (req, res) {
 
 router.put('/:orderId', require('./middleware/auth_check'));
 
+router.put('/:orderId', validator(require('./validation/orders/update.json'), {source: 'body', param: 'updateForm'}));
+
 router.put('/:orderId', function (req, res, next) {
     req.order
-        .save(req.body, {req: req})
+        .save(req['updateForm'])
         .then(function (orderModel) {
-            new OrderModel({id: orderModel.id})
-                .fetch({
-                    withRelated: ['total', 'user.image', 'shop.image', 'orderItems.product']
-                })
-                .then(function (orderModel) {
-                    res.status(200).json(orderModel);
-                });
+            return orderModel.load(['total', 'user.image', 'shop.image', 'orderItems.product']);
         })
-        .catch(OrderModel.PermissionError, function (error) {
-            var forbiddenError = new (require('./errors/forbidden'))(error.message);
-            next(forbiddenError);
-        })
-        .catch(OrderModel.ValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
-        })
-        .catch(OrderModel.InternalServerError, function (error) {
-            var internalServerError = new (require('./errors/internal'))(error.message);
-            next(internalServerError);
-        })
-        .catch(function (error) {
-            var internalServerError = new (require('./errors/internal'))();
-            next(internalServerError);
+        .then(function (orderModel) {
+            res.status(200).json(orderModel);
         });
 });
 
