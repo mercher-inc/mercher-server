@@ -53,6 +53,17 @@ router.post('/', require('./middleware/auth_check'));
 
 router.post('/', validator(require('./validation/products/create.json'), {source: 'body', param: 'createForm'}));
 
+router.post(
+    '/',
+    require('./middleware/role_check')(
+        function (req) {
+            return req['createForm'].shopId;
+        },
+        'editor',
+        'You are not allowed to create new products for this shop'
+    )
+);
+
 router.post('/', function (req, res, next) {
     new ProductModel()
         .save(req['createForm'])
@@ -96,7 +107,17 @@ router.get('/:productId', function (req, res) {
         });
 });
 
-router.put('/:productId', require('./middleware/auth_check'));
+router.put(
+    '/:productId',
+    require('./middleware/auth_check'),
+    require('./middleware/role_check')(
+        function (req) {
+            return req.product.get('shopId');
+        },
+        'editor',
+        'You are not allowed to update this shop\'s products'
+    )
+);
 
 router.put('/:productId', validator(require('./validation/products/update.json'), {source: 'body', param: 'updateForm'}));
 
