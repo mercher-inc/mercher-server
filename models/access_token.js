@@ -6,7 +6,11 @@ var app = require('../app'),
 
 var AccessTokenModel = BaseModel.extend(
     {
-        tableName: 'access_token'
+        tableName: 'access_token',
+
+        user: function () {
+            return this.belongsTo(require('./user'));
+        }
     },
     {
         grant: function (userModel) {
