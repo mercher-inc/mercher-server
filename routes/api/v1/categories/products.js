@@ -3,7 +3,8 @@ var express = require('express'),
     Promise = require('bluebird'),
     Bookshelf = require('../../../../modules/bookshelf'),
     ProductsCollection = require('../../../../collections/products'),
-    ProductModel = require('../../../../models/product');
+    ProductModel = require('../../../../models/product'),
+    validator = require('../../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -12,7 +13,7 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.get('/', require('../middleware/collection_params_check'));
+router.get('/', validator(require('../validation/collection.json'), {source: 'query', param: 'collectionForm'}));
 
 router.get('/', function (req, res, next) {
     var productsCollection = new ProductsCollection();
@@ -22,8 +23,8 @@ router.get('/', function (req, res, next) {
         .query(function (qb) {
             qb
                 .where('category_id', '=', req.category.id)
-                .limit(req.query.limit)
-                .offset(req.query.offset);
+                .limit(req['collectionForm'].limit)
+                .offset(req['collectionForm'].offset);
         })
         .fetch({
             withRelated: ['shop.image']

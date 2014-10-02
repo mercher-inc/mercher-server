@@ -1,0 +1,24 @@
+{
+    "title":       {
+        "rules":        {
+            "toString": {},
+            "trim":     {},
+            "escape":   {},
+            "isLength": {
+                "message": "Image's title should be at least 3 characters long and less then 250 characters",
+                "min":     3,
+                "max":     250
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "description": {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    }
+}

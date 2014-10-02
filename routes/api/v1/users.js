@@ -4,7 +4,7 @@ var express = require('express'),
     Bookshelf = require('../../../modules/bookshelf'),
     UsersCollection = require('../../../collections/users'),
     UserModel = require('../../../models/user'),
-    expressAsyncValidator = require('../../../modules/express-async-validator/module');
+    validator = require('../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -13,7 +13,7 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.get('/', require('./middleware/collection_params_check'));
+router.get('/', validator(require('./validation/collection.json'), {source: 'query', param: 'collectionForm'}));
 
 // Fetch users collection
 router.get('/', function (req, res, next) {
@@ -23,8 +23,8 @@ router.get('/', function (req, res, next) {
     var collectionRequest = usersCollection
         .query(function (qb) {
             qb
-                .limit(req.query.limit)
-                .offset(req.query.offset);
+                .limit(req['collectionForm'].limit)
+                .offset(req['collectionForm'].offset);
         })
         .fetch({
             withRelated: ['image']
@@ -77,41 +77,18 @@ router.param('userId', function (req, res, next) {
 });
 
 router.param('userId', function (req, res, next) {
-    req
-        .model({
-            "userId": {
-                "rules":      {
-                    "required":  {
-                        "message": "User ID is required"
-                    },
-                    "isNumeric": {
-                        "message": "User ID should be numeric or \"me\""
-                    },
-                    "toInt":     {}
-                },
-                "source":     ["params"],
-                "allowEmpty": false
-            }
+    var userModel = new UserModel({id: parseInt(req.params.userId)});
+    userModel.fetch({require: true})
+        .then(function (model) {
+            req.user = model;
+            next();
         })
-        .validate()
-        .then(function () {
-            var userModel = new UserModel({id: req.params.userId});
-            userModel.fetch({require: true})
-                .then(function (model) {
-                    req.user = model;
-                    next();
-                })
-                .catch(UserModel.NotFoundError, function () {
-                    var notFoundError = new (require('./errors/not_found'))("User was not found");
-                    next(notFoundError);
-                })
-                .catch(function (err) {
-                    next(err);
-                });
+        .catch(UserModel.NotFoundError, function () {
+            var notFoundError = new (require('./errors/not_found'))("User was not found");
+            next(notFoundError);
         })
-        .catch(function (error) {
-            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-            next(badRequestError);
+        .catch(function (err) {
+            next(err);
         });
 });
 
@@ -125,37 +102,21 @@ router.get('/:userId', function (req, res) {
 
 router.put('/:userId', require('./middleware/auth_check'));
 
+router.put('/:userId', validator(require('./validation/users/update.json'), {source: 'body', param: 'updateForm'}));
+
 router.put('/:userId', function (req, res, next) {
     req.user
-        .save(req.body, {req: req})
+        .save(req['updateForm'])
         .then(function (userModel) {
-            new UserModel({id: userModel.id})
-                .fetch({
-                    withRelated: ['image']
-                })
-                .then(function (userModel) {
-                    res.status(200).json(userModel);
-                });
+            return userModel.load(['image']);
         })
-        .catch(UserModel.PermissionError, function (error) {
-            var forbiddenError = new (require('./errors/forbidden'))(error.message);
-            next(forbiddenError);
-        })
-        .catch(UserModel.ValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
-        })
-        .catch(UserModel.InternalServerError, function (error) {
-            var internalServerError = new (require('./errors/internal'))(error.message);
-            next(internalServerError);
-        })
-        .catch(function (error) {
-            var internalServerError = new (require('./errors/internal'))();
-            next(internalServerError);
+        .then(function (userModel) {
+            res.status(200).json(userModel);
         });
 });
 
 router.use('/:userId/managers', require('./users/managers'));
 router.use('/:userId/orders', require('./users/orders'));
+router.use('/:userId/shops', require('./users/shops'));
 
 module.exports = router;

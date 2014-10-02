@@ -119,7 +119,6 @@
                     if (body.responseEnvelope.ack == 'Success') {
                         resolve(body);
                     } else {
-                        console.log("response: ", body);
                         reject(body);
                     }
                 });

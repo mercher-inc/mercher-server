@@ -1,0 +1,36 @@
+{
+    "shopId": {
+        "rules":      {
+            "required":     {
+                "message": "Shop ID is required"
+            },
+            "isInt":        {
+                "message": "Shop ID should be integer"
+            },
+            "recordExists": {
+                "message": "Shop does not exists",
+                "table":   "shop",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty": false
+    },
+    "userId": {
+        "rules":      {
+            "required":     {
+                "message": "User ID is required"
+            },
+            "isInt":        {
+                "message": "User ID should be integer"
+            },
+            "recordExists": {
+                "message": "User does not exists",
+                "table":   "shop",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty": false
+    }
+}

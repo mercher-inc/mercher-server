@@ -1,0 +1,44 @@
+{
+    "imageId":   {
+        "rules":        {
+            "isInt":        {
+                "message": "Image ID should be integer"
+            },
+            "recordExists": {
+                "message": "Image does not exists",
+                "table":   "image",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "firstName": {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "lastName":  {
+        "rules":        {
+            "toString": {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
+    "gender":    {
+        "rules":        {
+            "toString": {},
+            "isIn":     {
+                "message":     "Valid gender expected",
+                "coutryCodes": ["male", "female"]
+            }
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    }
+}

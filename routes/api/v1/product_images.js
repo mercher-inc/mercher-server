@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router(),
-    ProductImageModel = require('../../../models/product_image');
+    ProductImageModel = require('../../../models/product_image'),
+    validator = require('../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -11,35 +12,17 @@ router.use('/', function (req, res, next) {
 
 router.post('/', require('./middleware/auth_check'));
 
+router.post('/', validator(require('./validation/product_images/create.json'), {source: 'body', param: 'createForm'}));
+
 router.post('/', function (req, res, next) {
     new ProductImageModel()
-        .save(req.body, {req: req})
+        .save(req['createForm'])
         .then(function (productImageModel) {
-            new ProductImageModel({id: productImageModel.id})
-                .fetch({
-                    withRelated: ['product', 'image']
-                })
-                .then(function (productImageModel) {
-                    res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/product_images/' + productImageModel.id);
-                    res.status(201).json(productImageModel);
-                });
+            return productImageModel.load(['product', 'image']);
         })
-        .catch(ProductImageModel.PermissionError, function (error) {
-            var forbiddenError = new (require('./errors/forbidden'))(error.message);
-            next(forbiddenError);
-        })
-        .catch(ProductImageModel.ValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
-        })
-        .catch(ProductImageModel.InternalServerError, function (error) {
-            var internalServerError = new (require('./errors/internal'))(error.message);
-            next(internalServerError);
-        })
-        .catch(function (error) {
-            console.log(error);
-            var internalServerError = new (require('./errors/internal'))();
-            next(internalServerError);
+        .then(function (productImageModel) {
+            res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/product_images/' + productImageModel.id);
+            res.status(201).json(productImageModel);
         });
 });
 

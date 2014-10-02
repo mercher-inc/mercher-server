@@ -4,7 +4,7 @@ var express = require('express'),
     bookshelf = require('../../../modules/bookshelf'),
     CategoriesCollection = require('../../../collections/categories'),
     CategoryModel = require('../../../models/category'),
-    expressAsyncValidator = require('../../../modules/express-async-validator/module');
+    validator = require('../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -13,7 +13,7 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.get('/', require('./middleware/collection_params_check'));
+router.get('/', validator(require('./validation/collection.json'), {source: 'query', param: 'collectionForm'}));
 
 router.get('/', function (req, res, next) {
     var categoriesCollection = new CategoriesCollection();
@@ -22,8 +22,8 @@ router.get('/', function (req, res, next) {
     var collectionRequest = categoriesCollection
         .query(function (qb) {
             qb
-                .limit(req.query.limit)
-                .offset(req.query.offset);
+                .limit(req['collectionForm'].limit)
+                .offset(req['collectionForm'].offset);
         })
         .fetch({
             withRelated: ['image']
@@ -51,35 +51,17 @@ router.get('/', function (req, res, next) {
 
 router.post('/', require('./middleware/auth_check'));
 
+router.post('/', validator(require('./validation/categories/create.json'), {source: 'body', param: 'createForm'}));
+
 router.post('/', function (req, res, next) {
     new CategoryModel()
-        .save(req.body, {req: req})
+        .save(req['createForm'])
         .then(function (categoryModel) {
-            new CategoryModel({id: categoryModel.id})
-                .fetch({
-                    withRelated: ['image']
-                })
-                .then(function (categoryModel) {
-                    res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/categories/' + categoryModel.id);
-                    res.status(201).json(categoryModel);
-                });
+            return categoryModel.load(['image']);
         })
-        .catch(CategoryModel.PermissionError, function (error) {
-            var forbiddenError = new (require('./errors/forbidden'))(error.message);
-            next(forbiddenError);
-        })
-        .catch(CategoryModel.ValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
-        })
-        .catch(CategoryModel.InternalServerError, function (error) {
-            var internalServerError = new (require('./errors/internal'))(error.message);
-            next(internalServerError);
-        })
-        .catch(function (error) {
-            console.log(error);
-            var internalServerError = new (require('./errors/internal'))(error);
-            next(internalServerError);
+        .then(function (categoryModel) {
+            res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/categories/' + categoryModel.id);
+            res.status(201).json(categoryModel);
         });
 });
 
@@ -91,41 +73,18 @@ router.use('/:categoryId', function (req, res, next) {
 });
 
 router.param('categoryId', function (req, res, next) {
-    req
-        .model({
-            "categoryId": {
-                "rules":      {
-                    "required":  {
-                        "message": "Category ID is required"
-                    },
-                    "isNumeric": {
-                        "message": "Category ID should be numeric"
-                    },
-                    "toInt":     {}
-                },
-                "source":     ["params"],
-                "allowEmpty": false
-            }
+    var categoryModel = new CategoryModel({id: parseInt(req.params.categoryId)});
+    categoryModel.fetch({require: true})
+        .then(function (model) {
+            req.category = model;
+            next();
         })
-        .validate()
-        .then(function () {
-            var categoryModel = new CategoryModel({id: req.params.categoryId});
-            categoryModel.fetch({require: true})
-                .then(function (model) {
-                    req.category = model;
-                    next();
-                })
-                .catch(CategoryModel.NotFoundError, function () {
-                    var notFoundError = new (require('./errors/not_found'))("Category was not found");
-                    next(notFoundError);
-                })
-                .catch(function (err) {
-                    next(err);
-                });
+        .catch(CategoryModel.NotFoundError, function () {
+            var notFoundError = new (require('./errors/not_found'))("Category was not found");
+            next(notFoundError);
         })
-        .catch(function (error) {
-            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-            next(badRequestError);
+        .catch(function (err) {
+            next(err);
         });
 });
 
@@ -139,33 +98,16 @@ router.get('/:categoryId', function (req, res) {
 
 router.put('/:categoryId', require('./middleware/auth_check'));
 
+router.put('/:categoryId', validator(require('./validation/categories/update.json'), {source: 'body', param: 'updateForm'}));
+
 router.put('/:categoryId', function (req, res, next) {
     req.category
-        .save(req.body, {req: req})
+        .save(req['updateForm'])
         .then(function (categoryModel) {
-            new CategoryModel({id: categoryModel.id})
-                .fetch({
-                    withRelated: ['image']
-                })
-                .then(function (categoryModel) {
-                    res.status(200).json(categoryModel);
-                });
+            return categoryModel.load(['image']);
         })
-        .catch(CategoryModel.PermissionError, function (error) {
-            var forbiddenError = new (require('./errors/forbidden'))(error.message);
-            next(forbiddenError);
-        })
-        .catch(CategoryModel.ValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
-        })
-        .catch(CategoryModel.InternalServerError, function (error) {
-            var internalServerError = new (require('./errors/internal'))(error.message);
-            next(internalServerError);
-        })
-        .catch(function (error) {
-            var internalServerError = new (require('./errors/internal'))();
-            next(internalServerError);
+        .then(function (categoryModel) {
+            res.status(200).json(categoryModel);
         });
 });
 

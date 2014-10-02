@@ -1,0 +1,22 @@
+{
+    "limit":  {
+        "rules":        {
+            "isInt": {
+                "message": "Limit should be integer"
+            },
+            "toInt": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": 10
+    },
+    "offset": {
+        "rules":        {
+            "isInt": {
+                "message": "Offset should be integer"
+            },
+            "toInt": {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": 0
+    }
+}

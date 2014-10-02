@@ -47,13 +47,13 @@ router.get('/', function (req, res) {
                 ]
             },
             {
-                "path":       "/api/v1/paypal_accounts",
+                "path":       "/api/v1/paypal_accounts/register",
                 "operations": [
                     {
                         "method":           "POST",
-                        "summary":          "Create an account",
+                        "summary":          "Register an account",
                         "type":             "PayPalAccount",
-                        "nickname":         "sign_up",
+                        "nickname":         "register",
                         "parameters":       [
                             {
                                 "name":        "body",

@@ -5,7 +5,7 @@ var express = require('express'),
     ShopsCollection = require('../../../collections/shops'),
     ShopModel = require('../../../models/shop'),
     ManagerModel = require('../../../models/manager'),
-    expressAsyncValidator = require('../../../modules/express-async-validator/module');
+    validator = require('../../../modules/express-async-validator/module');
 
 router.use('/', function (req, res, next) {
     res.set({
@@ -14,7 +14,7 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.get('/', require('./middleware/collection_params_check'));
+router.get('/', validator(require('./validation/collection.json'), {source: 'query', param: 'collectionForm'}));
 
 router.get('/', function (req, res, next) {
     var shopsCollection = new ShopsCollection();
@@ -23,11 +23,11 @@ router.get('/', function (req, res, next) {
     var collectionRequest = shopsCollection
         .query(function (qb) {
             qb
-                .limit(req.query.limit)
-                .offset(req.query.offset);
+                .limit(req['collectionForm'].limit)
+                .offset(req['collectionForm'].offset);
         })
         .fetch({
-            withRelated: ['image']
+            withRelated: ['image', 'coverImage']
         });
 
     var totalRequest = Bookshelf
@@ -52,11 +52,13 @@ router.get('/', function (req, res, next) {
 
 router.post('/', require('./middleware/auth_check'));
 
+router.post('/', validator(require('./validation/shops/create.json'), {source: 'body', param: 'createForm'}));
+
 router.post('/', function (req, res, next) {
     Bookshelf
         .transaction(function (t) {
             return new ShopModel()
-                .save(req.body, {transacting: t, req: req})
+                .save(req['createForm'], {transacting: t})
                 .then(function (shopModel) {
                     return new ManagerModel()
                         .save({
@@ -69,37 +71,14 @@ router.post('/', function (req, res, next) {
                         .then(function () {
                             return shopModel;
                         });
-                })
-                .catch(ShopModel.PermissionError, function (error) {
-                    var forbiddenError = new (require('./errors/forbidden'))(error.message);
-                    next(forbiddenError);
-                })
-                .catch(ShopModel.ValidationError, function (error) {
-                    var validationError = new (require('./errors/validation'))("Validation failed", error);
-                    next(validationError);
-                })
-                .catch(ShopModel.InternalServerError, function (error) {
-                    var internalServerError = new (require('./errors/internal'))(error.message);
-                    next(internalServerError);
-                })
-                .catch(function (error) {
-                    var internalServerError = new (require('./errors/internal'))();
-                    next(internalServerError);
                 });
         })
         .then(function (shopModel) {
-            new ShopModel({id: shopModel.id})
-                .fetch({
-                    withRelated: ['image']
-                })
-                .then(function (shopModel) {
-                    res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/shops/' + shopModel.id);
-                    res.status(201).json(shopModel);
-                });
+            return shopModel.load(['image', 'coverImage']);
         })
-        .catch(function (err) {
-            var internalServerError = new (require('./errors/internal'))();
-            next(internalServerError);
+        .then(function (shopModel) {
+            res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/shops/' + shopModel.id);
+            res.status(201).json(shopModel);
         });
 });
 
@@ -111,47 +90,24 @@ router.use('/:shopId', function (req, res, next) {
 });
 
 router.param('shopId', function (req, res, next) {
-    req
-        .model({
-            "shopId": {
-                "rules":      {
-                    "required":  {
-                        "message": "Shop ID is required"
-                    },
-                    "isNumeric": {
-                        "message": "Shop ID should be numeric"
-                    },
-                    "toInt":     {}
-                },
-                "source":     ["params"],
-                "allowEmpty": false
-            }
+    var shopModel = new ShopModel({id: parseInt(req.params.shopId)});
+    shopModel.fetch({require: true})
+        .then(function (model) {
+            req.shop = model;
+            next();
         })
-        .validate()
-        .then(function () {
-            var shopModel = new ShopModel({id: req.params.shopId});
-            shopModel.fetch({require: true})
-                .then(function (model) {
-                    req.shop = model;
-                    next();
-                })
-                .catch(ShopModel.NotFoundError, function () {
-                    var notFoundError = new (require('./errors/not_found'))("Shop was not found");
-                    next(notFoundError);
-                })
-                .catch(function (err) {
-                    next(err);
-                });
+        .catch(ShopModel.NotFoundError, function () {
+            var notFoundError = new (require('./errors/not_found'))("Shop was not found");
+            next(notFoundError);
         })
-        .catch(function (error) {
-            var badRequestError = new (require('./errors/bad_request'))("Bad request", error);
-            next(badRequestError);
+        .catch(function (err) {
+            next(err);
         });
 });
 
 router.get('/:shopId', function (req, res) {
     req.shop
-        .load('image')
+        .load(['image', 'coverImage'])
         .then(function () {
             res.json(req.shop);
         });
@@ -159,36 +115,20 @@ router.get('/:shopId', function (req, res) {
 
 router.put('/:shopId', require('./middleware/auth_check'));
 
+router.put('/:shopId', validator(require('./validation/shops/update.json'), {source: 'body', param: 'updateForm'}));
+
 router.put('/:shopId', function (req, res, next) {
     req.shop
-        .save(req.body, {req: req})
+        .save(req['updateForm'])
         .then(function (shopModel) {
-            new ShopModel({id: shopModel.id})
-                .fetch({
-                    withRelated: ['image']
-                })
-                .then(function (shopModel) {
-                    res.status(200).json(shopModel);
-                });
+            return shopModel.load(['image', 'coverImage']);
         })
-        .catch(ShopModel.PermissionError, function (error) {
-            var forbiddenError = new (require('./errors/forbidden'))(error.message);
-            next(forbiddenError);
-        })
-        .catch(ShopModel.ValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
-        })
-        .catch(ShopModel.InternalServerError, function (error) {
-            var internalServerError = new (require('./errors/internal'))(error.message);
-            next(internalServerError);
-        })
-        .catch(function (error) {
-            var internalServerError = new (require('./errors/internal'))();
-            next(internalServerError);
+        .then(function (shopModel) {
+            res.status(200).json(shopModel);
         });
 });
 
+router.use('/:shopId/products', require('./shops/products'));
 router.use('/:shopId/managers', require('./shops/managers'));
 router.use('/:shopId/orders', require('./shops/orders'));
 router.use('/:shopId/paypal_accounts', require('./shops/paypal_accounts'));
