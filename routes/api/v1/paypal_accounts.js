@@ -12,9 +12,9 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.post('/', validator(require('./validation/paypal_accounts/register.json'), {source: 'body', param: 'registerForm'}));
+router.post('/register', validator(require('./validation/paypal_accounts/register.json'), {source: 'body', param: 'registerForm'}));
 
-router.post('/', function (req, res, next) {
+router.post('/register', function (req, res, next) {
     PayPalAccountModel
         .register(req['registerForm'])
         .then(function (payPalAccountModel) {
