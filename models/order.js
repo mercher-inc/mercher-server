@@ -10,9 +10,23 @@ var OrderModel = BaseModel.extend(
     {
         tableName: 'order',
         defaults:  {
-            managerId: null,
-            status:    'draft',
-            tax:       0
+            userId:           null,
+            managerId:        null,
+            shopId:           null,
+            status:           'draft',
+            tax:              0,
+            platform:         'marketplace',
+            pay_key:          null,
+            expires:          null,
+            shipping_memo:    null,
+            shipping_email:   null,
+            shipping_name:    null,
+            shipping_country: 'US',
+            shipping_state:   null,
+            shipping_city:    null,
+            shipping_street1: null,
+            shipping_street2: null,
+            shipping_zip:     null
         },
 
         user:       function () {
