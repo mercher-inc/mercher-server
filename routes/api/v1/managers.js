@@ -15,6 +15,8 @@ router.use('/', function (req, res, next) {
 
 router.get('/', require('./middleware/collection_params_check'));
 
+router.get('/', validator(require('./validation/collection.json'), {source: 'query', param: 'collectionForm'}));
+
 router.get('/', function (req, res, next) {
     var managersCollection = new ManagersCollection();
     var managerModel = new ManagerModel();
@@ -22,8 +24,8 @@ router.get('/', function (req, res, next) {
     var collectionRequest = managersCollection
         .query(function (qb) {
             qb
-                .limit(req.query.limit)
-                .offset(req.query.offset);
+                .limit(req['collectionForm'].limit)
+                .offset(req['collectionForm'].offset);
         })
         .fetch({
             withRelated: ['shop.image', 'user.image']
@@ -51,35 +53,17 @@ router.get('/', function (req, res, next) {
 
 router.post('/', require('./middleware/auth_check'));
 
+router.post('/', validator(require('./validation/managers/create.json'), {source: 'body', param: 'createForm'}));
+
 router.post('/', function (req, res, next) {
     new ManagerModel()
-        .save(req.body, {req: req})
+        .save(req['createForm'])
         .then(function (managerModel) {
-            new ManagerModel({id: managerModel.id})
-                .fetch({
-                    withRelated: ['shop.image', 'user.image']
-                })
-                .then(function (managerModel) {
-                    res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/managers/' + managerModel.id);
-                    res.status(201).json(managerModel);
-                });
+            return managerModel.load(['shop.image', 'user.image']);
         })
-        .catch(ManagerModel.PermissionError, function (error) {
-            var forbiddenError = new (require('./errors/forbidden'))(error.message);
-            next(forbiddenError);
-        })
-        .catch(ManagerModel.ValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
-        })
-        .catch(ManagerModel.InternalServerError, function (error) {
-            var internalServerError = new (require('./errors/internal'))(error.message);
-            next(internalServerError);
-        })
-        .catch(function (error) {
-            console.log(error);
-            var internalServerError = new (require('./errors/internal'))();
-            next(internalServerError);
+        .then(function (managerModel) {
+            res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/managers/' + managerModel.id);
+            res.status(201).json(managerModel);
         });
 });
 
@@ -116,33 +100,16 @@ router.get('/:managerId', function (req, res) {
 
 router.put('/:managerId', require('./middleware/auth_check'));
 
+router.put('/:managerId', validator(require('./validation/managers/update.json'), {source: 'body', param: 'updateForm'}));
+
 router.put('/:managerId', function (req, res, next) {
     req.manager
-        .save(req.body, {req: req})
+        .save(req['updateForm'])
         .then(function (managerModel) {
-            new ManagerModel({id: managerModel.id})
-                .fetch({
-                    withRelated: ['shop.image', 'user.image']
-                })
-                .then(function (managerModel) {
-                    res.status(200).json(managerModel);
-                });
+            return managerModel.load(['shop.image', 'user.image']);
         })
-        .catch(ManagerModel.PermissionError, function (error) {
-            var forbiddenError = new (require('./errors/forbidden'))(error.message);
-            next(forbiddenError);
-        })
-        .catch(ManagerModel.ValidationError, function (error) {
-            var validationError = new (require('./errors/validation'))("Validation failed", error);
-            next(validationError);
-        })
-        .catch(ManagerModel.InternalServerError, function (error) {
-            var internalServerError = new (require('./errors/internal'))(error.message);
-            next(internalServerError);
-        })
-        .catch(function (error) {
-            var internalServerError = new (require('./errors/internal'))();
-            next(internalServerError);
+        .then(function (managerModel) {
+            res.status(200).json(managerModel);
         });
 });
 

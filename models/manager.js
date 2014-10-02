@@ -8,9 +8,13 @@ var ManagerModel = BaseModel.extend(
     {
         tableName: 'manager',
         defaults:  {
-            role:     null,
-            isPublic: true,
-            isBanned: false
+            userId:    null,
+            shopId:    null,
+            role:      null,
+            isPublic:  true,
+            isBanned:  false,
+            createdAt: null,
+            updatedAt: null
         },
 
         user: function () {
