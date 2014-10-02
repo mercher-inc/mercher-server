@@ -6,9 +6,13 @@ var OrderItemModel = BaseModel.extend(
     {
         tableName: 'order_item',
         defaults:  {
+            orderId:      null,
+            productId:    null,
             price:        null,
             shippingCost: null,
-            amount:       null
+            amount:       null,
+            createdAt:    null,
+            updatedAt:    null
         },
 
         order:   function () {
