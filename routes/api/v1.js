@@ -41,25 +41,29 @@ router.use(function (req, res, next) {
         next();
         return;
     }
-    var AccessToken = require('../../models/access_token');
+    var AccessToken = require('../../models/access_token'),
+        expirationDate = new Date();
     new AccessToken()
         .where({token: req.get('X-Access-Token')})
-        .fetch({require: true})
-        .then(function (accessToken) {
-            //everything is ok, getting user
-            var User = require('../../models/user');
-            new User({id: accessToken.get('userId')})
-                .fetch({require: true})
-                .then(function (user) {
-                    req.currentUser = user;
-                    next();
-                })
-                .catch(User.NotFoundError, function () {
-                    next();
-                });
+        .where('expires', '>=', expirationDate.toISOString())
+        .fetch({require: true, withRelated: ['user']})
+        .then(function (accessTokenModel) {
+            //everything is ok, updating expiration time
+            expirationDate.setTime(expirationDate.getTime() + 24 * 60 * 60 * 1000); // + 1 day
+            return accessTokenModel.save({expires: expirationDate.toISOString()});
+        })
+        .then(function (accessTokenModel) {
+            //setting current user
+            req.currentUser = accessTokenModel.related('user');
+            next();
         })
         .catch(AccessToken.NotFoundError, function () {
+            //access token not found or expired
             next();
+        })
+        .catch(function (e) {
+            //unknown error
+            next(e);
         });
 });
 

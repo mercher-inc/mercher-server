@@ -22,7 +22,7 @@
 
     app.set('port', process.env.PORT || 3000);
     app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded());
+    app.use(bodyParser.urlencoded({extended: true}));
     app.use(useragent.express());
     app.use(cookieParser());
     app.use(favicon(__dirname + '/public/favicon.ico'));

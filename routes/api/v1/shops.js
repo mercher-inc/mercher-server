@@ -113,7 +113,17 @@ router.get('/:shopId', function (req, res) {
         });
 });
 
-router.put('/:shopId', require('./middleware/auth_check'));
+router.put(
+    '/:shopId',
+    require('./middleware/auth_check'),
+    require('./middleware/role_check')(
+        function (req) {
+            return req.shop.id;
+        },
+        'owner',
+        'You are not allowed to update this shop\'s details'
+    )
+);
 
 router.put('/:shopId', validator(require('./validation/shops/update.json'), {source: 'body', param: 'updateForm'}));
 

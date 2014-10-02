@@ -100,7 +100,18 @@ router.get('/:userId', function (req, res) {
         });
 });
 
-router.put('/:userId', require('./middleware/auth_check'));
+router.put(
+    '/:userId',
+    require('./middleware/auth_check'),
+    function (req, res, next) {
+        if (req.currentUser.id !== req.user.id) {
+            var ForbiddenError = require('./errors/forbidden');
+            next(new ForbiddenError('It\'s not your profile'));
+        } else {
+            next();
+        }
+    }
+);
 
 router.put('/:userId', validator(require('./validation/users/update.json'), {source: 'body', param: 'updateForm'}));
 
