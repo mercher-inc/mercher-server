@@ -1,16 +1,17 @@
 module.exports = {
-    "id":          "Manager",
+    "id":          "ManagerCreateRequest",
     "required":    [
+        "shopId",
         "userId",
-        "shopId"
+        "role"
     ],
-    "description": "Manager model",
+    "description": "Manager create request model",
     "properties":  {
-        "userId":   {
+        "shopId":   {
             "type":   "integer",
             "format": "int32"
         },
-        "shopId":   {
+        "userId":   {
             "type":   "integer",
             "format": "int32"
         },
