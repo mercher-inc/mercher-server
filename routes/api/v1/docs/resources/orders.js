@@ -128,6 +128,37 @@ router.get('/', function (req, res) {
                 ]
             },
             {
+                "path":       "/api/v1/orders/{orderId}/pay",
+                "operations": [
+                    {
+                        "method":     "POST",
+                        "summary":    "Pay order",
+                        "type":       "Order",
+                        "nickname":   "pay",
+                        "notes":      "You should use <b>payKey</b> from response to request user's peyment on PayPal. Redirect user to " +
+                                          "<a target='_blank' href=\"https://sandbox.paypal.com/webapps/adaptivepayment/flow/pay?paykey=payKey\">" +
+                                          "https://sandbox.paypal.com/webapps/adaptivepayment/flow/pay?paykey=<b>payKey</b>" +
+                            "</a>.",
+                        "parameters": [
+                            {
+                                "name":        "orderId",
+                                "description": "ID of the order that needs to be updated",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            },
+                            {
+                                "name":        "body",
+                                "description": "Order Pay request",
+                                "required":    true,
+                                "type":        "OrderPayRequest",
+                                "paramType":   "body"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 "path":       "/api/v1/users/{userId}/orders",
                 "operations": [
                     {
@@ -223,6 +254,7 @@ router.get('/', function (req, res) {
         "models":         {
             "Order":             require('../models/order'),
             "OrderRequest":      require('../models/request/order'),
+            "OrderPayRequest":   require('../models/request/order/pay'),
             "OrdersList":        require('../collections/orders'),
             "OrderItem":         require('../models/order_item'),
             "User":              require('../models/user'),

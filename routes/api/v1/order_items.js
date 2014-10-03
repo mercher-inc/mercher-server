@@ -10,8 +10,6 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.post('/', require('./middleware/auth_check'));
-
 router.post('/', validator(require('./validation/order_items/create.json'), {source: 'body', param: 'createForm'}));
 
 router.post('/', function (req, res, next) {

@@ -19,10 +19,27 @@
             ;
     }
 
+    var PayPalApiError = function (message) {
+        this.status = 400;
+        this.name = "PayPalApiError";
+        this.message = message || "PayPal Api Error";
+
+        this.error = {
+            "error":   this.name,
+            "message": this.message
+        };
+    };
+
+    PayPalApiError.prototype = new Error();
+    PayPalApiError.prototype.constructor = PayPalApiError;
+
+    module.exports.apiError = PayPalApiError;
+
     module.exports = function () {
         this.options = {
             applicationId: 'APP-80W284485P519543T',
             userId:        'dmitriy.s.les-facilitator_api1.gmail.com',
+            email:         'dmitriy.s.les-facilitator@gmail.com',
             password:      '1391764851',
             signature:     'AIkghGmb0DgD6MEPZCmNq.bKujMAA8NEIHryH-LQIfmx7UZ5q1LXAa7T',
             sandbox:       true
@@ -113,13 +130,19 @@
                 }
                 request(requestOptions, function (error, response, body) {
                     if (error) {
-                        reject(error);
+                        console.log('PayPalApiError:', error);
+                        reject(new PayPalApiError());
                         return;
                     }
                     if (body['responseEnvelope'] && body['responseEnvelope'].ack == 'Success') {
                         resolve(body);
+                    } else if (body['responseEnvelope'] && body['responseEnvelope'].ack == 'Failure' && body['error']) {
+                        if (body['error'] instanceof Array) {
+                            reject(new PayPalApiError(body['error'][0].message));
+                        }
                     } else {
-                        reject(body);
+                        console.log('PayPalApiError:', body);
+                        reject(new PayPalApiError());
                     }
                 });
             });
