@@ -61,7 +61,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Shop object that needs to be created",
                                 "required":    true,
-                                "type":        "ShopRequest",
+                                "type":        "ShopCreateRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -132,7 +132,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Shop object that needs to be updated",
                                 "required":    true,
-                                "type":        "ShopRequest",
+                                "type":        "ShopUpdateRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -210,7 +210,8 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "Shop":              require('../models/shop'),
-            "ShopRequest":       require('../models/request/shop'),
+            "ShopCreateRequest": require('../models/request/shop/create'),
+            "ShopUpdateRequest": require('../models/request/shop/update'),
             "Image":             require('../models/image'),
             "ShopsList":         require('../collections/shops'),
             "RequestError":      require('../errors/request'),

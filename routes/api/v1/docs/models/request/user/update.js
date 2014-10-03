@@ -1,6 +1,6 @@
 module.exports = {
-    "id":          "UserRequest",
-    "description": "User request model",
+    "id":          "UserUpdateRequest",
+    "description": "User update request model",
     "properties":  {
         "imageId":   {
             "type":         "integer",
@@ -13,6 +13,11 @@ module.exports = {
         },
         "lastName":  {
             "type":         "string",
+            "defaultValue": null
+        },
+        "gender":    {
+            "type":         "string",
+            "enum":         ["male", "female"],
             "defaultValue": null
         }
     }

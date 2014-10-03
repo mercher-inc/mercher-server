@@ -112,7 +112,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "User object that needs to be updated",
                                 "required":    true,
-                                "type":        "UserRequest",
+                                "type":        "UserUpdateRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -144,7 +144,7 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "User":              require('../models/user'),
-            "UserRequest":       require('../models/request/user'),
+            "UserUpdateRequest": require('../models/request/user/update'),
             "Image":             require('../models/image'),
             "UsersList":         require('../collections/users'),
             "RequestError":      require('../errors/request'),
