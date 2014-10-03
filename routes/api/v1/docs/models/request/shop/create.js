@@ -1,19 +1,10 @@
 module.exports = {
-    "id":          "Shop",
+    "id":          "ShopCreateRequest",
     "required":    [
-        "id",
-        "title",
-        "isPublic",
-        "isBanned",
-        "createdAt",
-        "updatedAt"
+        "title"
     ],
-    "description": "Shop model",
+    "description": "Shop create request model",
     "properties":  {
-        "id":              {
-            "type":   "integer",
-            "format": "int32"
-        },
         "imageId":         {
             "type":         "integer",
             "format":       "int32",
@@ -106,24 +97,6 @@ module.exports = {
         "isPublic":        {
             "type":         "boolean",
             "defaultValue": true
-        },
-        "isBanned":        {
-            "type":         "boolean",
-            "defaultValue": false
-        },
-        "createdAt":       {
-            "type":         "string",
-            "format":       "date-time",
-            "defaultValue": null
-        },
-        "updatedAt":       {
-            "type":         "string",
-            "format":       "date-time",
-            "defaultValue": null
-        },
-        "image":           {
-            "$ref":         "Image",
-            "defaultValue": null
         }
     }
 };

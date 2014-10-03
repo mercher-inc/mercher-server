@@ -1,10 +1,10 @@
 module.exports = {
-    "id":          "PayPalAccountCredentials",
+    "id":          "PayPalAccountRegisterRequest",
     "required":    [
         "requestToken",
         "verificationCode"
     ],
-    "description": "User Auth Credentials model",
+    "description": "PayPal Account register request model",
     "properties":  {
         "requestToken":     {
             "type": "string"

@@ -2,7 +2,9 @@ module.exports = {
     "id":          "User",
     "required":    [
         "id",
-        "isBanned"
+        "isBanned",
+        "createdAt",
+        "updatedAt"
     ],
     "description": "User model",
     "properties":  {
@@ -21,6 +23,11 @@ module.exports = {
         },
         "lastName":  {
             "type":         "string",
+            "defaultValue": null
+        },
+        "gender":    {
+            "type":         "string",
+            "enum":         ["male", "female"],
             "defaultValue": null
         },
         "lastLogin": {

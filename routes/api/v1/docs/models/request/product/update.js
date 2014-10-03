@@ -1,30 +1,10 @@
 module.exports = {
-    "id":          "Product",
+    "id":          "ProductUpdateRequest",
     "required":    [
-        "id",
-        "shopId",
-        "title",
-        "isUnique",
-        "isPublic",
-        "isBanned",
-        "createdAt",
-        "updatedAt"
+        "title"
     ],
-    "description": "Product model",
+    "description": "Product update request model",
     "properties":  {
-        "id":                     {
-            "type":   "integer",
-            "format": "int32"
-        },
-        "shopId":                 {
-            "type":   "integer",
-            "format": "int32"
-        },
-        "categoryId":             {
-            "type":         "integer",
-            "format":       "int32",
-            "defaultValue": null
-        },
         "title":                  {
             "type": "string"
         },
@@ -109,6 +89,7 @@ module.exports = {
         },
         "expirationTime":         {
             "type":         "string",
+            "format":       "date-time",
             "defaultValue": null
         },
         "color":                  {
@@ -134,26 +115,6 @@ module.exports = {
         "isPublic":               {
             "type":         "boolean",
             "defaultValue": true
-        },
-        "isBanned":               {
-            "type":         "boolean",
-            "defaultValue": false
-        },
-        "createdAt":              {
-            "type":         "string",
-            "format":       "date-time",
-            "defaultValue": null
-        },
-        "updatedAt":              {
-            "type":         "string",
-            "format":       "date-time",
-            "defaultValue": null
-        },
-        "shop":                   {
-            "$ref": "Shop"
-        },
-        "category":               {
-            "$ref": "Category"
         }
     }
 };

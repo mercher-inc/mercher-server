@@ -1,10 +1,10 @@
 module.exports = {
-    "id":          "ProductImageRequest",
+    "id":          "ProductImageCreateRequest",
     "required":    [
         "productId",
         "imageId"
     ],
-    "description": "Product Image request model",
+    "description": "Product Image create request model",
     "properties":  {
         "productId": {
             "type":   "integer",

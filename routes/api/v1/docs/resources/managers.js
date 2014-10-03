@@ -61,7 +61,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Manager object that needs to be created",
                                 "required":    true,
-                                "type":        "ManagerRequest",
+                                "type":        "ManagerCreateRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -132,7 +132,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Manager object that needs to be updated",
                                 "required":    true,
-                                "type":        "ManagerRequest",
+                                "type":        "ManagerUpdateRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -255,17 +255,18 @@ router.get('/', function (req, res) {
             }
         ],
         "models":         {
-            "Manager":           require('../models/manager'),
-            "ManagerRequest":    require('../models/request/manager'),
-            "Shop":              require('../models/shop'),
-            "User":              require('../models/user'),
-            "Image":             require('../models/image'),
-            "ManagersList":      require('../collections/managers'),
-            "RequestError":      require('../errors/request'),
-            "UnauthorizedError": require('../errors/unauthorized'),
-            "NotFoundError":     require('../errors/not_found'),
-            "ValidationError":   require('../errors/validation'),
-            "FieldError":        require('../errors/field')
+            "Manager":              require('../models/manager'),
+            "ManagerCreateRequest": require('../models/request/manager/create'),
+            "ManagerUpdateRequest": require('../models/request/manager/update'),
+            "Shop":                 require('../models/shop'),
+            "User":                 require('../models/user'),
+            "Image":                require('../models/image'),
+            "ManagersList":         require('../collections/managers'),
+            "RequestError":         require('../errors/request'),
+            "UnauthorizedError":    require('../errors/unauthorized'),
+            "NotFoundError":        require('../errors/not_found'),
+            "ValidationError":      require('../errors/validation'),
+            "FieldError":           require('../errors/field')
         }
     });
 });

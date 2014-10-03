@@ -91,7 +91,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Image object that needs to be updated",
                                 "required":    true,
-                                "type":        "ImageRequest",
+                                "type":        "ImageUpdateRequest",
                                 "paramType":   "body"
                             },
                             {
@@ -129,14 +129,14 @@ router.get('/', function (req, res) {
             }
         ],
         "models":         {
-            "Image":             require('../models/image'),
-            "ImageRequest":      require('../models/request/image'),
-            "ImagesList":        require('../collections/images'),
-            "RequestError":      require('../errors/request'),
-            "UnauthorizedError": require('../errors/unauthorized'),
-            "NotFoundError":     require('../errors/not_found'),
-            "ValidationError":   require('../errors/validation'),
-            "FieldError":        require('../errors/field')
+            "Image":              require('../models/image'),
+            "ImageUpdateRequest": require('../models/request/image/update'),
+            "ImagesList":         require('../collections/images'),
+            "RequestError":       require('../errors/request'),
+            "UnauthorizedError":  require('../errors/unauthorized'),
+            "NotFoundError":      require('../errors/not_found'),
+            "ValidationError":    require('../errors/validation'),
+            "FieldError":         require('../errors/field')
         }
     });
 });
