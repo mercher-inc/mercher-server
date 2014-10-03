@@ -10,23 +10,24 @@ var OrderModel = BaseModel.extend(
     {
         tableName: 'order',
         defaults:  {
-            userId:           null,
-            managerId:        null,
-            shopId:           null,
-            status:           'draft',
-            tax:              0,
-            platform:         'marketplace',
-            pay_key:          null,
-            expires:          null,
-            shipping_memo:    null,
-            shipping_email:   null,
-            shipping_name:    null,
-            shipping_country: 'US',
-            shipping_state:   null,
-            shipping_city:    null,
-            shipping_street1: null,
-            shipping_street2: null,
-            shipping_zip:     null
+            userId:            null,
+            managerId:         null,
+            shopId:            null,
+            status:            'draft',
+            tax:               0,
+            platform:          'marketplace',
+            payKey:            null,
+            paymentExecStatus: null,
+            expires:           null,
+            shippingMemo:      null,
+            shippingEmail:     null,
+            shippingName:      null,
+            shippingCountry:   'US',
+            shippingState:     null,
+            shippingCity:      null,
+            shippingStreet1:   null,
+            shippingStreet2:   null,
+            shippingZip:       null
         },
 
         user:       function () {
@@ -121,7 +122,18 @@ var OrderModel = BaseModel.extend(
                             returnUrl:                         credentials.returnUrl
                         })
                         .then(function (payResponse) {
-                            return orderModel.save({payKey: payResponse.payKey});
+                            var expirationDate = new Date();
+                            expirationDate.setTime(expirationDate.getTime() + 15 * 60 * 1000); // + 15 minutes
+
+                            if (payResponse['payErrorList']) {
+                                console.error(payResponse);
+                            }
+
+                            return orderModel.save({
+                                payKey:            payResponse.payKey,
+                                paymentExecStatus: payResponse.paymentExecStatus,
+                                expires:           expirationDate.toISOString()
+                            });
                         });
                 })
                 .then(function (orderModel) {
@@ -138,7 +150,6 @@ var OrderModel = BaseModel.extend(
                             itemCount:  parseInt(orderItemModel.get('amount'))
                         });
                     });
-                    console.log(items);
 
                     return payPalClient
                         .send('AdaptivePayments/SetPaymentOptions', {
