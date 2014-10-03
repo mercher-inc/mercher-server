@@ -1,6 +1,5 @@
 module.exports = {
     "id":          "ProductImageUpdateRequest",
-    "required":    [],
     "description": "Product Image update request model",
     "properties":  {
         "priority": {

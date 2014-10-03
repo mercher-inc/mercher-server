@@ -96,7 +96,7 @@ module.exports = {
         },
         "isPublic":        {
             "type":         "boolean",
-            "defaultValue": false
+            "defaultValue": true
         }
     }
 };

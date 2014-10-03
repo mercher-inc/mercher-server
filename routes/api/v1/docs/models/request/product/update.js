@@ -89,6 +89,7 @@ module.exports = {
         },
         "expirationTime":         {
             "type":         "string",
+            "format":       "date-time",
             "defaultValue": null
         },
         "color":                  {
@@ -109,7 +110,7 @@ module.exports = {
         },
         "isUnique":               {
             "type":         "boolean",
-            "defaultValue": true
+            "defaultValue": false
         },
         "isPublic":               {
             "type":         "boolean",
