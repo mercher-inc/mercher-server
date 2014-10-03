@@ -63,7 +63,35 @@ module.exports = {
         "accountPermissions": {
             "type":  "array",
             "items": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                    'EXPRESS_CHECKOUT',
+                    'DIRECT_PAYMENT',
+                    'SETTLEMENT_CONSOLIDATION',
+                    'SETTLEMENT_REPORTING',
+                    'AUTH_CAPTURE',
+                    'MOBILE_CHECKOUT',
+                    'BILLING_AGREEMENT',
+                    'REFERENCE_TRANSACTION',
+                    'AIR_TRAVEL',
+                    'MASS_PAY',
+                    'TRANSACTION_DETAILS',
+                    'TRANSACTION_SEARCH',
+                    'RECURRING_PAYMENTS',
+                    'ACCOUNT_BALANCE',
+                    'ENCRYPTED_WEBSITE_PAYMENTS',
+                    'REFUND',
+                    'NON_REFERENCED_CREDIT',
+                    'BUTTON_MANAGER',
+                    'MANAGE_PENDING_TRANSACTION_STATUS',
+                    'RECURRING_PAYMENT_REPORT',
+                    'EXTENDED_PRO_PROCESSING_REPORT',
+                    'EXCEPTION_PROCESSING_REPORT',
+                    'ACCOUNT_MANAGEMENT_PERMISSION',
+                    'ACCESS_BASIC_PERSONAL_DATA',
+                    'ACCESS_ADVANCED_PERSONAL_DATA',
+                    'INVOICING'
+                ]
             }
         },
         "token":              {
@@ -77,14 +105,12 @@ module.exports = {
             "defaultValue": false
         },
         "createdAt":          {
-            "type":         "string",
-            "format":       "date-time",
-            "defaultValue": null
+            "type":   "string",
+            "format": "date-time"
         },
         "updatedAt":          {
-            "type":         "string",
-            "format":       "date-time",
-            "defaultValue": null
+            "type":   "string",
+            "format": "date-time"
         }
     }
 };
