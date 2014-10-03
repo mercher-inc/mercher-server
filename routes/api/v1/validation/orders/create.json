@@ -17,10 +17,7 @@
         "allowEmpty": false
     },
     "userId": {
-        "rules":      {
-            "required":     {
-                "message": "User ID is required"
-            },
+        "rules":        {
             "isInt":        {
                 "message": "User ID should be integer"
             },
@@ -31,6 +28,7 @@
             },
             "toInt":        {}
         },
-        "allowEmpty": false
+        "allowEmpty":   true,
+        "defaultValue": null
     }
 }

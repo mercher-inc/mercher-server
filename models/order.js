@@ -54,6 +54,127 @@ var OrderModel = BaseModel.extend(
                     orderModel.set('tax', orderModel.related('shop').get('tax'));
                     return orderModel;
                 });
+        },
+
+        pay: function () {
+            var orderModel = this,
+                PayPal = require('../modules/paypal'),
+                payPalClient = new PayPal,
+                _ = require('underscore');
+
+            return orderModel.load(['shop', 'orderItems.product'])
+                .then(function (orderModel) {
+                    return orderModel.save({tax: orderModel.related('shop').get('tax')});
+                })
+                .then(function (orderModel) {
+                    orderModel.related('orderItems').each(function (orderItemModel) {
+                        orderItemModel.set({
+                            price:        orderItemModel.related('product').get('price'),
+                            shippingCost: orderItemModel.related('product').get('shippingCost')
+                        });
+                    });
+                    return orderModel.related('orderItems')
+                        .invokeThen('save')
+                        .then(function () {
+                            return orderModel;
+                        });
+                })
+                .then(function (orderModel) {
+                    return orderModel.load('total');
+                })
+                .then(function (orderModel) {
+                    var totalPrice = parseFloat(orderModel.related('total').get('price')),
+                        totalShippingCost = parseFloat(orderModel.related('total').get('shippingCost')),
+                        totalTax = parseFloat(orderModel.related('total').get('tax')),
+                        totalShop = totalPrice + totalShippingCost + totalTax,
+                        totalMarketplace = (Math.ceil(totalPrice * 2)) / 100;
+
+                    return payPalClient
+                        .send('AdaptivePayments/Pay', {
+                            actionType:                        'PAY',
+                            currencyCode:                      'USD',
+                            feesPayer:                         'PRIMARYRECEIVER',
+                            payKeyDuration:                    'PT15M',
+                            reverseAllParallelPaymentsOnError: true,
+                            clientDetails:                     {
+                                applicationId: 'Mercher API',
+                                partnerName:   'Mercher Inc.'
+                            },
+                            receiverList:                      {
+                                receiver: [
+                                    {
+                                        amount:      totalShop,
+                                        email:       'seller1.test@mercher.net',
+                                        paymentType: 'GOODS',
+                                        primary:     true
+                                    },
+                                    {
+                                        amount:      totalMarketplace,
+                                        email:       payPalClient.options.email,
+                                        paymentType: 'SERVICE',
+                                        primary:     false
+                                    }
+                                ]
+                            },
+                            trackingId:                        orderModel.id,
+                            cancelUrl:                         'http://local.mercherdev.com/test',
+                            returnUrl:                         'http://local.mercherdev.com/test'
+                        })
+                        .then(function (payResponse) {
+                            return orderModel.save({payKey: payResponse.payKey});
+                        })
+                        .catch(function (payResponseError) {
+                            console.log(payResponseError);
+                            return payResponseError;
+                        });
+                })
+                .then(function (orderModel) {
+                    var totalShippingCost = parseFloat(orderModel.related('total').get('shippingCost')),
+                        totalTax = parseFloat(orderModel.related('total').get('tax')),
+                        items = [];
+
+                    orderModel.related('orderItems').each(function (orderItemModel) {
+                        items.push({
+                            name:       orderItemModel.related('product').get('title'),
+                            identifier: orderItemModel.related('product').id,
+                            price:      parseFloat(orderItemModel.get('price')) * parseInt(orderItemModel.get('amount')),
+                            itemPrice:  parseFloat(orderItemModel.get('price')),
+                            itemCount:  parseInt(orderItemModel.get('amount'))
+                        });
+                    });
+                    console.log(items);
+
+                    return payPalClient
+                        .send('AdaptivePayments/SetPaymentOptions', {
+                            payKey:          orderModel.get('payKey'),
+                            displayOptions:  {
+                                businessName: orderModel.related('shop').get('title')
+                            },
+                            senderOptions:   {
+                                requireShippingAddressSelection: true
+                            },
+                            receiverOptions: {
+                                receiver:    {
+                                    email: 'seller1.test@mercher.net'
+                                },
+                                invoiceData: {
+                                    totalTax:      totalTax,
+                                    totalShipping: totalShippingCost,
+                                    item:          items
+                                }
+                            }
+                        })
+                        .then(function () {
+                            return orderModel;
+                        })
+                        .catch(function (setPaymentOptionsResponseError) {
+                            console.log(setPaymentOptionsResponseError);
+                            return setPaymentOptionsResponseError;
+                        });
+                })
+                .then(function (orderModel) {
+                    return orderModel;
+                });
         }
     }
 );

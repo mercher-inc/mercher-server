@@ -128,6 +128,30 @@ router.get('/', function (req, res) {
                 ]
             },
             {
+                "path":       "/api/v1/orders/{orderId}/pay",
+                "operations": [
+                    {
+                        "method":     "POST",
+                        "summary":    "Pay order",
+                        "type":       "Order",
+                        "nickname":   "pay",
+                        "notes":      "You should use <b>payKey</b> from response to request user's peyment on PayPal. Redirect user to " +
+                                          "<a target='_blank' href=\"https://sandbox.paypal.com/webapps/adaptivepayment/flow/pay?paykey=payKey\">" +
+                                          "https://sandbox.paypal.com/webapps/adaptivepayment/flow/pay?paykey=<b>payKey</b>" +
+                            "</a>.",
+                        "parameters": [
+                            {
+                                "name":        "orderId",
+                                "description": "ID of the order that needs to be updated",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 "path":       "/api/v1/users/{userId}/orders",
                 "operations": [
                     {

@@ -23,6 +23,7 @@
         this.options = {
             applicationId: 'APP-80W284485P519543T',
             userId:        'dmitriy.s.les-facilitator_api1.gmail.com',
+            email:         'dmitriy.s.les-facilitator@gmail.com',
             password:      '1391764851',
             signature:     'AIkghGmb0DgD6MEPZCmNq.bKujMAA8NEIHryH-LQIfmx7UZ5q1LXAa7T',
             sandbox:       true

@@ -11,8 +11,6 @@ router.use('/', function (req, res, next) {
     next();
 });
 
-router.post('/', require('./middleware/auth_check'));
-
 router.post('/', validator(require('./validation/orders/create.json'), {source: 'body', param: 'createForm'}));
 
 router.post('/', function (req, res, next) {
@@ -55,6 +53,16 @@ router.get('/:orderId', function (req, res) {
         .load(['total', 'user.image', 'shop.image', 'orderItems.product'])
         .then(function () {
             res.json(req.order);
+        });
+});
+
+router.post('/:orderId/pay', function (req, res, next) {
+    req.order.pay()
+        .then(function (orderModel) {
+            res.json(orderModel);
+        })
+        .catch(function (e) {
+            next(e);
         });
 });
 
