@@ -37,8 +37,12 @@ router.post('/ipn', function (req, res, next) {
     console.info(req.headers);
 
     var requestOptions = {
-        uri: 'https://www.sandbox.paypal.com/cgi-bin/webscr',
-        qs:  _.extend({'cmd': '_notify-validate'}, ipnMessage)
+        uri:     'https://www.sandbox.paypal.com/cgi-bin/webscr',
+        method:  'POST',
+        form:    _.extend({'cmd': '_notify-validate'}, ipnMessage),
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded'
+        }
     };
 
     console.info(requestOptions);
