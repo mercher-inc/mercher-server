@@ -27,19 +27,21 @@ router.post('/', function (req, res, next) {
 
 router.post('/ipn', function (req, res, next) {
     var request = require('request'),
-        queue = require('../../../modules/queue');
+        queue = require('../../../modules/queue'),
+        ipnMessage = req.body;
 
     res.status(200).send();
 
     queue
         .create('process ipn message', {
-            message: req.body
+            message: ipnMessage
         })
         .save();
 
-    console.info(req.body);
+    console.info(ipnMessage);
+    console.info(req.headers);
 
-    request.post('https://sandbox.paypal.com/ipn', req.body, function (error, response, body) {
+    request.post('http://sandbox.paypal.com/ipn', ipnMessage, function (error, response, body) {
         console.info(error, response, body);
     });
 });
