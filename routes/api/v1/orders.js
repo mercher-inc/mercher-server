@@ -42,12 +42,23 @@ router.post('/ipn', function (req, res, next) {
     console.info(ipnMessage);
     console.info(req.headers);
 
-    request({
-        url:    'https://sandbox.paypal.com/cgi-bin/webscr',
-        method: 'POST',
-        form:   _.extend({'cmd': '_notify-validate'}, ipnMessage)
-    }, function (error, response, body) {
-        console.info(error, response.statusCode, body);
+    var requestOptions = {
+        uri: 'https://sandbox.paypal.com/cgi-bin/webscr',
+        qs:  _.extend({'cmd': '_notify-validate'}, ipnMessage)
+    };
+
+    console.info(requestOptions);
+
+    request(requestOptions, function (error, response, body) {
+        if (error) {
+            console.info(error);
+        }
+        if (response) {
+            console.info(response.statusCode);
+        }
+        if (body) {
+            console.info(body);
+        }
     });
 });
 
