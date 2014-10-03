@@ -15,20 +15,24 @@ router.get('/', function (req, res) {
         ],
         "apis":           [
             {
-                "path":       "/api/v1/shops/{shopId}/paypal_accounts/request",
+                "path":       "/api/v1/paypal_accounts/request",
                 "operations": [
                     {
                         "method":           "POST",
-                        "summary":          "Create PayPal account request",
+                        "summary":          "Request an account",
                         "type":             "ShopPayPalAuthRequest",
-                        "nickname":         "create_request",
+                        "nickname":         "request",
+                        "notes":            "You should use <b>requestToken</b> from response to request user's permissions on PayPal. Redirect user to " +
+                                                "<a target='_blank' href=\"https://sandbox.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token=requestToken\">" +
+                                                "https://sandbox.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token=<b>requestToken</b>" +
+                            "</a>.",
                         "parameters":       [
                             {
-                                "name":        "shopId",
-                                "description": "ID of the shop",
+                                "name":        "body",
+                                "description": "PayPal Account request model",
                                 "required":    true,
-                                "type":        "integer",
-                                "paramType":   "path"
+                                "type":        "PayPalAccountRequestRequest",
+                                "paramType":   "body"
                             }
                         ],
                         "responseMessages": [
@@ -54,6 +58,8 @@ router.get('/', function (req, res) {
                         "summary":          "Register an account",
                         "type":             "PayPalAccount",
                         "nickname":         "register",
+                        "notes":            "Get <b>requestToken</b> and  <b>verificationCode</b> on <b>returnUrl</b> from " +
+                            "<a href=\"#!/paypal_accounts/request\">paypal_accounts/request</a> endpoint.",
                         "parameters":       [
                             {
                                 "name":        "body",
@@ -81,9 +87,10 @@ router.get('/', function (req, res) {
         ],
         "models":         {
             "PayPalAccount":                require('../models/paypal_account'),
+            "PayPalAccountRequestRequest":  require('../models/request/paypal_account/request'),
+            "PayPalAccountRegisterRequest": require('../models/request/paypal_account/register'),
             "ShopPayPalAuthRequest":        require('../models/shop_paypal_auth_request'),
             "Shop":                         require('../models/shop'),
-            "PayPalAccountRegisterRequest": require('../models/request/paypal_account/register'),
             "ValidationError":              require('../errors/validation'),
             "FieldError":                   require('../errors/field')
         }

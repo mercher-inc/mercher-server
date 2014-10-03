@@ -1,0 +1,30 @@
+{
+    "shopId":    {
+        "rules":      {
+            "required":     {
+                "message": "Shop ID is required"
+            },
+            "isInt":        {
+                "message": "Shop ID should be integer"
+            },
+            "recordExists": {
+                "message": "Shop does not exists",
+                "table":   "shop",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty": false
+    },
+    "returnUrl": {
+        "rules":      {
+            "required": {
+                "message": "Return URL is required"
+            },
+            "isURL":    {
+                "message": "Return URL should be a valid URL"
+            }
+        },
+        "allowEmpty": false
+    }
+}

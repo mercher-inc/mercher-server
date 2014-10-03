@@ -116,7 +116,7 @@
                         reject(error);
                         return;
                     }
-                    if (body.responseEnvelope.ack == 'Success') {
+                    if (body['responseEnvelope'] && body['responseEnvelope'].ack == 'Success') {
                         resolve(body);
                     } else {
                         reject(body);
