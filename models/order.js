@@ -97,6 +97,7 @@ var OrderModel = BaseModel.extend(
                             feesPayer:                         'PRIMARYRECEIVER',
                             payKeyDuration:                    'PT15M',
                             reverseAllParallelPaymentsOnError: true,
+                            ipnNotificationUrl:                credentials.ipnNotificationUrl,
                             clientDetails:                     {
                                 applicationId: 'Mercher API',
                                 partnerName:   'Mercher Inc.'

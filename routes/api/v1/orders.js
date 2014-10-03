@@ -59,6 +59,7 @@ router.get('/:orderId', function (req, res) {
 router.post('/:orderId/pay', validator(require('./validation/orders/pay.json'), {source: 'body', param: 'payForm'}));
 
 router.post('/:orderId/pay', function (req, res, next) {
+    req['payForm'].ipnNotificationUrl = (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/orders/' + req.order.id + '/ipn';
     req.order.pay(req['payForm'])
         .then(function (orderModel) {
             res.json(orderModel);
@@ -66,6 +67,11 @@ router.post('/:orderId/pay', function (req, res, next) {
         .catch(function (e) {
             next(e);
         });
+});
+
+router.post('/:orderId/ipn', function (req, res, next) {
+    console.info(req.body);
+    res.json(req.body);
 });
 
 router.put('/:orderId', require('./middleware/auth_check'));
