@@ -41,8 +41,12 @@ router.post('/ipn', function (req, res, next) {
     console.info(ipnMessage);
     console.info(req.headers);
 
-    request.post('http://sandbox.paypal.com/ipn', ipnMessage, function (error, response, body) {
-        console.info(error, response, body);
+    request({
+        url:    'http://sandbox.paypal.com/ipn',
+        method: 'POST',
+        form:   ipnMessage
+    }, function (error, response, body) {
+        console.info(error, response.statusCode, body);
     });
 });
 
