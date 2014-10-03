@@ -1,10 +1,9 @@
 module.exports = {
-    "id":          "ProductRequest",
+    "id":          "ProductUpdateRequest",
     "required":    [
-        "shopId",
         "title"
     ],
-    "description": "Product request model",
+    "description": "Product update request model",
     "properties":  {
         "title":                  {
             "type": "string"

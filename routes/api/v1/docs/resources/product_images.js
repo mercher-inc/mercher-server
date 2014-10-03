@@ -27,7 +27,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Product Image object that needs to be created",
                                 "required":    true,
-                                "type":        "ProductImageRequest",
+                                "type":        "ProductImageCreateRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -98,7 +98,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "Product image object that needs to be updated",
                                 "required":    true,
-                                "type":        "ProductImageRequest",
+                                "type":        "ProductImageUpdateRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -175,16 +175,17 @@ router.get('/', function (req, res) {
             }
         ],
         "models":         {
-            "ProductImage":        require('../models/product_image'),
-            "ProductImagesList":   require('../collections/product_images'),
-            "ProductImageRequest": require('../models/request/product_image'),
-            "Product":             require('../models/product'),
-            "Image":               require('../models/image'),
-            "RequestError":        require('../errors/request'),
-            "UnauthorizedError":   require('../errors/unauthorized'),
-            "NotFoundError":       require('../errors/not_found'),
-            "ValidationError":     require('../errors/validation'),
-            "FieldError":          require('../errors/field')
+            "ProductImage":              require('../models/product_image'),
+            "ProductImagesList":         require('../collections/product_images'),
+            "ProductImageCreateRequest": require('../models/request/product_image/create'),
+            "ProductImageUpdateRequest": require('../models/request/product_image/update'),
+            "Product":                   require('../models/product'),
+            "Image":                     require('../models/image'),
+            "RequestError":              require('../errors/request'),
+            "UnauthorizedError":         require('../errors/unauthorized'),
+            "NotFoundError":             require('../errors/not_found'),
+            "ValidationError":           require('../errors/validation'),
+            "FieldError":                require('../errors/field')
         }
     });
 });

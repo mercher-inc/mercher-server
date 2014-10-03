@@ -1,10 +1,10 @@
 module.exports = {
-    "id":          "ProductRequest",
+    "id":          "ProductCreateRequest",
     "required":    [
         "shopId",
         "title"
     ],
-    "description": "Product request model",
+    "description": "Product create request model",
     "properties":  {
         "shopId":                 {
             "type":   "integer",
