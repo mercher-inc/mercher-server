@@ -33,17 +33,11 @@ router.post('/ipn', function (req, res, next) {
 
     res.status(200).send();
 
-    queue
-        .create('process ipn message', {
-            message: ipnMessage
-        })
-        .save();
-
     console.info(ipnMessage);
     console.info(req.headers);
 
     var requestOptions = {
-        uri: 'https://sandbox.paypal.com/cgi-bin/webscr',
+        uri: 'http://sandbox.paypal.com/cgi-bin/webscr',
         qs:  _.extend({'cmd': '_notify-validate'}, ipnMessage)
     };
 
@@ -59,6 +53,12 @@ router.post('/ipn', function (req, res, next) {
         if (body) {
             console.info(body);
         }
+
+        queue
+            .create('process ipn message', {
+                message: ipnMessage
+            })
+            .save();
     });
 });
 
