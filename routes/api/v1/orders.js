@@ -28,6 +28,7 @@ router.post('/', function (req, res, next) {
 router.post('/ipn', function (req, res, next) {
     var request = require('request'),
         queue = require('../../../modules/queue'),
+        _ = require('underscore'),
         ipnMessage = req.body;
 
     res.status(200).send();
@@ -42,9 +43,9 @@ router.post('/ipn', function (req, res, next) {
     console.info(req.headers);
 
     request({
-        url:    'http://sandbox.paypal.com/ipn',
+        url:    'https://sandbox.paypal.com/cgi-bin/webscr',
         method: 'POST',
-        form:   ipnMessage
+        form:   _.extend({'cmd': '_notify-validate'}, ipnMessage)
     }, function (error, response, body) {
         console.info(error, response.statusCode, body);
     });
