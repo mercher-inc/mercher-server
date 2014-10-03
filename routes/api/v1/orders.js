@@ -25,6 +25,25 @@ router.post('/', function (req, res, next) {
         });
 });
 
+router.post('/ipn', function (req, res, next) {
+    var request = require('request'),
+        queue = require('../../../modules/queue');
+
+    res.status(200).send();
+
+    queue
+        .create('process ipn message', {
+            message: req.body
+        })
+        .save();
+
+    console.info(req.body);
+
+    request.post('https://sandbox.paypal.com/ipn', req.body, function (error, response, body) {
+        console.info(error, response, body);
+    });
+});
+
 router.use('/:orderId', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'GET,PUT,DELETE'
@@ -59,7 +78,7 @@ router.get('/:orderId', function (req, res) {
 router.post('/:orderId/pay', validator(require('./validation/orders/pay.json'), {source: 'body', param: 'payForm'}));
 
 router.post('/:orderId/pay', function (req, res, next) {
-    req['payForm'].ipnNotificationUrl = (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/orders/' + req.order.id + '/ipn';
+    req['payForm'].ipnNotificationUrl = (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/orders/ipn';
     req.order.pay(req['payForm'])
         .then(function (orderModel) {
             res.json(orderModel);
@@ -67,11 +86,6 @@ router.post('/:orderId/pay', function (req, res, next) {
         .catch(function (e) {
             next(e);
         });
-});
-
-router.post('/:orderId/ipn', function (req, res, next) {
-    console.info(req.body);
-    res.json(req.body);
 });
 
 router.put('/:orderId', require('./middleware/auth_check'));
