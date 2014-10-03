@@ -122,10 +122,6 @@ var OrderModel = BaseModel.extend(
                         })
                         .then(function (payResponse) {
                             return orderModel.save({payKey: payResponse.payKey});
-                        })
-                        .catch(function (payResponseError) {
-                            console.log(payResponseError);
-                            return payResponseError;
                         });
                 })
                 .then(function (orderModel) {
@@ -166,10 +162,6 @@ var OrderModel = BaseModel.extend(
                         })
                         .then(function () {
                             return orderModel;
-                        })
-                        .catch(function (setPaymentOptionsResponseError) {
-                            console.log(setPaymentOptionsResponseError);
-                            return setPaymentOptionsResponseError;
                         });
                 })
                 .then(function (orderModel) {
