@@ -41,7 +41,7 @@ router.post('/ipn', function (req, res, next) {
         method:  'POST',
         form:    _.extend({'cmd': '_notify-validate'}, ipnMessage),
         headers: {
-            'content-type': 'application/x-www-form-urlencoded'
+            'content-type': 'application/x-www-form-urlencoded; charset=windows-1252'
         }
     };
 
@@ -58,11 +58,13 @@ router.post('/ipn', function (req, res, next) {
             console.info(body);
         }
 
-        queue
-            .create('process ipn message', {
-                message: ipnMessage
-            })
-            .save();
+        if (body === 'VERIFIED') {
+            queue
+                .create('process ipn message', {
+                    message: ipnMessage
+                })
+                .save();
+        }
     });
 });
 
