@@ -12,7 +12,7 @@ module.exports = {
     ],
     "description": "Product model",
     "properties":  {
-        "id":             {
+        "id":                     {
             "type":   "integer",
             "format": "int32"
         },
@@ -20,7 +20,7 @@ module.exports = {
             "type":   "integer",
             "format": "int32"
         },
-        "categoryId":     {
+        "categoryId":             {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
@@ -135,24 +135,24 @@ module.exports = {
             "type":         "boolean",
             "defaultValue": true
         },
-        "isBanned":       {
+        "isBanned":               {
             "type":         "boolean",
             "defaultValue": false
         },
-        "createdAt":      {
+        "createdAt":              {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updatedAt":      {
+        "updatedAt":              {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "shop":           {
+        "shop":                   {
             "$ref": "Shop"
         },
-        "category":       {
+        "category":               {
             "$ref": "Category"
         }
     }

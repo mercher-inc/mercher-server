@@ -1,9 +1,9 @@
 module.exports = {
-    "id":          "ImageRequest",
+    "id":          "ImageUpdateRequest",
     "required":    [
         "cropGeometry"
     ],
-    "description": "Image request model",
+    "description": "Image update request model",
     "properties":  {
         "title":        {
             "type":         "string",
@@ -15,6 +15,13 @@ module.exports = {
         },
         "cropGeometry": {
             "type": "json"
+        },
+        "mainColor":    {
+            "type": "string"
+        },
+        "colorSchema":  {
+            "type": "string",
+            "enum": ["light", "dark"]
         }
     }
 };

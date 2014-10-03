@@ -10,11 +10,11 @@ module.exports = {
     ],
     "description": "Shop model",
     "properties":  {
-        "id":          {
+        "id":              {
             "type":   "integer",
             "format": "int32"
         },
-        "imageId":     {
+        "imageId":         {
             "type":         "integer",
             "format":       "int32",
             "defaultValue": null
@@ -107,21 +107,21 @@ module.exports = {
             "type":         "boolean",
             "defaultValue": true
         },
-        "isBanned":    {
+        "isBanned":        {
             "type":         "boolean",
             "defaultValue": false
         },
-        "createdAt":   {
+        "createdAt":       {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "updatedAt":   {
+        "updatedAt":       {
             "type":         "string",
             "format":       "date-time",
             "defaultValue": null
         },
-        "image":       {
+        "image":           {
             "$ref":         "Image",
             "defaultValue": null
         }

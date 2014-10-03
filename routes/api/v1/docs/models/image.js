@@ -16,6 +16,10 @@ module.exports = {
             "type":   "integer",
             "format": "int32"
         },
+        "userId":       {
+            "type":   "integer",
+            "format": "int32"
+        },
         "title":        {
             "type":         "string",
             "defaultValue": null
@@ -38,6 +42,19 @@ module.exports = {
         },
         "files":        {
             "type": "json"
+        },
+        "colors":       {
+            "type":  "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "mainColor":    {
+            "type": "string"
+        },
+        "colorSchema":  {
+            "type": "string",
+            "enum": ["light", "dark"]
         },
         "isActive":     {
             "type":         "boolean",
