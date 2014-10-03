@@ -59,7 +59,7 @@ router.get('/', function (req, res) {
                                 "name":        "body",
                                 "description": "PayPal Account Credentials model",
                                 "required":    true,
-                                "type":        "PayPalAccountCredentials",
+                                "type":        "PayPalAccountRegisterRequest",
                                 "paramType":   "body"
                             }
                         ],
@@ -80,12 +80,12 @@ router.get('/', function (req, res) {
             }
         ],
         "models":         {
-            "PayPalAccount":            require('../models/paypal_account'),
-            "ShopPayPalAuthRequest":    require('../models/shop_paypal_auth_request'),
-            "Shop":                     require('../models/shop'),
-            "PayPalAccountCredentials": require('../models/request/paypal_account_credentials'),
-            "ValidationError":          require('../errors/validation'),
-            "FieldError":               require('../errors/field')
+            "PayPalAccount":                require('../models/paypal_account'),
+            "ShopPayPalAuthRequest":        require('../models/shop_paypal_auth_request'),
+            "Shop":                         require('../models/shop'),
+            "PayPalAccountRegisterRequest": require('../models/request/paypal_account/register'),
+            "ValidationError":              require('../errors/validation'),
+            "FieldError":                   require('../errors/field')
         }
     });
 });
