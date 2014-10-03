@@ -1,0 +1,24 @@
+{
+    "returnUrl": {
+        "rules":      {
+            "required": {
+                "message": "Return URL is required"
+            },
+            "isURL":    {
+                "message": "Return URL should be a valid URL"
+            }
+        },
+        "allowEmpty": false
+    },
+    "cancelUrl": {
+        "rules":      {
+            "required": {
+                "message": "Cancel URL is required"
+            },
+            "isURL":    {
+                "message": "Cancel URL should be a valid URL"
+            }
+        },
+        "allowEmpty": false
+    }
+}

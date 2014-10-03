@@ -56,8 +56,10 @@ router.get('/:orderId', function (req, res) {
         });
 });
 
+router.post('/:orderId/pay', validator(require('./validation/orders/pay.json'), {source: 'body', param: 'payForm'}));
+
 router.post('/:orderId/pay', function (req, res, next) {
-    req.order.pay()
+    req.order.pay(req['payForm'])
         .then(function (orderModel) {
             res.json(orderModel);
         })

@@ -56,7 +56,7 @@ var OrderModel = BaseModel.extend(
                 });
         },
 
-        pay: function () {
+        pay: function (credentials) {
             var orderModel = this,
                 PayPal = require('../modules/paypal'),
                 payPalClient = new PayPal,
@@ -117,8 +117,8 @@ var OrderModel = BaseModel.extend(
                                 ]
                             },
                             trackingId:                        orderModel.id,
-                            cancelUrl:                         'http://local.mercherdev.com/test',
-                            returnUrl:                         'http://local.mercherdev.com/test'
+                            cancelUrl:                         credentials.cancelUrl,
+                            returnUrl:                         credentials.returnUrl
                         })
                         .then(function (payResponse) {
                             return orderModel.save({payKey: payResponse.payKey});

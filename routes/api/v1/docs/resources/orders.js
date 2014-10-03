@@ -146,6 +146,13 @@ router.get('/', function (req, res) {
                                 "required":    true,
                                 "type":        "integer",
                                 "paramType":   "path"
+                            },
+                            {
+                                "name":        "body",
+                                "description": "Order Pay request",
+                                "required":    true,
+                                "type":        "OrderPayRequest",
+                                "paramType":   "body"
                             }
                         ]
                     }
@@ -247,6 +254,7 @@ router.get('/', function (req, res) {
         "models":         {
             "Order":             require('../models/order'),
             "OrderRequest":      require('../models/request/order'),
+            "OrderPayRequest":   require('../models/request/order/pay'),
             "OrdersList":        require('../collections/orders'),
             "OrderItem":         require('../models/order_item'),
             "User":              require('../models/user'),
