@@ -29,7 +29,7 @@ router.post('/ipn', function (req, res, next) {
     res.status(200).send();
 
     var https = require('https'),
-        qs = require('querystring'),
+        qs = require('query-string'),
         _ = require('underscore'),
         ipnMessage = qs.encode(_.extend({'cmd': '_notify-validate'}, req.body));
 
@@ -46,7 +46,7 @@ router.post('/ipn', function (req, res, next) {
 
     var payPalRequest = https.request(payPalRequestOptions, function (payPalResponse) {
         payPalResponse.on('data', function (d) {
-            console.log(d);
+            console.log(d.toString());
         });
     });
     payPalRequest.write(ipnMessage);
