@@ -29,7 +29,7 @@ router.post('/ipn', function (req, res, next) {
     res.status(200).send();
 
     var https = require('https'),
-        qs = require('qs'),
+        qs = require('querystring'),
         _ = require('underscore'),
         ipnMessage = qs.stringify(_.extend({'cmd': '_notify-validate'}, req.body));
 
