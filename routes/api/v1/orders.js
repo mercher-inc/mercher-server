@@ -29,11 +29,9 @@ router.post('/ipn', function (req, res, next) {
     res.status(200).send();
 
     var https = require('https'),
-        qs = require('querystring'),
+        qs = require('qs'),
         _ = require('underscore'),
         ipnMessage = qs.stringify(_.extend({'cmd': '_notify-validate'}, req.body));
-
-    console.info(req.body, ipnMessage);
 
     var payPalRequestOptions = {
         host:    (req.body['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
@@ -42,6 +40,8 @@ router.post('/ipn', function (req, res, next) {
         headers: {'Content-Length': ipnMessage.length}
     };
 
+
+    console.info(req.body, ipnMessage);
     console.info(payPalRequestOptions);
 
     var payPalRequest = https.request(payPalRequestOptions, function (payPalResponse) {
