@@ -26,24 +26,31 @@ router.post('/', function (req, res, next) {
 });
 
 router.post('/ipn', function (req, res, next) {
-    var payPalIpn = require('paypal-ipn'),
-        queue = require('../../../modules/queue');
-
     res.status(200).send();
 
-    console.info(req.body);
+    var https = require('https'),
+        qs = require('querystring'),
+        _ = require('underscore'),
+        ipnMessage = qs.encode(_.extend({'cmd': '_notify-validate'}, req.body));
 
-    payPalIpn.verify(req.body, function(error, response){
-        console.log(error, response);
+    console.info(ipnMessage);
 
-        if (!error) {
-            console.log('================OK================');
-            queue
-                .create('process ipn message', {
-                    message: req.body
-                })
-                .save();
-        }
+    var payPalRequestOptions = {
+        host: (ipnMessage['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
+        method: 'POST',
+        path: '/cgi-bin/webscr',
+        headers: {'Content-Length': ipnMessage.length}
+    };
+
+    var payPalRequest = https.request(payPalRequestOptions, function (payPalResponse) {
+        payPalResponse.on('data', function (d) {
+            console.log(d);
+        });
+    });
+    payPalRequest.write(ipnMessage);
+    payPalRequest.end();
+    payPalRequest.on('error', function (e) {
+        console.log(e);
     });
 });
 
