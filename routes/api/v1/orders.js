@@ -26,39 +26,21 @@ router.post('/', function (req, res, next) {
 });
 
 router.post('/ipn', function (req, res, next) {
-    var request = require('request'),
-        queue = require('../../../modules/queue'),
-        _ = require('underscore'),
-        ipnMessage = req.body;
+    var payPalIpn = require('paypal-ipn'),
+        queue = require('../../../modules/queue');
 
     res.status(200).send();
 
-    console.info(ipnMessage);
-    console.info(req.headers);
+    console.info(req.body);
 
-    var requestOptions = {
-        uri:    'https://www.sandbox.paypal.com/cgi-bin/webscr',
-        method: 'POST',
-        qs:     _.extend({'cmd': '_notify-validate'}, ipnMessage)
-    };
+    payPalIpn.verify(req.body, function(error, response){
+        console.log(error, response);
 
-    console.info(requestOptions);
-
-    request(requestOptions, function (error, response, body) {
-        if (error) {
-            console.info(error);
-        }
-        if (response) {
-            console.info(response.statusCode);
-        }
-        if (body) {
-            console.info(body);
-        }
-
-        if (body === 'VERIFIED') {
+        if (!error) {
+            console.log('================OK================');
             queue
                 .create('process ipn message', {
-                    message: ipnMessage
+                    message: req.body
                 })
                 .save();
         }
