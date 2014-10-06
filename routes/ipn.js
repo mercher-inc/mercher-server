@@ -1,6 +1,6 @@
 var express = require('express'),
     https = require('https'),
-    qs = require('qs'),
+    qs = require('querystring'),
     bodyParser = require('body-parser'),
     router = express.Router();
 
