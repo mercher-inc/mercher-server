@@ -46,6 +46,7 @@ router.post('/ipn', function (req, res, next) {
                 result[key] = value;
             }
         });
+        return result;
     };
     console.info(req.body, ipnMessage);
 
