@@ -40,7 +40,6 @@ router.post('/ipn', function (req, res, next) {
         headers: {'Content-Length': ipnMessage.length}
     };
 
-
     console.info(req.body, ipnMessage);
     console.info(payPalRequestOptions);
 
