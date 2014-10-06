@@ -42,6 +42,8 @@ router.post('/ipn', function (req, res, next) {
         headers: {'Content-Length': ipnMessage.length}
     };
 
+    console.info(payPalRequestOptions);
+
     var payPalRequest = https.request(payPalRequestOptions, function (payPalResponse) {
         payPalResponse.on('data', function (d) {
             console.log(d);
