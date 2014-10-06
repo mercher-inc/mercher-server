@@ -7,6 +7,10 @@ router.get('/', function (req, res) {
         "swaggerVersion": "1.2",
         "apis":           [
             {
+                "path":        "/ipn",
+                "description": "IPN resource"
+            },
+            {
                 "path":        "/auth",
                 "description": "Auth resource"
             },
@@ -59,6 +63,7 @@ router.get('/', function (req, res) {
     });
 });
 
+router.use('/ipn', require('./docs/resources/ipn'));
 router.use('/auth', require('./docs/resources/auth'));
 router.use('/users', require('./docs/resources/users'));
 router.use('/shops', require('./docs/resources/shops'));
