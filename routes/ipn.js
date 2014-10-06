@@ -1,6 +1,6 @@
 var express = require('express'),
     https = require('https'),
-    qs = require('querystring'),
+    qs = require('qs'),
     bodyParser = require('body-parser'),
     router = express.Router();
 
@@ -14,7 +14,7 @@ router.post('/', function (req, res, next) {
     var ipnMessage = 'cmd=_notify-validate&' + req.body.toString(),
         ipnMessageData = qs.parse(ipnMessage);
 
-    console.info(ipnMessage, ipnMessageData);
+    console.info(ipnMessageData);
 
     var payPalRequestOptions = {
         host:    (ipnMessageData['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
