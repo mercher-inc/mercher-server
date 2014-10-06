@@ -28,6 +28,8 @@ router.post('/', function (req, res, next) {
 router.post('/ipn', function (req, res, next) {
     res.status(200).send();
 
+    console.log(req.rawBody);
+
     var https = require('https'),
         qs = require('qs'),
         _ = require('underscore'),
