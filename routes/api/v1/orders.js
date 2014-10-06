@@ -33,7 +33,7 @@ router.post('/ipn', function (req, res, next) {
         _ = require('underscore'),
         ipnMessage = qs.encode(_.extend({'cmd': '_notify-validate'}, req.body));
 
-    console.info(ipnMessage);
+    console.info(req.body, ipnMessage);
 
     var payPalRequestOptions = {
         host: (ipnMessage['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
