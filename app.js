@@ -20,16 +20,6 @@
     app.set('views', './views');
     app.set('view engine', 'jade');
 
-    app.use(function(req, res, next) {
-        req.on('data', function(chunk) {
-            console.log('RAW BODY:', chunk.toString());
-        });
-
-        req.on('end', function() {
-            next();
-        });
-    });
-
     app.set('port', process.env.PORT || 3000);
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
