@@ -21,11 +21,8 @@
     app.set('view engine', 'jade');
 
     app.use(function(req, res, next) {
-        req.rawBody = '';
-        req.setEncoding('utf8');
-
         req.on('data', function(chunk) {
-            req.rawBody += chunk;
+            console.log('RAW BODY:', chunk.toString());
         });
 
         req.on('end', function() {
