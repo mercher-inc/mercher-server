@@ -36,7 +36,7 @@ router.post('/ipn', function (req, res, next) {
     console.info(req.body, ipnMessage);
 
     var payPalRequestOptions = {
-        host:    (ipnMessage['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
+        host:    (req.body['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
         method:  'POST',
         path:    '/cgi-bin/webscr',
         headers: {'Content-Length': ipnMessage.length}
