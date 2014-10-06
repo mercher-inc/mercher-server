@@ -21,6 +21,7 @@
     app.set('view engine', 'jade');
 
     app.set('port', process.env.PORT || 3000);
+    app.use('/ipn', require('./routes/ipn'));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(useragent.express());

@@ -25,64 +25,6 @@ router.post('/', function (req, res, next) {
         });
 });
 
-router.post('/ipn', function (req, res, next) {
-    res.status(200).send();
-
-    var https = require('https'),
-        qs = require('querystring'),
-        _ = require('underscore'),
-        ipnMessage = _.extend({'cmd': '_notify-validate'}, req.body);
-
-    var fixArrayParams = function (params) {
-        var result = {};
-        _.each(params, function (value, key) {
-            if ((/boolean|number|string/).test(typeof value)) {
-                result[key] = value;
-            } else {
-                if (value instanceof Array) {
-                    result[key + '[]'] = [];
-                    _.each(value, function (arrayValue) {
-                        result[key + '[]'].push(arrayValue);
-                    });
-                } else {
-                    result[key] = fixArrayParams(value);
-                }
-            }
-        });
-        return result;
-    };
-    console.info(req.body);
-    console.info(ipnMessage);
-
-    ipnMessage = fixArrayParams(ipnMessage);
-
-    console.info(ipnMessage);
-
-    ipnMessage = qs.stringify(ipnMessage);
-
-    console.info(ipnMessage);
-
-    var payPalRequestOptions = {
-        host:    (req.body['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
-        method:  'POST',
-        path:    '/cgi-bin/webscr',
-        headers: {'Content-Length': ipnMessage.length}
-    };
-
-    console.info(payPalRequestOptions);
-
-    var payPalRequest = https.request(payPalRequestOptions, function (payPalResponse) {
-        payPalResponse.on('data', function (d) {
-            console.log(d.toString());
-        });
-    });
-    payPalRequest.write(ipnMessage);
-    payPalRequest.end();
-    payPalRequest.on('error', function (e) {
-        console.log(e);
-    });
-});
-
 router.use('/:orderId', function (req, res, next) {
     res.set({
         'Access-Control-Allow-Methods': 'GET,PUT,DELETE'
@@ -117,7 +59,7 @@ router.get('/:orderId', function (req, res) {
 router.post('/:orderId/pay', validator(require('./validation/orders/pay.json'), {source: 'body', param: 'payForm'}));
 
 router.post('/:orderId/pay', function (req, res, next) {
-    req['payForm'].ipnNotificationUrl = (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/orders/ipn';
+    req['payForm'].ipnNotificationUrl = (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/ipn';
     req.order.pay(req['payForm'])
         .then(function (orderModel) {
             res.json(orderModel);
