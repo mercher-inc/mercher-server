@@ -36,19 +36,23 @@ router.post('/ipn', function (req, res, next) {
     var fixArrayParams = function (params) {
         var result = {};
         _.each(params, function (value, key) {
-            if (value instanceof Object) {
+            if ((/boolean|number|string/).test(typeof value)) {
+                result[key] = value;
+            } else {
                 if (value instanceof Array) {
-                    result[key + '[]'] = fixArrayParams(value);
+                    result[key + '[]'] = [];
+                    _.each(value, function (arrayValue) {
+                        result[key + '[]'].push(arrayValue);
+                    });
                 } else {
                     result[key] = fixArrayParams(value);
                 }
-            } else {
-                result[key] = value;
             }
         });
         return result;
     };
-    console.info(req.body, ipnMessage);
+    console.info(req.body);
+    console.info(ipnMessage);
 
     ipnMessage = fixArrayParams(ipnMessage);
 
