@@ -29,9 +29,33 @@ router.post('/ipn', function (req, res, next) {
     res.status(200).send();
 
     var https = require('https'),
-        qs = require('qs'),
+        qs = require('querystring'),
         _ = require('underscore'),
-        ipnMessage = qs.stringify(_.extend({'cmd': '_notify-validate'}, req.body));
+        ipnMessage = _.extend({'cmd': '_notify-validate'}, req.body);
+
+    var fixArrayParams = function (params) {
+        var result = {};
+        _.each(params, function (value, key) {
+            if (value instanceof Object) {
+                if (value instanceof Array) {
+                    result[key + '[]'] = fixArrayParams(value);
+                } else {
+                    result[key] = fixArrayParams(value);
+                }
+            } else {
+                result[key] = value;
+            }
+        });
+    };
+    console.info(req.body, ipnMessage);
+
+    ipnMessage = fixArrayParams(ipnMessage);
+
+    console.info(ipnMessage);
+
+    ipnMessage = qs.stringify(ipnMessage);
+
+    console.info(ipnMessage);
 
     var payPalRequestOptions = {
         host:    (req.body['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
@@ -40,7 +64,6 @@ router.post('/ipn', function (req, res, next) {
         headers: {'Content-Length': ipnMessage.length}
     };
 
-    console.info(req.body, ipnMessage);
     console.info(payPalRequestOptions);
 
     var payPalRequest = https.request(payPalRequestOptions, function (payPalResponse) {
