@@ -29,16 +29,16 @@ router.post('/ipn', function (req, res, next) {
     res.status(200).send();
 
     var https = require('https'),
-        qs = require('query-string'),
+        qs = require('qs'),
         _ = require('underscore'),
-        ipnMessage = qs.encode(_.extend({'cmd': '_notify-validate'}, req.body));
+        ipnMessage = qs.stringify(_.extend({'cmd': '_notify-validate'}, req.body));
 
-    console.info(ipnMessage);
+    console.info(req.body, ipnMessage);
 
     var payPalRequestOptions = {
-        host: (ipnMessage['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
-        method: 'POST',
-        path: '/cgi-bin/webscr',
+        host:    (ipnMessage['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
+        method:  'POST',
+        path:    '/cgi-bin/webscr',
         headers: {'Content-Length': ipnMessage.length}
     };
 
