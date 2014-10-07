@@ -1,6 +1,7 @@
 var express = require('express'),
     https = require('https'),
     qs = require('querystring'),
+    Promise = require('bluebird'),
     _ = require('underscore'),
     bodyParser = require('body-parser'),
     router = express.Router();
@@ -9,14 +10,15 @@ router.post('/', bodyParser.raw({type: 'application/*'}));
 
 router.post('/', function (req, res, next) {
     res.status(200).send();
+    next();
+});
 
-    console.log(req.body.toString());
-
-    var ipnMessage = 'cmd=_notify-validate&' + req.body.toString(),
-        ipnMessageData = qs.parse(req.body.toString());
+router.post('/', function (req, res, next) {
+    var ipnMessage = 'cmd=_notify-validate&' + req.body.toString();
+    req.ipnMessage = qs.parse(req.body.toString());
 
     var ipnMessageNewData = {};
-    _.each(ipnMessageData, function (value, key) {
+    _.each(req.ipnMessage, function (value, key) {
         if (key.match(/(\[\d+\]|\.)/g)) {
             var newKey = key.replace(/\[/g, '.').replace(/\]\./g, '.').replace(/\]/g, '.');
             var keyPath = newKey.split('.');
@@ -35,32 +37,80 @@ router.post('/', function (req, res, next) {
                     j = j[keyPath[i]];
                 }
             }
-            delete ipnMessageData[key];
+            delete req.ipnMessage[key];
         }
     });
-    _.extend(ipnMessageData, ipnMessageNewData);
+    _.extend(req.ipnMessage, ipnMessageNewData);
 
-    console.info(ipnMessageData);
+    console.info(req.ipnMessage);
 
     var payPalRequestOptions = {
-        host:    (ipnMessageData['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
+        host:    (req.ipnMessage['test_ipn']) ? 'www.sandbox.paypal.com' : 'www.paypal.com',
         method:  'POST',
         path:    '/cgi-bin/webscr',
         headers: {'Content-Length': ipnMessage.length}
     };
 
-    console.info(payPalRequestOptions);
-
     var payPalRequest = https.request(payPalRequestOptions, function (payPalResponse) {
         payPalResponse.on('data', function (d) {
-            console.log(d.toString());
+            if (d.toString() === 'VERIFIED') {
+                next();
+            }
         });
     });
     payPalRequest.write(ipnMessage);
     payPalRequest.end();
     payPalRequest.on('error', function (e) {
-        console.log(e);
+        next(e);
     });
+});
+
+router.post('/', function (req, res, next) {
+    if (req.ipnMessage['action_type'] !== 'PAY') {
+        next();
+        return;
+    }
+
+    var OrderModel = require('../models/order'),
+        UserModel = require('../models/user'),
+        UserEmailModel = require('../models/user_email');
+
+    new OrderModel({payKey: req.ipnMessage['pay_key']})
+        .fetch({require: true})
+        .then(function (orderModel) {
+            if (req.ipnMessage['status'] === 'COMPLETED') {
+                return orderModel.save({status: 'submitted', expires: null});
+            }
+        })
+        .then(function (orderModel) {
+            if (!orderModel.get('userId')) {
+                return new UserEmailModel({email: req.ipnMessage['sender_email']})
+                    .fetch({require: true})
+                    .then(function(userEmailModel){
+                        return orderModel.save({userId: userEmailModel.get('userId')});
+                    })
+                    .catch(UserEmailModel.NotFoundError, function(){
+                        return new UserModel().save()
+                            .then(function(userModel){
+                                return Promise.all([
+                                    new UserEmailModel().save({userId: userModel.id, email: req.ipnMessage['sender_email']}),
+                                    orderModel.save({userId: userModel.id})
+                                ]).then(function(){
+                                    return orderModel;
+                                });
+                            });
+                    });
+            } else {
+                return orderModel;
+            }
+        })
+        .catch(OrderModel.NotFoundError, function (e) {
+            next(e);
+        });
+});
+
+router.post('/', function (err, req, res, next) {
+    console.error(err);
 });
 
 module.exports = router;

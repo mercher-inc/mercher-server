@@ -6,9 +6,13 @@ var UserEmailModel = BaseModel.extend(
     {
         tableName: 'user_email',
         defaults:  {
-            password: null,
-            isActive: false,
-            isBanned: false
+            userId:    null,
+            email:     null,
+            password:  null,
+            isActive:  false,
+            isBanned:  false,
+            createdAt: null,
+            updatedAt: null
         },
 
         user: function () {

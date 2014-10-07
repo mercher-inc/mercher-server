@@ -16,7 +16,9 @@ var UserModel = BaseModel.extend(
             lastName:   null,
             gender:     null,
             last_login: null,
-            isBanned:   false
+            isBanned:   false,
+            createdAt:  null,
+            updatedAt:  null
         },
 
         image:  function () {
