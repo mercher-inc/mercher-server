@@ -19,15 +19,11 @@ var OrderModel = BaseModel.extend(
             payKey:            null,
             paymentExecStatus: null,
             expires:           null,
-            shippingMemo:      null,
-            shippingEmail:     null,
-            shippingName:      null,
-            shippingCountry:   'US',
-            shippingState:     null,
-            shippingCity:      null,
-            shippingStreet1:   null,
-            shippingStreet2:   null,
-            shippingZip:       null
+            reason:            null,
+            memo:              null,
+            shippingAddress:   null,
+            createdAt:         null,
+            updatedAt:         null
         },
 
         user:       function () {
