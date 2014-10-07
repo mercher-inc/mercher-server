@@ -66,7 +66,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.post('/', function (req, res, next) {
-    if (req.ipnMessage['action_type'] !== 'PAY') {
+    if (req.ipnMessage['action_type'] !== 'PAY' && req.ipnMessage['action_type'] !== 'CREATE') {
         next();
         return;
     }
@@ -78,24 +78,56 @@ router.post('/', function (req, res, next) {
     new OrderModel({payKey: req.ipnMessage['pay_key']})
         .fetch({require: true})
         .then(function (orderModel) {
-            if (req.ipnMessage['status'] === 'COMPLETED') {
-                return orderModel.save({status: 'submitted', expires: null});
+            switch (req.ipnMessage['status']) {
+                case 'CANCELED':
+                    orderModel.set({
+                        status:  'canceled',
+                        expires: null
+                    });
+                    break;
+                case 'CREATED':
+                case 'PROCESSING':
+                case 'PENDING':
+                    orderModel.set({
+                        status: 'pending'
+                    });
+                    break;
+                case 'COMPLETED':
+                    orderModel.set({
+                        status:  'submitted',
+                        expires: null
+                    });
+                    break;
+                case 'INCOMPLETE':
+                case 'ERROR':
+                case 'REVERSALERROR':
+                default:
+                    orderModel.set({
+                        status:  'error',
+                        expires: null
+                    });
+                    break;
             }
+            return orderModel.save({
+                paymentExecStatus: req.ipnMessage['status'],
+                reason:            req.ipnMessage['reason_code'] ? req.ipnMessage['reason_code'] : null,
+                memo:              req.ipnMessage['memo'] ? req.ipnMessage['memo'] : null
+            });
         })
         .then(function (orderModel) {
             if (!orderModel.get('userId')) {
                 return new UserEmailModel({email: req.ipnMessage['sender_email']})
                     .fetch({require: true})
-                    .then(function(userEmailModel){
+                    .then(function (userEmailModel) {
                         return orderModel.save({userId: userEmailModel.get('userId')});
                     })
-                    .catch(UserEmailModel.NotFoundError, function(){
+                    .catch(UserEmailModel.NotFoundError, function () {
                         return new UserModel().save()
-                            .then(function(userModel){
+                            .then(function (userModel) {
                                 return Promise.all([
                                     new UserEmailModel().save({userId: userModel.id, email: req.ipnMessage['sender_email']}),
                                     orderModel.save({userId: userModel.id})
-                                ]).then(function(){
+                                ]).then(function () {
                                     return orderModel;
                                 });
                             });

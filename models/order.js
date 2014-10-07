@@ -4,7 +4,8 @@ var app = require('../app'),
     UserModel = require('./user'),
     ShopModel = require('./shop'),
     OrderItemModel = require('./order_item'),
-    OrderTotalModel = require('./order_total');
+    OrderTotalModel = require('./order_total'),
+    OrderTransactionModel = require('./order_transaction');
 
 var OrderModel = BaseModel.extend(
     {
@@ -19,27 +20,26 @@ var OrderModel = BaseModel.extend(
             payKey:            null,
             paymentExecStatus: null,
             expires:           null,
-            shippingMemo:      null,
-            shippingEmail:     null,
-            shippingName:      null,
-            shippingCountry:   'US',
-            shippingState:     null,
-            shippingCity:      null,
-            shippingStreet1:   null,
-            shippingStreet2:   null,
-            shippingZip:       null
+            reason:            null,
+            memo:              null,
+            shippingAddress:   null,
+            createdAt:         null,
+            updatedAt:         null
         },
 
-        user:       function () {
+        user:         function () {
             return this.belongsTo(UserModel);
         },
-        shop:       function () {
+        shop:         function () {
             return this.belongsTo(ShopModel);
         },
-        orderItems: function () {
+        orderItems:   function () {
             return this.hasMany(OrderItemModel);
         },
-        total:      function () {
+        transactions: function () {
+            return this.hasMany(OrderTransactionModel);
+        },
+        total:        function () {
             return this.hasOne(OrderTotalModel, 'id');
         },
 
