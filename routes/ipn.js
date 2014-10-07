@@ -119,7 +119,7 @@ router.post('/', function (req, res, next) {
         })
         .then(function (orderModel) {
             _.each(req.ipnMessage['transaction'], function (transaction) {
-                orderModel.related('transactions').add({data: transaction});
+                orderModel.related('transactions').add({data: transaction, orderId: orderModel.id});
             });
             return orderModel.related('transactions').invokeThen('save').then(function () {
                 return orderModel;
