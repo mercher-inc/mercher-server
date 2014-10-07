@@ -17,7 +17,7 @@ router.post('/', function (req, res, next) {
     new OrderModel()
         .save(req['createForm'])
         .then(function (orderModel) {
-            return orderModel.load(['total', 'user.image', 'shop.image', 'orderItems.product']);
+            return orderModel.load(['total', 'user.image', 'shop.image', 'orderItems.product', 'transactions']);
         })
         .then(function (orderModel) {
             res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/orders/' + orderModel.id);
@@ -50,7 +50,7 @@ router.param('orderId', function (req, res, next) {
 
 router.get('/:orderId', function (req, res) {
     req.order
-        .load(['total', 'user.image', 'shop.image', 'orderItems.product'])
+        .load(['total', 'user.image', 'shop.image', 'orderItems.product', 'transactions'])
         .then(function () {
             res.json(req.order);
         });
@@ -77,7 +77,7 @@ router.put('/:orderId', function (req, res, next) {
     req.order
         .save(req['updateForm'])
         .then(function (orderModel) {
-            return orderModel.load(['total', 'user.image', 'shop.image', 'orderItems.product']);
+            return orderModel.load(['total', 'user.image', 'shop.image', 'orderItems.product', 'transactions']);
         })
         .then(function (orderModel) {
             res.status(200).json(orderModel);

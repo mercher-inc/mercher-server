@@ -30,7 +30,7 @@ router.get('/', function (req, res, next) {
                 .offset(req['collectionForm'].offset);
         })
         .fetch({
-            withRelated: ['total', 'shop.image', 'orderItems.product']
+            withRelated: ['total', 'shop.image', 'orderItems.product', 'transactions']
         });
 
     var totalRequest = Bookshelf
