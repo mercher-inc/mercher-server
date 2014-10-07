@@ -1,6 +1,7 @@
 var express = require('express'),
     https = require('https'),
     qs = require('querystring'),
+    Promise = require('bluebird'),
     _ = require('underscore'),
     bodyParser = require('body-parser'),
     router = express.Router();
@@ -70,15 +71,40 @@ router.post('/', function (req, res, next) {
         return;
     }
 
-    var OrderModel = require('../models/order');
-    new OrderModel({payKey: req.ipnMessage['pay_key'], id: req.ipnMessage['tracking_id']})
+    var OrderModel = require('../models/order'),
+        UserModel = require('../models/user'),
+        UserEmailModel = require('../models/user_email');
+
+    new OrderModel({payKey: req.ipnMessage['pay_key']})
         .fetch({require: true})
         .then(function (orderModel) {
             if (req.ipnMessage['status'] === 'COMPLETED') {
-                return orderModel.save({status: 'submitted'});
+                return orderModel.save({status: 'submitted', expires: null});
             }
         })
-        .catch(function (e) {
+        .then(function (orderModel) {
+            if (!orderModel.get('userId')) {
+                return new UserEmailModel({email: req.ipnMessage['sender_email']})
+                    .fetch({require: true})
+                    .then(function(userEmailModel){
+                        return orderModel.save({userId: userEmailModel.get('userId')});
+                    })
+                    .catch(UserEmailModel.NotFoundError, function(){
+                        return new UserModel().save()
+                            .then(function(userModel){
+                                return Promise.all([
+                                    new UserEmailModel().save({userId: userModel.id, email: req.ipnMessage['sender_email']}),
+                                    orderModel.save({userId: userModel.id})
+                                ]).then(function(){
+                                    return orderModel;
+                                });
+                            });
+                    });
+            } else {
+                return orderModel;
+            }
+        })
+        .catch(OrderModel.NotFoundError, function (e) {
             next(e);
         });
 });
