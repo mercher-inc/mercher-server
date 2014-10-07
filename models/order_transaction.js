@@ -1,7 +1,6 @@
 var app = require('../app'),
     io = app.get('io'),
-    BaseModel = require('./base'),
-    OrderModel = require('./order');
+    BaseModel = require('./base');
 
 var OrderTransactionModel = BaseModel.extend(
     {
@@ -14,7 +13,7 @@ var OrderTransactionModel = BaseModel.extend(
         },
 
         order: function () {
-            return this.hasOne(OrderModel, 'id');
+            return this.belongsTo(require('./order'));
         }
     }
 );
