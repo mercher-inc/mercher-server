@@ -115,6 +115,17 @@ router.post('/', function (req, res, next) {
             });
         })
         .then(function (orderModel) {
+            return orderModel.load('transactions');
+        })
+        .then(function (orderModel) {
+            _.each(req.ipnMessage['transaction'], function (transaction) {
+                orderModel.related('transactions').add({data: transaction});
+            });
+            return orderModel.related('transactions').invokeThen('save').then(function () {
+                return orderModel;
+            });
+        })
+        .then(function (orderModel) {
             if (!orderModel.get('userId')) {
                 return new UserEmailModel({email: req.ipnMessage['sender_email']})
                     .fetch({require: true})
