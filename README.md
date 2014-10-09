@@ -33,6 +33,11 @@ sudo createdb --host=localhost --username=postgres --encoding=UTF-8 mercher
 npm install knex -g
 ```
 
+### Install Redis server
+```bash
+sudo apt-get install redis-server
+```
+
 ### Install ImageMagick
 ```bash
 sudo apt-get install imagemagick
