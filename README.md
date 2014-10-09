@@ -78,16 +78,6 @@ nvm install
 nvm use
 npm install
 ```
-### Create DB config
-```bash
-cp ~/work/mercher-inc/mercher-server/knexfile.js.example ~/work/mercher-inc/mercher-server/knexfile.js
-```
-Update `knexfile.js` to fit your configuration.
-
-### Update DB
-```bash
-knex migrate:latest
-```
 
 ### Link to Web Client
 Link `public` folder to web client's `dist`:
