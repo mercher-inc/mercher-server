@@ -75,4 +75,34 @@ router.put('/:imageId', function (req, res, next) {
         });
 });
 
+router.delete('/:imageId', require('./middleware/auth_check'));
+
+router.delete('/:imageId', function (req, res, next) {
+    var _ = require('underscore'),
+        path = require('path'),
+        queue = require('../../../modules/queue'),
+        files = [];
+
+    _.each(req.image.get('files'), function (sizeFiles) {
+        _.each(sizeFiles, function (resolutionFile) {
+            var oldFileName = path.join(ImageModel.getUploadsPath(), req.image.get('key'), resolutionFile.file);
+            files.push(oldFileName);
+        });
+    });
+    files = _.uniq(files);
+    console.log(files, req.image.get('key'));
+
+    req.image
+        .destroy()
+        .then(function () {
+            _.each(files, function (oldFileName) {
+                queue.create('delete file', {fileName: oldFileName}).save();
+            });
+            res.status(204).send();
+        })
+        .catch(function (e) {
+            console.log(e);
+        });
+});
+
 module.exports = router;
