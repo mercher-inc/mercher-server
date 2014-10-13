@@ -1,8 +1,8 @@
 var kue = require('kue'),
     queue = kue.createQueue({
         redis: {
-            port: process.env.REDIS_PORT,
-            host: process.env.REDIS_ENDPOINT
+            port: process.env['REDIS_PORT']     || '6379',
+            host: process.env['REDIS_ENDPOINT'] || 'localhost'
         }
     }),
     cropImageProcess = require('./queue/crop_image'),
