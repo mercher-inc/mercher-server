@@ -80,54 +80,11 @@ router.put('/:imageId', function (req, res, next) {
 router.delete('/:imageId', require('./middleware/auth_check'));
 
 router.delete('/:imageId', function (req, res, next) {
-    var fs = require('fs'),
-        path = require('path'),
-        _ = require('underscore'),
-        imageDir = path.join(ImageModel.getUploadsPath(), req.image.get('key'));
-
-    function rmdir(dir){
-        return new Promise(function (resolve, reject) {
-            try {
-                var list = fs.readdirSync(dir);
-                _.each(list, function(item){
-                    var filename = path.join(dir, item);
-                    var stat = fs.statSync(filename);
-                    if (!_.contains([".", ".."], filename)) {
-                        if (stat.isDirectory()) {
-                            rmdir(filename);
-                        } else {
-                            fs.unlinkSync(filename);
-                        }
-                    }
-                });
-                fs.rmdirSync(dir);
-            } catch (e) {
-                reject(e);
-                return;
-            }
-            resolve();
-        });
-    }
-
-    Bookshelf
-        .transaction(function (trx) {
-            req.image
-                .destroy({transacting: trx})
-                .then(function () {
-                    return rmdir(imageDir);
-                })
-                .then(trx.commit)
-                .catch(trx.rollback);
-        })
+    req.image
+        .destroy()
         .then(function () {
-            console.log('commit');
             res.status(204).send();
-        })
-        .catch(function () {
-            console.log('rollback');
-            res.status(500).send();
         });
-
 });
 
 module.exports = router;
