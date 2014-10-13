@@ -1,4 +1,6 @@
-var express = require('express'),
+var app = require('../../../app'),
+    Bookshelf = app.get('bookshelf'),
+    express = require('express'),
     crypto = require('crypto'),
     fs = require('fs'),
     router = express.Router(),
@@ -78,31 +80,54 @@ router.put('/:imageId', function (req, res, next) {
 router.delete('/:imageId', require('./middleware/auth_check'));
 
 router.delete('/:imageId', function (req, res, next) {
-    var _ = require('underscore'),
+    var fs = require('fs'),
         path = require('path'),
-        queue = require('../../../modules/queue'),
-        files = [];
+        _ = require('underscore'),
+        imageDir = path.join(ImageModel.getUploadsPath(), req.image.get('key'));
 
-    _.each(req.image.get('files'), function (sizeFiles) {
-        _.each(sizeFiles, function (resolutionFile) {
-            var oldFileName = path.join(ImageModel.getUploadsPath(), req.image.get('key'), resolutionFile.file);
-            files.push(oldFileName);
+    function rmdir(dir){
+        return new Promise(function (resolve, reject) {
+            try {
+                var list = fs.readdirSync(dir);
+                _.each(list, function(item){
+                    var filename = path.join(dir, item);
+                    var stat = fs.statSync(filename);
+                    if (!_.contains([".", ".."], filename)) {
+                        if (stat.isDirectory()) {
+                            rmdir(filename);
+                        } else {
+                            fs.unlinkSync(filename);
+                        }
+                    }
+                });
+                fs.rmdirSync(dir);
+            } catch (e) {
+                reject(e);
+                return;
+            }
+            resolve();
         });
-    });
-    files = _.uniq(files);
-    console.log(files, req.image.get('key'));
+    }
 
-    req.image
-        .destroy()
+    Bookshelf
+        .transaction(function (trx) {
+            req.image
+                .destroy({transacting: trx})
+                .then(function () {
+                    return rmdir(imageDir);
+                })
+                .then(trx.commit)
+                .catch(trx.rollback);
+        })
         .then(function () {
-            _.each(files, function (oldFileName) {
-                queue.create('delete file', {fileName: oldFileName}).save();
-            });
+            console.log('commit');
             res.status(204).send();
         })
-        .catch(function (e) {
-            console.log(e);
+        .catch(function () {
+            console.log('rollback');
+            res.status(500).send();
         });
+
 });
 
 module.exports = router;
