@@ -1,4 +1,6 @@
-var express = require('express'),
+var app = require('../../../app'),
+    Bookshelf = app.get('bookshelf'),
+    express = require('express'),
     crypto = require('crypto'),
     fs = require('fs'),
     router = express.Router(),
@@ -72,6 +74,16 @@ router.put('/:imageId', function (req, res, next) {
         .save(req['updateForm'])
         .then(function (imageModel) {
             res.status(200).json(imageModel);
+        });
+});
+
+router.delete('/:imageId', require('./middleware/auth_check'));
+
+router.delete('/:imageId', function (req, res, next) {
+    req.image
+        .destroy()
+        .then(function () {
+            res.status(204).send();
         });
 });
 

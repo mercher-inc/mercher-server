@@ -124,6 +124,36 @@ router.get('/', function (req, res) {
                                 "responseModel": "NotFoundError"
                             }
                         ]
+                    },
+                    {
+                        "method":           "DELETE",
+                        "summary":          "Delete image",
+                        "nickname":         "delete",
+                        "parameters":       [
+                            {
+                                "name":        "imageId",
+                                "description": "ID of the image that needs to be deleted",
+                                "required":    true,
+                                "type":        "integer",
+                                "paramType":   "path"
+                            }
+                        ],
+                        "responseMessages": [
+                            {
+                                "code":          204,
+                                "message":       "No Content"
+                            },
+                            {
+                                "code":          400,
+                                "message":       "Bad request",
+                                "responseModel": "RequestError"
+                            },
+                            {
+                                "code":          404,
+                                "message":       "Image not found",
+                                "responseModel": "NotFoundError"
+                            }
+                        ]
                     }
                 ]
             }

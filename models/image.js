@@ -2,6 +2,7 @@ var app = require('../app'),
     io = app.get('io'),
     BaseModel = require('./base'),
     Promise = require("bluebird"),
+    path = require('path'),
     queue = require('../modules/queue'),
     expressAsyncValidator = require('../modules/express-async-validator/module');
 
@@ -39,6 +40,11 @@ var ImageModel = BaseModel.extend(
             });
             this.on('updated', function () {
                 io.sockets.emit('image updated', this);
+            });
+            this.on('destroying', function () {
+                if (this.get('key')) {
+                    queue.create('remove directory', {dirName: path.join(ImageModel.getUploadsPath(), this.get('key'))}).save();
+                }
             });
         },
         cropImage:  function (imageModel) {
