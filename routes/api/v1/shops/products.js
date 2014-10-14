@@ -27,7 +27,7 @@ router.get('/', function (req, res, next) {
                 .offset(req['collectionForm'].offset);
         })
         .fetch({
-            withRelated: ['shop.image']
+            withRelated: ['shop.image', 'productImages.image']
         });
 
     var totalRequest = Bookshelf

@@ -26,7 +26,7 @@ router.get('/', function (req, res, next) {
                 .offset(req['collectionForm'].offset);
         })
         .fetch({
-            withRelated: ['shop.image']
+            withRelated: ['shop.image', 'productImages.image']
         });
 
     var totalRequest = Bookshelf
@@ -68,7 +68,7 @@ router.post('/', function (req, res, next) {
     new ProductModel()
         .save(req['createForm'])
         .then(function (productModel) {
-            return productModel.load(['shop.image']);
+            return productModel.load(['shop.image', 'productImages.image']);
         })
         .then(function (productModel) {
             res.set('Location', (req.secure ? 'https' : 'http') + '://' + req.get('host') + '/api/v1/products/' + productModel.id);
@@ -101,7 +101,7 @@ router.param('productId', function (req, res, next) {
 
 router.get('/:productId', function (req, res) {
     req.product
-        .load(['shop.image'])
+        .load(['shop.image', 'productImages.image'])
         .then(function () {
             res.json(req.product);
         });
@@ -125,7 +125,7 @@ router.put('/:productId', function (req, res, next) {
     req.product
         .save(req['updateForm'])
         .then(function (productModel) {
-            return productModel.load(['shop.image']);
+            return productModel.load(['shop.image', 'productImages.image']);
         })
         .then(function (productModel) {
             res.status(200).json(productModel);
