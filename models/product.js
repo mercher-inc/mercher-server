@@ -15,6 +15,7 @@ var ProductModel = BaseModel.extend(
             shopId:                 null,
             categoryId:             null,
             title:                  null,
+            subtitle:               null,
             description:            null,
             rating:                 null,
             brand:                  null,

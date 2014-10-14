@@ -27,6 +27,15 @@
         },
         "allowEmpty": false
     },
+    "subtitle":               {
+        "rules":        {
+            "toString": {},
+            "trim":     {},
+            "escape":   {}
+        },
+        "allowEmpty":   true,
+        "defaultValue": null
+    },
     "description":            {
         "rules":        {
             "toString": {},

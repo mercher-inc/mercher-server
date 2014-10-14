@@ -8,6 +8,9 @@ module.exports = {
         "title":                  {
             "type": "string"
         },
+        "subtitle":               {
+            "type": "string"
+        },
         "description":            {
             "type":         "string",
             "defaultValue": null

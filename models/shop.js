@@ -9,6 +9,7 @@ var ShopModel = BaseModel.extend(
             imageId:           null,
             coverImageId:      null,
             title:             'New shop',
+            subtitle:          null,
             description:       null,
             rating:            null,
             tax:               0,
