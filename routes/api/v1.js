@@ -94,6 +94,7 @@ router.use('/images', require('./v1/images'));
 router.use('/categories', require('./v1/categories'));
 router.use('/users', require('./v1/users'));
 router.use('/shops', require('./v1/shops'));
+router.use('/shop_reviews', require('./v1/shop_reviews'));
 router.use('/managers', require('./v1/managers'));
 router.use('/products', require('./v1/products'));
 router.use('/product_images', require('./v1/product_images'));
