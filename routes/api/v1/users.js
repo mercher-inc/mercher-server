@@ -130,5 +130,6 @@ router.use('/:userId/managers', require('./users/managers'));
 router.use('/:userId/orders', require('./users/orders'));
 router.use('/:userId/shops', require('./users/shops'));
 router.use('/:userId/product_reviews', require('./users/product_reviews'));
+router.use('/:userId/shop_reviews', require('./users/shop_reviews'));
 
 module.exports = router;
