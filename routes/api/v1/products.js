@@ -133,5 +133,6 @@ router.put('/:productId', function (req, res, next) {
 });
 
 router.use('/:productId/product_images', require('./products/product_images'));
+router.use('/:productId/product_reviews', require('./products/product_reviews'));
 
 module.exports = router;
