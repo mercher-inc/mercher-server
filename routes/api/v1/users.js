@@ -129,5 +129,6 @@ router.put('/:userId', function (req, res, next) {
 router.use('/:userId/managers', require('./users/managers'));
 router.use('/:userId/orders', require('./users/orders'));
 router.use('/:userId/shops', require('./users/shops'));
+router.use('/:userId/product_reviews', require('./users/product_reviews'));
 
 module.exports = router;
