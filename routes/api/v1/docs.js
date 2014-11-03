@@ -19,6 +19,10 @@ router.get('/', function (req, res) {
                 "description": "Shop resource"
             },
             {
+                "path":        "/shop_reviews",
+                "description": "Shop Review resource"
+            },
+            {
                 "path":        "/products",
                 "description": "Product resource"
             },
@@ -66,6 +70,7 @@ router.get('/', function (req, res) {
 router.use('/auth', require('./docs/resources/auth'));
 router.use('/users', require('./docs/resources/users'));
 router.use('/shops', require('./docs/resources/shops'));
+router.use('/shop_reviews', require('./docs/resources/shop_reviews'));
 router.use('/products', require('./docs/resources/products'));
 router.use('/product_images', require('./docs/resources/product_images'));
 router.use('/product_reviews', require('./docs/resources/product_reviews'));
