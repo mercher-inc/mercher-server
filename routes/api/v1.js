@@ -6,6 +6,17 @@ var express = require('express'),
     Bookshelf = app.get('bookshelf'),
     knex = Bookshelf.knex;
 
+// documentation
+router.use('/docs', require('./v1/docs'));
+
+if (process.env.NODE_ENV === 'development') {
+    router.use(function(req, res, next) {
+        var now = new Date();
+        console.info('%s %s %s', now.toISOString(), req.method, req.path, req.body);
+        next();
+    });
+}
+
 validator.validators.uniqueRecord = function (param, value, options) {
     return new Promise(function (resolve, reject) {
         knex(options.table)
@@ -89,9 +100,6 @@ router.use('/product_images', require('./v1/product_images'));
 router.use('/orders', require('./v1/orders'));
 router.use('/order_items', require('./v1/order_items'));
 router.use('/paypal_accounts', require('./v1/paypal_accounts'));
-
-// documentation
-router.use('/docs', require('./v1/docs'));
 
 router.use(function (req, res, next) {
     next(new (require('./v1/errors/not_found'))("Edge was not found"));
