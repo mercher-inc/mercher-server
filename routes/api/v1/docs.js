@@ -27,6 +27,10 @@ router.get('/', function (req, res) {
                 "description": "Product Image resource"
             },
             {
+                "path":        "/product_reviews",
+                "description": "Product Review resource"
+            },
+            {
                 "path":        "/categories",
                 "description": "Category resource"
             },
@@ -64,6 +68,7 @@ router.use('/users', require('./docs/resources/users'));
 router.use('/shops', require('./docs/resources/shops'));
 router.use('/products', require('./docs/resources/products'));
 router.use('/product_images', require('./docs/resources/product_images'));
+router.use('/product_reviews', require('./docs/resources/product_reviews'));
 router.use('/categories', require('./docs/resources/categories'));
 router.use('/managers', require('./docs/resources/managers'));
 router.use('/orders', require('./docs/resources/orders'));
