@@ -1,0 +1,30 @@
+{
+    "rating":  {
+        "rules":      {
+            "required": {
+                "message": "Rating is required"
+            },
+            "isInt":    {
+                "message": "Rating should be integer"
+            },
+            "toInt":    {}
+        },
+        "allowEmpty": false
+    },
+    "comment": {
+        "rules":      {
+            "required": {
+                "message": "Comment is required"
+            },
+            "toString": {},
+            "trim":     {},
+            "escape":   {},
+            "isLength": {
+                "message": "Comment should be at least 3 characters long and less then 250 characters",
+                "min":     3,
+                "max":     250
+            }
+        },
+        "allowEmpty": false
+    }
+}

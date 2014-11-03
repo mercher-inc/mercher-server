@@ -1,0 +1,64 @@
+{
+    "productId": {
+        "rules":      {
+            "required":     {
+                "message": "Product ID is required"
+            },
+            "isInt":        {
+                "message": "Product ID should be integer"
+            },
+            "recordExists": {
+                "message": "Product does not exists",
+                "table":   "product",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty": false
+    },
+    "userId":    {
+        "rules":      {
+            "required":     {
+                "message": "User ID is required"
+            },
+            "isInt":        {
+                "message": "User ID should be integer"
+            },
+            "recordExists": {
+                "message": "User does not exists",
+                "table":   "user",
+                "field":   "id"
+            },
+            "toInt":        {}
+        },
+        "allowEmpty": false
+    },
+    "rating":    {
+        "rules":      {
+            "required": {
+                "message": "Rating is required"
+            },
+            "isInt":    {
+                "message": "Rating should be integer"
+            },
+            "toInt":    {}
+        },
+        "allowEmpty": false
+    },
+    "comment":   {
+        "rules":      {
+            "required": {
+                "message": "Comment is required"
+            },
+            "toString": {},
+            "trim":     {},
+            "escape":   {},
+            "isLength": {
+                "message": "Comment should be at least 3 characters long and less then 250 characters",
+                "min":     3,
+                "max":     250
+            }
+        },
+        "allowEmpty": false
+    }
+}
