@@ -54,9 +54,9 @@
             "trim":     {},
             "escape":   {},
             "isLength": {
-                "message": "Comment should be at least 3 characters long and less then 250 characters",
+                "message": "Comment should be at least 3 characters long and less then 2000 characters",
                 "min":     3,
-                "max":     250
+                "max":     2000
             }
         },
         "allowEmpty": false
