@@ -5,7 +5,9 @@
         _ = require('underscore'),
         UserModel = require('../models/user'),
         UserEmailModel = require('../models/user_email'),
-        UserThirdPartyAccountModel = require('../models/user_third_party_account');
+        UserThirdPartyAccountModel = require('../models/user_third_party_account'),
+        ShopModel = require('../models/shop'),
+        ShopThirdPartyAccountModel = require('../models/shop_third_party_account');
 
     var getData = function (type) {
         return new Promise(function (resolve, reject) {
@@ -84,8 +86,7 @@
                 return userEmailModel.save(
                     {
                         isActive:  false,
-                        isBanned:  userData['is_banned'],
-                        createdAt: userData['created']
+                        isBanned:  userData['is_banned']
                     }
                 );
             });
@@ -96,17 +97,49 @@
         return userThirdPartyAccountModel
             .fetch({require: true})
             .catch(UserThirdPartyAccountModel.NotFoundError, function () {
-                return userThirdPartyAccountModel.save(
+                return userThirdPartyAccountModel.save();
+            });
+    };
+
+    var updateShop = function (shopData) {
+        console.log(shopData);
+        var shopModel = new ShopModel({id: parseInt(shopData['id'])});
+        return shopModel
+            .fetch({require: true})
+            .catch(ShopModel.NotFoundError, function () {
+                return shopModel.save(
                     {
-                        createdAt: userData['created']
+                        title:       shopData['title'],
+                        description: shopData['description'],
+                        tax:         shopData['tax'],
+                        isPublic:    shopData['is_active'],
+                        isBanned:    shopData['is_banned'],
+                        createdAt:   shopData['created']
+                    },
+                    {
+                        method: "insert"
                     }
                 );
+            })
+            .then(function (shopModel) {
+                return updateShopThirdPartyAccount(shopData)
+                    .then(function () {
+                        return shopModel;
+                    });
+            })
+    };
+
+    var updateShopThirdPartyAccount = function (shopData) {
+        var shopThirdPartyAccountModel = new ShopThirdPartyAccountModel({provider: 'facebook', providerId: shopData['fb_id'], shopId: parseInt(shopData['id'])});
+        return shopThirdPartyAccountModel
+            .fetch({require: true})
+            .catch(ShopThirdPartyAccountModel.NotFoundError, function () {
+                return shopThirdPartyAccountModel.save();
             });
     };
 
     module.exports = function () {
         return new Promise(function (resolve, reject) {
-
             getData('users')
                 .then(function (users) {
                     var userPromises = [];
@@ -115,10 +148,16 @@
                     });
                     return Promise.all(userPromises);
                 })
-                .then(function (users) {
-                    console.log(users);
+                .then(function () {
+                    return getData('shops');
+                })
+                .then(function (shops) {
+                    var shopPromises = [];
+                    _.each(shops, function (shopData) {
+                        shopPromises.push(updateShop(shopData));
+                    });
+                    return Promise.all(shopPromises);
                 });
-
         });
     };
 
