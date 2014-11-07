@@ -105,4 +105,6 @@
             });
         });
 
+    require('./modules/import')();
+
 })(module, require);

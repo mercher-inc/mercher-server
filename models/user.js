@@ -11,14 +11,14 @@ var UserModel = BaseModel.extend(
     {
         tableName: 'user',
         defaults:  {
-            imageId:    null,
-            firstName:  null,
-            lastName:   null,
-            gender:     null,
-            last_login: null,
-            isBanned:   false,
-            createdAt:  null,
-            updatedAt:  null
+            imageId:   null,
+            firstName: null,
+            lastName:  null,
+            gender:    null,
+            lastLogin: null,
+            isBanned:  false,
+            createdAt: null,
+            updatedAt: null
         },
 
         image:  function () {
