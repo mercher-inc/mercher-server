@@ -7,7 +7,8 @@
         UserEmailModel = require('../models/user_email'),
         UserThirdPartyAccountModel = require('../models/user_third_party_account'),
         ShopModel = require('../models/shop'),
-        ShopThirdPartyAccountModel = require('../models/shop_third_party_account');
+        ShopThirdPartyAccountModel = require('../models/shop_third_party_account'),
+        ManagerModel = require('../models/manager');
 
     var getData = function (type) {
         return new Promise(function (resolve, reject) {
@@ -127,6 +128,12 @@
                         return shopModel;
                     });
             })
+            .then(function (shopModel) {
+                return updateManager(shopData)
+                    .then(function () {
+                        return shopModel;
+                    });
+            })
     };
 
     var updateShopThirdPartyAccount = function (shopData) {
@@ -135,6 +142,17 @@
             .fetch({require: true})
             .catch(ShopThirdPartyAccountModel.NotFoundError, function () {
                 return shopThirdPartyAccountModel.save();
+            });
+    };
+
+    var updateManager = function (shopData) {
+        var managerModel = new ManagerModel({userId: parseInt(shopData['owner_id']), shopId: parseInt(shopData['id'])});
+        return managerModel
+            .fetch({require: true})
+            .catch(ManagerModel.NotFoundError, function () {
+                return managerModel.save({
+                    role: 'owner'
+                });
             });
     };
 
