@@ -4,7 +4,8 @@
         Promise = require('bluebird'),
         _ = require('underscore'),
         UserModel = require('../models/user'),
-        UserEmailModel = require('../models/user_email');
+        UserEmailModel = require('../models/user_email'),
+        UserThirdPartyAccountModel = require('../models/user_third_party_account');
 
     var getData = function (type) {
         return new Promise(function (resolve, reject) {
@@ -66,6 +67,12 @@
                     .then(function () {
                         return userModel;
                     });
+            })
+            .then(function (userModel) {
+                return updateUserThirdPartyAccount(userData)
+                    .then(function () {
+                        return userModel;
+                    });
             });
     };
 
@@ -78,6 +85,19 @@
                     {
                         isActive:  false,
                         isBanned:  userData['is_banned'],
+                        createdAt: userData['created']
+                    }
+                );
+            });
+    };
+
+    var updateUserThirdPartyAccount = function (userData) {
+        var userThirdPartyAccountModel = new UserThirdPartyAccountModel({provider: 'facebook', providerId: userData['fb_id'], userId: parseInt(userData['id'])});
+        return userThirdPartyAccountModel
+            .fetch({require: true})
+            .catch(UserThirdPartyAccountModel.NotFoundError, function () {
+                return userThirdPartyAccountModel.save(
+                    {
                         createdAt: userData['created']
                     }
                 );
